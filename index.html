@@ -107,15 +107,14 @@
         <div class="content">
             <div id="loader" class="loader">جاري تحميل البيانات... ⏳</div>
             
-            <!-- قسم المباريات -->
             <div id="rounds-view" class="hidden"></div>
+            
             <div id="match-details-view" class="hidden">
                 <button class="back-btn" onclick="showRounds()">⬅ رجوع للجولات</button>
                 <h3 id="current-round-title" style="margin-bottom: 20px; text-align: center; color: var(--text-main); font-weight: 900;"></h3>
                 <div id="matches-container"></div>
             </div>
             
-            <!-- قسم الإحصائيات -->
             <div id="stats-view" class="hidden">
                 <div class="glass-card animated" style="animation-delay: 0.1s; padding: 15px 5px;">
                     <div class="stats-title">📊 جدول الترتيب</div>
@@ -141,7 +140,6 @@
                 </div>
             </div>
 
-            <!-- قسم الحضور -->
             <div id="attendance-view" class="hidden"></div>
         </div>
     </div>
@@ -181,12 +179,17 @@
             }
         }
 
+        // ================= التعديل السحري هنا =================
         function getPlayerAvatarSrc(text) {
             if (!text) return defaultAvatar;
-            let cleanText = text.replace(/<[^>]*>/g, '').trim();
+            
+            // بنقص النص من عند قوس الأسيست وناخد الجزء الأول بس عشان نجيب صورة الهداف الأساسي
+            let cleanText = text.split('(')[0].replace(/<[^>]*>/g, '').trim();
+            
             for (let name in playerImages) {
                 if (cleanText.includes(name) || name.includes(cleanText)) return playerImages[name];
             }
+            
             let firstWord = cleanText.split(' ')[0];
             if (firstWord && firstWord.length > 2) {
                 for (let name in playerImages) {
@@ -203,9 +206,6 @@
             });
             leagueData.forEach(round => {
                 round.matches.forEach(match => {
-                    if (match.scoreA === 0 && match.scoreB === 0 && match.eventsA.goals.length === 0 && match.eventsB.goals.length === 0 && !match.isPlayed) {
-                        // ممكن نضيف شرط ان الماتش لسة متلعبش لو حابين
-                    }
                     standings[match.teamA].played++; standings[match.teamB].played++;
                     standings[match.teamA].goalsFor += match.scoreA; standings[match.teamA].goalsAgainst += match.scoreB;
                     standings[match.teamB].goalsFor += match.scoreB; standings[match.teamB].goalsAgainst += match.scoreA;
@@ -236,7 +236,6 @@
             else if (tabName === 'attendance') { document.getElementById('attendance-view').classList.remove('hidden'); renderAttendance(); }
         }
 
-        // ================= المباريات =================
         function renderRounds() {
             const roundsView = document.getElementById('rounds-view'); roundsView.innerHTML = '';
             leagueData.forEach((round, index) => {
@@ -286,9 +285,7 @@
             document.getElementById('rounds-view').classList.remove('hidden'); 
         }
 
-        // ================= الإحصائيات =================
         function renderStats() {
-            // الترتيب
             const standings = calculateStandings();
             const standingsBody = document.getElementById('league-standings-body'); standingsBody.innerHTML = '';
             standings.forEach(team => {
@@ -300,7 +297,6 @@
             const rankClasses = ['tier-1', 'tier-2', 'tier-3']; 
             const rankTitles = ['🥇 المركز الأول', '🥈 المركز الثاني', '🥉 المركز الثالث'];
 
-            // الهدافين
             const scorersContainer = document.getElementById('top-scorers-container');
             let uniqueGoalCounts = [...new Set(statsData.topScorers.map(p => p.count))].sort((a, b) => b - a).filter(c => c > 0);
             let top3GoalCounts = uniqueGoalCounts.slice(0, 3); let scorersHtml = '';
@@ -313,7 +309,6 @@
             });
             scorersContainer.innerHTML = scorersHtml;
 
-            // الأسيست
             const assistsContainer = document.getElementById('top-assists-container');
             let uniqueAssistCounts = [...new Set(statsData.topAssists.map(p => p.count))].sort((a, b) => b - a).filter(c => c > 0);
             let top3AssistCounts = uniqueAssistCounts.slice(0, 3); let assistsHtml = '';
@@ -327,11 +322,9 @@
             assistsContainer.innerHTML = assistsHtml;
         }
 
-        // ================= الحضور =================
         function renderAttendance() {
             const container = document.getElementById('attendance-view'); 
             container.innerHTML = '';
-            
             let hasAnyVisible = false;
 
             attendanceData.forEach((monthData, monthIdx) => {
@@ -412,7 +405,6 @@
         function closeModal() { document.getElementById('attendance-modal').style.display = 'none'; }
         function closeModalOnOutsideClick(e) { if (e.target.id === 'attendance-modal') closeModal(); }
 
-        // بدء التشغيل
         fetchDatabase();
     </script>
 </body>
