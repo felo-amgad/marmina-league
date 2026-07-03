@@ -1,0 +1,92 @@
+{
+  "logos": {
+    "بايرن ميونخ": "https://upload.wikimedia.org/wikipedia/commons/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg",
+    "برشلونة": "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg",
+    "تشيلسي": "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg",
+    "ليفربول": "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg"
+  },
+  "playerImages": {
+    "أبانوب ناصر": "ابانوب ناصر.jpeg",
+    "أبانوب ماهر": "ابانوب ماهر.jpeg",
+    "جون": "جون.jpeg",
+    "بافلي": "بافلي.jpeg",
+    "شنودة": "شنودة.jpeg",
+    "فيلو": "فيلو.jpeg",
+    "كاراس": "كاراس عادل.jpeg",
+    "كيرلس مجدي": "كيرلس مجدي.jpeg",
+    "كيفين": "كيفين.jpeg",
+    "موسى سميح": "موسى.jpeg",
+    "موسى": "موسى.jpeg",
+    "مينا خالد": "مينا.jpeg",
+    "مينا": "مينا.jpeg",
+    "يوحنا": "يوحنا.jpeg",
+    "يوساب": "يوساب.jpeg",
+    "يوسف": "يوسف.jpeg"
+  },
+  "leagueData": [
+    {
+      "id": 1,
+      "name": "الجولة الأولى",
+      "date": "الخميس 2 يوليو 2026",
+      "matches": [
+        {
+          "teamA": "بايرن ميونخ", "teamB": "برشلونة",
+          "scoreA": 0, "scoreB": 1,
+          "eventsA": { "goals": [], "yellowCards": [], "redCards": [] },
+          "eventsB": { "goals": ["جون"], "yellowCards": [], "redCards": [] }
+        },
+        {
+          "teamA": "تشيلسي", "teamB": "ليفربول",
+          "scoreA": 1, "scoreB": 2,
+          "eventsA": { "goals": ["أبانوب ناصر"], "yellowCards": [], "redCards": ["أبانوب ماهر"] },
+          "eventsB": { "goals": ["فيلو", "فيلو"], "yellowCards": [], "redCards": [] }
+        },
+        {
+          "teamA": "بايرن ميونخ", "teamB": "تشيلسي",
+          "scoreA": 2, "scoreB": 6,
+          "eventsA": { "goals": ["أستاذ هاني", "كاراس <span class='own-goal'>(هدف ذاتي)</span>"], "yellowCards": [], "redCards": [] },
+          "eventsB": { "goals": ["أبانوب ناصر (أسيست كاراس)", "أبانوب ناصر", "موسى سميح <span class='own-goal'>(هدف ذاتي)</span>", "كاراس (أسيست أبانوب)", "كاراس (أسيست أبانوب)", "أبانوب ناصر (أسيست كاراس)"], "yellowCards": ["يوسف", "فيلو أمجد"], "redCards": [] }
+        },
+        {
+          "teamA": "برشلونة", "teamB": "ليفربول",
+          "scoreA": 3, "scoreB": 0,
+          "eventsA": { "goals": ["جون", "يوساب (أسيست مينا خالد)", "يوساب (أسيست مينا خالد)"], "yellowCards": [], "redCards": [] },
+          "eventsB": { "goals": [], "yellowCards": [], "redCards": [] }
+        }
+      ]
+    }
+  ],
+  "statsData": {
+    "topScorers": [
+      { "name": "أبانوب ناصر", "team": "تشيلسي", "count": 4 },
+      { "name": "جون", "team": "برشلونة", "count": 2 },
+      { "name": "يوساب", "team": "برشلونة", "count": 2 },
+      { "name": "كاراس", "team": "تشيلسي", "count": 2 },
+      { "name": "فيلو", "team": "ليفربول", "count": 2 },
+      { "name": "أستاذ هاني", "team": "بايرن ميونخ", "count": 1 }
+    ],
+    "topAssists": [
+      { "name": "مينا خالد", "team": "برشلونة", "count": 3 },
+      { "name": "كاراس", "team": "تشيلسي", "count": 2 },
+      { "name": "أبانوب ناصر", "team": "تشيلسي", "count": 2 }
+    ]
+  },
+  "attendanceData": [
+    {
+      "month": "يوليو 2026",
+      "fridays": [
+        { "name": "الجمعة الأولى", "date": "3 يوليو 2026" },
+        { "name": "الجمعة الثانية", "date": "10 يوليو 2026" },
+        { "name": "الجمعة الثالثة", "date": "17 يوليو 2026" },
+        { "name": "الجمعة الرابعة", "date": "24 يوليو 2026" }
+      ]
+    },
+    {
+      "month": "أغسطس 2026",
+      "fridays": [
+        { "name": "الجمعة الأولى", "date": "7 أغسطس 2026" },
+        { "name": "الجمعة الثانية", "date": "14 أغسطس 2026" }
+      ]
+    }
+  ]
+}
