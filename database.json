@@ -160,26 +160,7 @@
       "id": 2,
       "name": "الجولة الثانية",
       "date": "9/7/2026",
-      "matches": [
-        {
-          "teamA": "بايرن ميونخ",
-          "teamB": "برشلونة",
-          "scoreA": 1,
-          "scoreB": 0,
-          "eventsA": {
-            "goals": [
-              "بافلي (أسيست أبانوب ماهر)"
-            ],
-            "yellowCards": [],
-            "redCards": []
-          },
-          "eventsB": {
-            "goals": [],
-            "yellowCards": [],
-            "redCards": []
-          }
-        }
-      ]
+      "matches": []
     }
   ],
   "statsData": {
@@ -213,11 +194,6 @@
         "name": "أستاذ هاني",
         "team": "بايرن ميونخ",
         "count": 1
-      },
-      {
-        "name": "بافلي",
-        "team": "بايرن ميونخ",
-        "count": 1
       }
     ],
     "topAssists": [
@@ -235,11 +211,6 @@
         "name": "مينا خالد",
         "team": "برشلونة",
         "count": 2
-      },
-      {
-        "name": "أبانوب ماهر",
-        "team": "بايرن ميونخ",
-        "count": 1
       }
     ]
   },
