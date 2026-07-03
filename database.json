@@ -32,11 +32,29 @@
     "يوسف رامي": "يوسف.jpeg"
   },
   "players": [
-    "أبانوب ماهر", "أبانوب ناصر", "بيتر عماد", "أمير ملاك", "ماركو أمير", 
-    "موسى سميح", "يوحنا أسامة", "كاراس عادل", "مينا خالد", "بولا عريان", 
-    "كيرلس مجدي", "جون رامز", "بيشوي هشام", "كيفين", "فادي عادل", 
-    "شنودة سمير", "كاراس ميلاد", "كاراس أمجد", "كيرلس عماد", "يوسف رامي",
-    "بافلي", "فيلو", "يوساب"
+    "أبانوب ماهر",
+    "أبانوب ناصر",
+    "بيتر عماد",
+    "أمير ملاك",
+    "ماركو أمير",
+    "موسى سميح",
+    "يوحنا أسامة",
+    "كاراس عادل",
+    "مينا خالد",
+    "بولا عريان",
+    "كيرلس مجدي",
+    "جون رامز",
+    "بيشوي هشام",
+    "كيفين",
+    "فادي عادل",
+    "شنودة سمير",
+    "كاراس ميلاد",
+    "كاراس أمجد",
+    "كيرلس عماد",
+    "يوسف رامي",
+    "بافلي",
+    "فيلو",
+    "يوساب"
   ],
   "leagueData": [
     {
@@ -45,85 +63,299 @@
       "date": "الخميس 2 يوليو 2026",
       "matches": [
         {
-          "teamA": "بايرن ميونخ", "teamB": "برشلونة",
-          "scoreA": 0, "scoreB": 1,
-          "eventsA": { "goals": [], "yellowCards": ["بافلي"], "redCards": [] },
-          "eventsB": { "goals": ["جون"], "yellowCards": [], "redCards": [] }
+          "teamA": "بايرن ميونخ",
+          "teamB": "برشلونة",
+          "scoreA": 0,
+          "scoreB": 1,
+          "eventsA": {
+            "goals": [],
+            "yellowCards": [
+              "بافلي"
+            ],
+            "redCards": []
+          },
+          "eventsB": {
+            "goals": [
+              "جون"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          }
         },
         {
-          "teamA": "تشيلسي", "teamB": "ليفربول",
-          "scoreA": 1, "scoreB": 2,
-          "eventsA": { "goals": ["أبانوب ناصر"], "yellowCards": [], "redCards": ["أبانوب ماهر"] },
-          "eventsB": { "goals": ["فيلو", "فيلو"], "yellowCards": [], "redCards": [] }
+          "teamA": "تشيلسي",
+          "teamB": "ليفربول",
+          "scoreA": 1,
+          "scoreB": 2,
+          "eventsA": {
+            "goals": [
+              "أبانوب ناصر"
+            ],
+            "yellowCards": [],
+            "redCards": [
+              "أبانوب ماهر"
+            ]
+          },
+          "eventsB": {
+            "goals": [
+              "فيلو",
+              "فيلو"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          }
         },
         {
-          "teamA": "بايرن ميونخ", "teamB": "تشيلسي",
-          "scoreA": 2, "scoreB": 6,
-          "eventsA": { "goals": ["أستاذ هاني", "كاراس <span class='own-goal'>(هدف ذاتي)</span>"], "yellowCards": [], "redCards": [] },
-          "eventsB": { "goals": ["أبانوب ناصر (أسيست كاراس)", "أبانوب ناصر", "موسى سميح <span class='own-goal'>(هدف ذاتي)</span>", "كاراس (أسيست أبانوب)", "كاراس (أسيست أبانوب)", "أبانوب ناصر (أسيست كاراس)"], "yellowCards": ["يوسف", "فيلو أمجد"], "redCards": [] }
+          "teamA": "بايرن ميونخ",
+          "teamB": "تشيلسي",
+          "scoreA": 2,
+          "scoreB": 6,
+          "eventsA": {
+            "goals": [
+              "أستاذ هاني",
+              "كاراس <span class='own-goal'>(هدف ذاتي)</span>"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          },
+          "eventsB": {
+            "goals": [
+              "أبانوب ناصر (أسيست كاراس)",
+              "أبانوب ناصر",
+              "موسى سميح <span class='own-goal'>(هدف ذاتي)</span>",
+              "كاراس (أسيست أبانوب)",
+              "كاراس (أسيست أبانوب)",
+              "أبانوب ناصر (أسيست كاراس)"
+            ],
+            "yellowCards": [
+              "يوسف",
+              "فيلو أمجد"
+            ],
+            "redCards": []
+          }
         },
         {
-          "teamA": "برشلونة", "teamB": "ليفربول",
-          "scoreA": 3, "scoreB": 0,
-          "eventsA": { "goals": ["جون", "يوساب (أسيست مينا خالد)", "يوساب (أسيست مينا خالد)"], "yellowCards": [], "redCards": [] },
-          "eventsB": { "goals": [], "yellowCards": [], "redCards": [] }
+          "teamA": "برشلونة",
+          "teamB": "ليفربول",
+          "scoreA": 3,
+          "scoreB": 0,
+          "eventsA": {
+            "goals": [
+              "جون",
+              "يوساب (أسيست مينا خالد)",
+              "يوساب (أسيست مينا خالد)"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          },
+          "eventsB": {
+            "goals": [],
+            "yellowCards": [],
+            "redCards": []
+          }
         }
       ]
     }
   ],
   "statsData": {
     "topScorers": [
-      { "name": "أبانوب ناصر", "team": "تشيلسي", "count": 4 },
-      { "name": "جون", "team": "برشلونة", "count": 2 },
-      { "name": "يوساب", "team": "برشلونة", "count": 2 },
-      { "name": "كاراس", "team": "تشيلسي", "count": 2 },
-      { "name": "فيلو", "team": "ليفربول", "count": 2 },
-      { "name": "أستاذ هاني", "team": "بايرن ميونخ", "count": 1 }
+      {
+        "name": "أبانوب ناصر",
+        "team": "تشيلسي",
+        "count": 4
+      },
+      {
+        "name": "جون",
+        "team": "برشلونة",
+        "count": 2
+      },
+      {
+        "name": "يوساب",
+        "team": "برشلونة",
+        "count": 2
+      },
+      {
+        "name": "كاراس",
+        "team": "تشيلسي",
+        "count": 2
+      },
+      {
+        "name": "فيلو",
+        "team": "ليفربول",
+        "count": 2
+      },
+      {
+        "name": "أستاذ هاني",
+        "team": "بايرن ميونخ",
+        "count": 1
+      }
     ],
     "topAssists": [
-      { "name": "مينا خالد", "team": "برشلونة", "count": 3 },
-      { "name": "كاراس", "team": "تشيلسي", "count": 2 },
-      { "name": "أبانوب ناصر", "team": "تشيلسي", "count": 2 }
+      {
+        "name": "مينا خالد",
+        "team": "برشلونة",
+        "count": 3
+      },
+      {
+        "name": "كاراس",
+        "team": "تشيلسي",
+        "count": 2
+      },
+      {
+        "name": "أبانوب ناصر",
+        "team": "تشيلسي",
+        "count": 2
+      }
     ]
   },
   "attendanceData": [
     {
       "month": "يوليو 2026",
       "fridays": [
-        { 
-          "name": "الجمعة الأولى", 
+        {
+          "name": "الجمعة الأولى",
           "date": "3 يوليو 2026",
           "visible": true,
           "hasAttendance": true,
           "records": {
-            "أبانوب ماهر": { "friday": true, "study": false, "activity": false },
-            "أبانوب ناصر": { "friday": true, "study": false, "activity": false },
-            "بيتر عماد": { "friday": true, "study": false, "activity": false },
-            "أمير ملاك": { "friday": true, "study": false, "activity": false },
-            "ماركو أمير": { "friday": true, "study": false, "activity": false },
-            "موسى سميح": { "friday": true, "study": false, "activity": false },
-            "يوحنا أسامة": { "friday": true, "study": false, "activity": false },
-            "كاراس عادل": { "friday": true, "study": false, "activity": false },
-            "مينا خالد": { "friday": true, "study": false, "activity": false },
-            "بولا عريان": { "friday": true, "study": false, "activity": false },
-            "كيرلس مجدي": { "friday": true, "study": false, "activity": false },
-            "جون رامز": { "friday": true, "study": false, "activity": false },
-            "بيشوي هشام": { "friday": true, "study": false, "activity": false },
-            "كيفين": { "friday": true, "study": false, "activity": false },
-            "فادي عادل": { "friday": true, "study": false, "activity": false },
-            "شنودة سمير": { "friday": true, "study": false, "activity": false },
-            "كاراس ميلاد": { "friday": true, "study": false, "activity": false },
-            "كاراس أمجد": { "friday": true, "study": false, "activity": false },
-            "كيرلس عماد": { "friday": true, "study": false, "activity": false },
-            "يوسف رامي": { "friday": true, "study": false, "activity": false },
-            "بافلي": { "friday": false, "study": false, "activity": false },
-            "فيلو": { "friday": false, "study": false, "activity": false },
-            "يوساب": { "friday": false, "study": false, "activity": false }
+            "أبانوب ماهر": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "أبانوب ناصر": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "بيتر عماد": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "أمير ملاك": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "ماركو أمير": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "موسى سميح": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "يوحنا أسامة": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "كاراس عادل": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "مينا خالد": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "بولا عريان": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "كيرلس مجدي": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "جون رامز": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "بيشوي هشام": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "كيفين": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "فادي عادل": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "شنودة سمير": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "كاراس ميلاد": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "كاراس أمجد": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "كيرلس عماد": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "يوسف رامي": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "بافلي": {
+              "friday": false,
+              "study": false,
+              "activity": false
+            },
+            "فيلو": {
+              "friday": false,
+              "study": false,
+              "activity": false
+            },
+            "يوساب": {
+              "friday": false,
+              "study": false,
+              "activity": false
+            }
           }
         },
-        { "name": "الجمعة الثانية", "date": "10 يوليو 2026", "visible": false, "hasAttendance": false, "records": {} },
-        { "name": "الجمعة الثالثة", "date": "17 يوليو 2026", "visible": false, "hasAttendance": false, "records": {} },
-        { "name": "الجمعة الرابعة", "date": "24 يوليو 2026", "visible": false, "hasAttendance": false, "records": {} }
+        {
+          "name": "الجمعة الثانية",
+          "date": "10 يوليو 2026",
+          "visible": false,
+          "hasAttendance": false,
+          "records": {}
+        },
+        {
+          "name": "الجمعة الثالثة",
+          "date": "17 يوليو 2026",
+          "visible": false,
+          "hasAttendance": false,
+          "records": {}
+        },
+        {
+          "name": "الجمعة الرابعة",
+          "date": "24 يوليو 2026",
+          "visible": false,
+          "hasAttendance": false,
+          "records": {}
+        }
       ]
     }
   ]
