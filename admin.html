@@ -24,21 +24,23 @@
         button { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; font-size: 15px; cursor: pointer; transition: 0.3s; margin-bottom: 10px; }
         .btn-primary { background: var(--primary); color: black; }
         .btn-secondary { background: var(--secondary); color: white; }
-        .btn-success { background: #00ff88; color: black; font-size: 16px; padding: 15px;}
+        .btn-success { background: #00ff88; color: black; font-size: 16px; padding: 15px; box-shadow: 0 0 15px rgba(0,255,136,0.4);}
+        .btn-danger { background: #ff4b2b; color: white; padding: 6px; font-size: 12px; margin:0;}
         
         .admin-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         .tab-btn { flex: 1; padding: 10px; background: rgba(255,255,255,0.05); color: #aaa; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-weight: bold; text-align: center;}
         .tab-btn.active { background: var(--primary); color: black; border-color: var(--primary); }
         
-        .attendance-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .checkbox-group { display: flex; gap: 15px; }
-        .checkbox-group label { display: flex; align-items: center; gap: 4px; font-size: 12px; cursor: pointer; }
-        .checkbox-group input { width: auto; margin: 0; }
-        
         .save-bar { position: sticky; bottom: 10px; z-index: 1000; }
         .hidden { display: none !important; }
-        .match-box { background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border); }
-        .event-badge { background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 12px; font-size: 11px; margin-left: 5px; display: inline-block; margin-top: 5px;}
+        
+        .checkbox-group { display: flex; gap: 15px; margin-top: 10px; background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; justify-content: space-around;}
+        .checkbox-group label { display: flex; align-items: center; gap: 6px; font-size: 14px; cursor: pointer; font-weight: bold;}
+        .checkbox-group input { width: 20px; height: 20px; margin: 0; cursor: pointer;}
+        
+        .edit-box { background: rgba(0,0,0,0.2); padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px dashed var(--primary); }
+        .event-badge { background: rgba(255,255,255,0.1); padding: 5px 10px; border-radius: 12px; font-size: 12px; margin: 5px 0; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border);}
+        .score-display { text-align: center; font-size: 24px; font-weight: 900; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px; margin-bottom: 15px; letter-spacing: 2px;}
     </style>
 </head>
 <body>
@@ -54,7 +56,7 @@
 
         <div id="main-panel" class="hidden">
             <div class="admin-tabs">
-                <div class="tab-btn active" id="btn-tab-config" onclick="switchTab('config')">إعدادات الربط</div>
+                <div class="tab-btn active" id="btn-tab-config" onclick="switchTab('config')">الربط</div>
                 <div class="tab-btn" id="btn-tab-attendance" onclick="switchTab('attendance')">الحضور</div>
                 <div class="tab-btn" id="btn-tab-matches" onclick="switchTab('matches')">المباريات</div>
             </div>
@@ -63,52 +65,99 @@
                 <button class="btn-success" onclick="pushChangesToGitHub()">💾 حفظ وحساب الإحصائيات أوتوماتيكياً</button>
             </div>
 
+            <!-- إعدادات GitHub -->
             <div id="section-config" class="glass-card animated">
                 <div class="title">⚙️ إعدادات ربط GitHub</div>
-                <label>Token (الرمز السري اللي جبناه):</label>
-                <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxx">
-                <label>اسم حسابك (Username):</label>
-                <input type="text" id="gh-owner" placeholder="مثال: FelopaterAmgad">
-                <label>اسم المستودع (Repository):</label>
-                <input type="text" id="gh-repo" placeholder="مثال: marmina-league">
+                <label>Token السري:</label><input type="password" id="gh-token" placeholder="ghp_...">
+                <label>اسم الحساب:</label><input type="text" id="gh-owner" placeholder="مثال: FelopaterAmgad">
+                <label>اسم المستودع:</label><input type="text" id="gh-repo" placeholder="مثال: marmina-league">
                 <button class="btn-primary" onclick="saveConfig()">حفظ محلياً</button>
             </div>
 
+            <!-- الحضور -->
             <div id="section-attendance" class="glass-card hidden animated">
-                <div class="title">🗓️ كشوفات الحضور</div>
-                <label>اختر الشهر:</label><select id="attend-month-select" onchange="loadAttendanceForm()"></select>
+                <div class="title">🗓️ تسجيل الحضور الفردي</div>
+                <label>اختر الشهر:</label><select id="attend-month-select" onchange="updateFridaysList()"></select>
                 <label>اختر الجمعة:</label><select id="attend-friday-select" onchange="loadAttendanceForm()"></select>
-                <div style="margin-bottom: 15px; display: flex; gap: 10px;">
-                    <label style="font-size:13px;"><input type="checkbox" id="friday-visible-check" onchange="updateFridayMeta()"> إظهار للشباب</label>
-                    <label style="font-size:13px;"><input type="checkbox" id="friday-active-check" onchange="updateFridayMeta()"> تفعيل الكشف</label>
+                
+                <div style="margin-bottom: 15px; display: flex; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 15px;">
+                    <label style="font-size:13px; font-weight:bold;"><input type="checkbox" id="friday-visible-check" onchange="updateFridayMeta()"> إظهار للشباب</label>
+                    <label style="font-size:13px; font-weight:bold;"><input type="checkbox" id="friday-active-check" onchange="updateFridayMeta()"> تفعيل الكشف</label>
                 </div>
-                <div id="attendance-players-list"></div>
+
+                <div id="player-attendance-area" class="hidden">
+                    <label style="color: var(--primary); font-weight:bold;">اختر الولد لتسجيل حضوره:</label>
+                    <select id="attend-player-select" onchange="loadPlayerRecord()"></select>
+                    
+                    <div class="checkbox-group">
+                        <label><input type="checkbox" id="chk-friday" onchange="savePlayerRecord()"> جمعة</label>
+                        <label><input type="checkbox" id="chk-study" onchange="savePlayerRecord()"> دراسي</label>
+                        <label><input type="checkbox" id="chk-activity" onchange="savePlayerRecord()"> نشاط</label>
+                    </div>
+                </div>
             </div>
 
+            <!-- المباريات وإدارة الأحداث -->
             <div id="section-matches" class="glass-card hidden animated">
-                <div class="title">⚽ المباريات (تسجيل الأهداف يحسب تلقائياً)</div>
+                <div class="title">⚽ إدارة المباريات والجولات</div>
+                
                 <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
-                    <div style="font-size: 13px; color: var(--secondary); margin-bottom: 8px;">➕ إضافة جولة</div>
+                    <div style="font-size: 13px; color: var(--secondary); margin-bottom: 8px;">➕ إضافة جولة جديدة</div>
                     <input type="text" id="new-round-name" placeholder="اسم الجولة">
-                    <input type="text" id="new-round-date" placeholder="تاريخها">
+                    <input type="text" id="new-round-date" placeholder="التاريخ">
                     <button class="btn-secondary" onclick="addNewRound()">إنشاء الجولة</button>
                 </div>
-                <label>الجولة المحددة للتعديل:</label><select id="round-matches-select" onchange="loadRoundMatches()"></select>
+
+                <label>اختر الجولة:</label><select id="round-matches-select" onchange="loadRoundMatchesList()"></select>
+                
                 <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
-                    <div style="font-size: 13px; color: var(--primary); margin-bottom: 8px;">🎮 إضافة ماتش</div>
+                    <div style="font-size: 13px; color: var(--primary); margin-bottom: 8px;">🎮 إضافة ماتش جديد للجولة</div>
                     <select id="match-team-a"></select><select id="match-team-b"></select>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="number" id="match-score-a" placeholder="أهداف A"><input type="number" id="match-score-b" placeholder="أهداف B">
-                    </div>
                     <button class="btn-primary" onclick="addNewMatch()">إدراج المباراة</button>
                 </div>
-                <div id="current-round-matches-list"></div>
+
+                <label style="color: var(--gold); font-weight:bold;">اختر المباراة لتعديلها وإضافة الأحداث:</label>
+                <select id="match-edit-select" onchange="loadMatchDetails()"></select>
+
+                <!-- منطقة تعديل الماتش (الاسكور والأحداث) -->
+                <div id="match-editor-area" class="edit-box hidden">
+                    <div class="score-display" id="live-score-display">0 - 0</div>
+                    
+                    <div style="margin-bottom: 10px; border-bottom: 1px dashed var(--border); padding-bottom: 10px;">
+                        <label>الحدث:</label>
+                        <select id="event-type" onchange="toggleEventFields()">
+                            <option value="goals">⚽ تسجيل هدف</option>
+                            <option value="yellowCards">🟨 إنذار أصفر</option>
+                            <option value="redCards">🟥 طرد</option>
+                        </select>
+                        
+                        <label>لصالح فريق:</label>
+                        <select id="event-team"></select>
+
+                        <label>اللاعب الأساسي:</label>
+                        <select id="event-player"></select>
+
+                        <div id="assist-container">
+                            <label>صانع اللعب (أسيست):</label>
+                            <select id="event-assist"></select>
+                            
+                            <label style="display:flex; align-items:center; gap:5px; margin-top:10px; color:var(--secondary); font-size:13px; font-weight:bold;">
+                                <input type="checkbox" id="event-owngoal"> هذا الهدف (هدف ذاتي بالخطأ)
+                            </label>
+                        </div>
+
+                        <button class="btn-primary" style="margin-top: 15px;" onclick="addMatchEvent()">إضافة الحدث للمباراة</button>
+                    </div>
+
+                    <div id="match-events-list"></div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
         let db = {}; 
+
         function handleLogin() {
             if(document.getElementById('admin-pass').value === "1234") {
                 document.getElementById('login-section').classList.add('hidden');
@@ -133,53 +182,97 @@
         async function fetchDatabaseFromServer() {
             const res = await fetch('database.json?v=' + new Date().getTime());
             db = await res.json();
-            populateSelects(); loadAttendanceForm(); loadRoundMatches();
+            populateSelects();
         }
 
         function populateSelects() {
+            // الحضور
             const monthSel = document.getElementById('attend-month-select');
             monthSel.innerHTML = db.attendanceData.map((m, i) => `<option value="${i}">شهر ${m.month}</option>`).join('');
+            
+            const playerSel = document.getElementById('attend-player-select');
+            playerSel.innerHTML = db.players.sort().map(p => `<option value="${p}">${p}</option>`).join('');
+            
             updateFridaysList();
+
+            // المباريات
             document.getElementById('round-matches-select').innerHTML = db.leagueData.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+            
             let teamOptions = Object.keys(db.logos).map(t => `<option value="${t}">${t}</option>`).join('');
-            document.getElementById('match-team-a').innerHTML = teamOptions; document.getElementById('match-team-b').innerHTML = teamOptions;
+            document.getElementById('match-team-a').innerHTML = teamOptions; 
+            document.getElementById('match-team-b').innerHTML = teamOptions;
+
+            let playersOptions = db.players.sort().map(p => `<option value="${p}">${p}</option>`).join('');
+            document.getElementById('event-player').innerHTML = playersOptions;
+            document.getElementById('event-assist').innerHTML = `<option value="">-- بدون أسيست --</option>` + playersOptions;
+
+            loadRoundMatchesList();
         }
 
+        /* ====== نظام الحضور المطور ====== */
         function updateFridaysList() {
             const mIdx = document.getElementById('attend-month-select').value;
-            if(db.attendanceData[mIdx]) {
-                document.getElementById('attend-friday-select').innerHTML = db.attendanceData[mIdx].fridays.map((f, i) => `<option value="${i}">${f.name}</option>`).join('');
+            const fSelect = document.getElementById('attend-friday-select');
+            if(db.attendanceData[mIdx] && db.attendanceData[mIdx].fridays.length > 0) {
+                fSelect.innerHTML = db.attendanceData[mIdx].fridays.map((f, i) => `<option value="${i}">${f.name} (${f.date})</option>`).join('');
+                document.getElementById('player-attendance-area').classList.remove('hidden');
+                loadAttendanceForm();
+            } else {
+                fSelect.innerHTML = '';
+                document.getElementById('player-attendance-area').classList.add('hidden');
             }
         }
 
         function loadAttendanceForm() {
-            const mIdx = document.getElementById('attend-month-select').value; const fIdx = document.getElementById('attend-friday-select').value;
+            const mIdx = document.getElementById('attend-month-select').value; 
+            const fIdx = document.getElementById('attend-friday-select').value;
             if(!db.attendanceData[mIdx] || !db.attendanceData[mIdx].fridays[fIdx]) return;
+            
             const fri = db.attendanceData[mIdx].fridays[fIdx];
-            document.getElementById('friday-visible-check').checked = fri.visible; document.getElementById('friday-active-check').checked = fri.hasAttendance;
+            document.getElementById('friday-visible-check').checked = fri.visible; 
+            document.getElementById('friday-active-check').checked = fri.hasAttendance;
             if(!fri.records) fri.records = {};
-            const list = document.getElementById('attendance-players-list'); list.innerHTML = '';
-            db.players.sort().forEach(p => {
-                if(!fri.records[p]) fri.records[p] = { friday: false, study: false, activity: false };
-                let r = fri.records[p];
-                list.innerHTML += `<div class="attendance-row"><div>${p}</div><div class="checkbox-group">
-                    <label><input type="checkbox" ${r.friday ? 'checked' : ''} onchange="toggleAttend('${p}', 'friday', this.checked)"> عام</label>
-                    <label><input type="checkbox" ${r.study ? 'checked' : ''} onchange="toggleAttend('${p}', 'study', this.checked)"> دراسي</label>
-                    <label><input type="checkbox" ${r.activity ? 'checked' : ''} onchange="toggleAttend('${p}', 'activity', this.checked)"> نشاط</label>
-                </div></div>`;
-            });
+            
+            loadPlayerRecord();
         }
 
-        function toggleAttend(p, t, v) { db.attendanceData[document.getElementById('attend-month-select').value].fridays[document.getElementById('attend-friday-select').value].records[p][t] = v; }
+        function loadPlayerRecord() {
+            const mIdx = document.getElementById('attend-month-select').value; 
+            const fIdx = document.getElementById('attend-friday-select').value;
+            const player = document.getElementById('attend-player-select').value;
+            
+            let records = db.attendanceData[mIdx].fridays[fIdx].records;
+            if(!records[player]) records[player] = { friday: false, study: false, activity: false };
+            
+            document.getElementById('chk-friday').checked = records[player].friday;
+            document.getElementById('chk-study').checked = records[player].study;
+            document.getElementById('chk-activity').checked = records[player].activity;
+        }
+
+        function savePlayerRecord() {
+            const mIdx = document.getElementById('attend-month-select').value; 
+            const fIdx = document.getElementById('attend-friday-select').value;
+            const player = document.getElementById('attend-player-select').value;
+            
+            db.attendanceData[mIdx].fridays[fIdx].records[player] = {
+                friday: document.getElementById('chk-friday').checked,
+                study: document.getElementById('chk-study').checked,
+                activity: document.getElementById('chk-activity').checked
+            };
+        }
+
         function updateFridayMeta() {
             const f = db.attendanceData[document.getElementById('attend-month-select').value].fridays[document.getElementById('attend-friday-select').value];
-            f.visible = document.getElementById('friday-visible-check').checked; f.hasAttendance = document.getElementById('friday-active-check').checked;
+            f.visible = document.getElementById('friday-visible-check').checked; 
+            f.hasAttendance = document.getElementById('friday-active-check').checked;
         }
 
+        /* ====== نظام المباريات المطور ====== */
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.glass-card').forEach(c => { if(c.id !== 'login-section') c.classList.add('hidden'); });
-            document.getElementById(`btn-tab-${tab}`).classList.add('active'); document.getElementById(`section-${tab}`).classList.remove('hidden');
+            document.getElementById(`btn-tab-${tab}`).classList.add('active'); 
+            document.getElementById(`section-${tab}`).classList.remove('hidden');
         }
 
         function addNewRound() {
@@ -187,67 +280,135 @@
             if(!name) return;
             const newId = db.leagueData.length + 1;
             db.leagueData.push({ id: newId, name: name, date: date, matches: [] });
-            populateSelects(); document.getElementById('round-matches-select').value = newId; loadRoundMatches();
+            populateSelects(); document.getElementById('round-matches-select').value = newId; loadRoundMatchesList();
         }
 
         function addNewMatch() {
             const round = db.leagueData.find(r => r.id == document.getElementById('round-matches-select').value);
             const tA = document.getElementById('match-team-a').value; const tB = document.getElementById('match-team-b').value;
             if(tA === tB) return alert("لا يمكن اختيار نفس الفريق!");
-            round.matches.push({ teamA: tA, teamB: tB, scoreA: parseInt(document.getElementById('match-score-a').value)||0, scoreB: parseInt(document.getElementById('match-score-b').value)||0, eventsA: { goals: [], yellowCards: [], redCards: [] }, eventsB: { goals: [], yellowCards: [], redCards: [] } });
-            loadRoundMatches();
+            round.matches.push({ teamA: tA, teamB: tB, scoreA: 0, scoreB: 0, eventsA: { goals: [], yellowCards: [], redCards: [] }, eventsB: { goals: [], yellowCards: [], redCards: [] } });
+            loadRoundMatchesList();
         }
 
-        function loadRoundMatches() {
+        function loadRoundMatchesList() {
             const round = db.leagueData.find(r => r.id == document.getElementById('round-matches-select').value);
-            const container = document.getElementById('current-round-matches-list'); container.innerHTML = '';
-            if(!round || round.matches.length === 0) return;
-
-            round.matches.forEach((m, mIdx) => {
-                container.innerHTML += `
-                    <div class="match-box">
-                        <div style="font-weight:bold; margin-bottom:10px;">${m.teamA} (${m.scoreA}) ضد ${m.teamB} (${m.scoreB})</div>
-                        <div style="display:flex; gap:5px; margin-bottom: 10px;">
-                            <input style="padding:4px; font-size:12px; margin:0; flex:2;" type="text" id="event-text-${mIdx}" placeholder="مثال: يوسف (أسيست مينا)">
-                            <select style="padding:4px; font-size:12px; margin:0; flex:1;" id="event-team-${mIdx}"><option value="A">${m.teamA}</option><option value="B">${m.teamB}</option></select>
-                            <button class="btn-primary" style="padding:4px; font-size:12px; margin:0;" onclick="addGoal(${mIdx})">⚽ إضافة جول</button>
-                        </div>
-                        <div style="font-size:11px; color:#aaa;">الأهداف: 
-                            ${m.eventsA.goals.map(e => `<span class="event-badge">${m.teamA}: ${e}</span>`).join('')}
-                            ${m.eventsB.goals.map(e => `<span class="event-badge">${m.teamB}: ${e}</span>`).join('')}
-                        </div>
-                    </div>
-                `;
-            });
+            const matchSelect = document.getElementById('match-edit-select');
+            if(!round || round.matches.length === 0) {
+                matchSelect.innerHTML = `<option value="">-- لا يوجد مباريات --</option>`;
+                document.getElementById('match-editor-area').classList.add('hidden');
+                return;
+            }
+            
+            matchSelect.innerHTML = round.matches.map((m, i) => `<option value="${i}">${m.teamA} ضد ${m.teamB}</option>`).join('');
+            document.getElementById('match-editor-area').classList.remove('hidden');
+            loadMatchDetails();
         }
 
-        function addGoal(mIdx) {
+        function loadMatchDetails() {
             const rId = document.getElementById('round-matches-select').value;
+            const mIdx = document.getElementById('match-edit-select').value;
+            if (mIdx === "") return;
+            
             const match = db.leagueData.find(r => r.id == rId).matches[mIdx];
-            const team = document.getElementById(`event-team-${mIdx}`).value;
-            const text = document.getElementById(`event-text-${mIdx}`).value.trim();
-            if(!text) return;
-            match[`events${team}`].goals.push(text);
-            loadRoundMatches();
+            
+            // تحديث الاسكور والأطراف
+            document.getElementById('live-score-display').innerText = `${match.teamA} (${match.scoreA}) - (${match.scoreB}) ${match.teamB}`;
+            document.getElementById('event-team').innerHTML = `<option value="A">${match.teamA}</option><option value="B">${match.teamB}</option>`;
+            
+            toggleEventFields();
+            renderMatchEvents(match, mIdx);
         }
 
-        // السحر هنا: الدالة دي بتشتغل قبل الحفظ عشان تحلل الماتشات وتطلع ההداف والأسيست أوتوماتيك
+        function toggleEventFields() {
+            const type = document.getElementById('event-type').value;
+            const assistContainer = document.getElementById('assist-container');
+            if(type === 'goals') { assistContainer.classList.remove('hidden'); } 
+            else { assistContainer.classList.add('hidden'); }
+        }
+
+        function addMatchEvent() {
+            const rId = document.getElementById('round-matches-select').value;
+            const mIdx = document.getElementById('match-edit-select').value;
+            const match = db.leagueData.find(r => r.id == rId).matches[mIdx];
+            
+            const type = document.getElementById('event-type').value;
+            const team = document.getElementById('event-team').value;
+            const player = document.getElementById('event-player').value;
+            const assist = document.getElementById('event-assist').value;
+            const isOwnGoal = document.getElementById('event-owngoal').checked;
+
+            let eventText = player;
+
+            if (type === 'goals') {
+                if (isOwnGoal) {
+                    eventText += " <span class='own-goal'>(هدف ذاتي)</span>";
+                } else if (assist) {
+                    eventText += ` (أسيست ${assist})`;
+                }
+                
+                // تحديث السكور تلقائياً
+                if (team === 'A') match.scoreA++; else match.scoreB++;
+            }
+
+            match[`events${team}`][type].push(eventText);
+            
+            // إعادة ضبط الخيارات
+            document.getElementById('event-owngoal').checked = false;
+            document.getElementById('event-assist').value = "";
+            
+            loadMatchDetails(); // إعادة تحميل العرض
+        }
+
+        function removeEvent(team, type, eventIndex) {
+            const rId = document.getElementById('round-matches-select').value;
+            const mIdx = document.getElementById('match-edit-select').value;
+            const match = db.leagueData.find(r => r.id == rId).matches[mIdx];
+            
+            // لو بنمسح جول، ننقص الاسكور
+            if (type === 'goals') {
+                if (team === 'A' && match.scoreA > 0) match.scoreA--;
+                if (team === 'B' && match.scoreB > 0) match.scoreB--;
+            }
+            
+            match[`events${team}`][type].splice(eventIndex, 1);
+            loadMatchDetails();
+        }
+
+        function renderMatchEvents(match, mIdx) {
+            const list = document.getElementById('match-events-list');
+            let html = '<div style="font-size:12px; color:#aaa; margin-top:15px; margin-bottom:5px;">الأحداث المسجلة:</div>';
+            
+            const eventTypes = { 'goals': '⚽', 'yellowCards': '🟨', 'redCards': '🟥' };
+            
+            ['A', 'B'].forEach(team => {
+                let teamName = team === 'A' ? match.teamA : match.teamB;
+                ['goals', 'yellowCards', 'redCards'].forEach(type => {
+                    match[`events${team}`][type].forEach((ev, idx) => {
+                        html += `<div class="event-badge">
+                                    <span>${eventTypes[type]} ${teamName}: ${ev}</span>
+                                    <button class="btn-danger" onclick="removeEvent('${team}', '${type}', ${idx})">حذف</button>
+                                 </div>`;
+                    });
+                });
+            });
+            list.innerHTML = html;
+        }
+
+        // السحر: حساب الإحصائيات أوتوماتيكياً قبل الرفع
         function autoCalculateStats() {
             let scorers = {}; let assists = {};
-            
             db.leagueData.forEach(round => {
                 round.matches.forEach(match => {
                     const processGoals = (goalsList, teamName) => {
                         goalsList.forEach(goalStr => {
-                            if(goalStr.includes('own-goal') || goalStr.includes('هدف ذاتي')) return; // تجاهل الأهداف الذاتية
+                            if(goalStr.includes('own-goal') || goalStr.includes('هدف ذاتي')) return; 
                             
-                            // استخراج اسم الهداف (بياخد أول اسم قبل القوس)
                             let scorerMatch = goalStr.split('(')[0].split('<')[0].trim();
                             if(scorerMatch) {
                                 if(!scorers[scorerMatch]) scorers[scorerMatch] = {name: scorerMatch, team: teamName, count: 0};
                                 scorers[scorerMatch].count++;
                             }
-                            // استخراج صانع اللعب (أي حاجة جوه قوسين كلمة أسيست)
                             let assistMatch = goalStr.match(/\(أسيست\s+([^)]+)\)/);
                             if(assistMatch && assistMatch[1]) {
                                 let assistName = assistMatch[1].trim();
@@ -260,24 +421,22 @@
                     processGoals(match.eventsB.goals, match.teamB);
                 });
             });
-            // تحديث الإحصائيات في الداتا قبل الرفع
             db.statsData.topScorers = Object.values(scorers).sort((a,b) => b.count - a.count);
             db.statsData.topAssists = Object.values(assists).sort((a,b) => b.count - a.count);
         }
 
         async function pushChangesToGitHub() {
             const token = localStorage.getItem('gh_token'); const owner = localStorage.getItem('gh_owner'); const repo = localStorage.getItem('gh_repo');
-            if(!token || !owner || !repo) return alert("⚠️ املأ إعدادات GitHub أولاً!");
+            if(!token || !owner || !repo) return alert("⚠️ املأ إعدادات GitHub أولاً في تبويب (الربط)!");
 
-            // استدعاء السحر: تجميع الجوان والأسيستات وحفظها في الداتا
             autoCalculateStats();
 
             const url = `https://api.github.com/repos/${owner}/${repo}/contents/database.json`;
             try {
                 const getRes = await fetch(url, { headers: { "Authorization": `token ${token}` } });
+                if (!getRes.ok) throw new Error("تأكد من صحة بيانات الربط والـ Token.");
                 const currentSha = (await getRes.json()).sha;
                 
-                // تحويل الداتا المعربة إلى Base64 بأمان
                 const jsonString = JSON.stringify(db, null, 2);
                 const utf8Bytes = new TextEncoder().encode(jsonString);
                 const base64Content = btoa(String.fromCharCode.apply(null, utf8Bytes));
@@ -285,11 +444,11 @@
                 const putRes = await fetch(url, {
                     method: "PUT",
                     headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: "تحديث مباريات وإحصائيات وحضور أوتوماتيكي ⚡", content: base64Content, sha: currentSha })
+                    body: JSON.stringify({ message: "تحديث أوتوماتيكي للنتائج والحضور ⚡", content: base64Content, sha: currentSha })
                 });
 
-                if(putRes.ok) alert("🎉 تم الحفظ بنجاح! روح بص على الموقع للشباب هتلاقي الماتشات والترتيب والهدافين كلهم اتحدثوا لوحدهم!");
-                else alert("❌ فشل الحفظ. راجع الـ Token.");
+                if(putRes.ok) alert("🎉 تم الحفظ بنجاح! الموقع اتحدث بالكامل والاسكور والإحصائيات اتظبطت.");
+                else alert("❌ فشل الحفظ. راجع صلاحيات الـ Token.");
             } catch (error) { alert("❌ خطأ: " + error.message); }
         }
     </script>
