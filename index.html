@@ -23,7 +23,6 @@
         }
 
         body {
-            /* خلفية شبابية لملعب */
             background: linear-gradient(rgba(10, 20, 30, 0.8), rgba(15, 32, 39, 0.9)), 
                         url('https://images.unsplash.com/photo-1522778119026-d647f0596c20?q=80&w=1080&auto=format&fit=crop') center/cover fixed;
             color: var(--text-main);
@@ -151,7 +150,6 @@
             animation: pulseGlow 2s infinite;
         }
 
-        /* التصميم الجديد بالـ Grid لضبط المسافات الأفقية */
         .match-events-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -160,17 +158,32 @@
             margin-top: 5px;
         }
 
-        .event-cell {
-            text-align: center;
-            padding: 0 5px;
-        }
-
-        .team-a-cell {
-            border-left: 1px solid rgba(255,255,255,0.1);
-        }
-
+        .event-cell { text-align: center; padding: 0 5px; }
+        .team-a-cell { border-left: 1px solid rgba(255,255,255,0.1); }
         .event-type { font-size: 14px; margin-bottom: 8px; color: var(--primary-accent); font-weight: bold;}
+        
         .event-list { list-style: none; color: var(--text-muted); font-size: 12px; line-height: 1.6; margin-bottom: 10px; }
+        
+        .event-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 6px;
+            background: rgba(255,255,255,0.05);
+            padding: 4px 8px;
+            border-radius: 20px;
+        }
+        
+        .player-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--primary-accent);
+            box-shadow: 0 0 5px rgba(0, 229, 255, 0.3);
+            background-color: #fff;
+        }
 
         .league-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
         .league-table th { color: var(--primary-accent); padding: 10px 2px; border-bottom: 1px solid rgba(255,255,255,0.2); font-size: 12px; }
@@ -190,6 +203,13 @@
 
         .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
         .stat-row:last-child { border-bottom: none; }
+        
+        .stat-player-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
         .stat-name { font-weight: 900; font-size: 15px; color: #fff; }
         .stat-team { font-size: 12px; color: var(--text-muted); }
         .stat-number {
@@ -265,6 +285,39 @@
             "تشيلسي": "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg",
             "ليفربول": "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg"
         };
+
+        // قاموس صور اللاعبين المحدث (تم إضافة جميع الأسماء والصور)
+        const playerImages = {
+            "أبانوب ناصر": "ابانوب ناصر.jpeg",
+            "أبانوب ماهر": "ابانوب ماهر.jpeg",
+            "جون": "جون.jpeg",
+            "بافلي": "بافلي.jpeg",
+            "شنودة": "شنودة.jpeg",
+            "فيلو": "فيلو.jpeg",
+            "كاراس": "كاراس عادل.jpeg",
+            "كيرلس مجدي": "كيرلس مجدي.jpeg",
+            "كيفين": "كيفين.jpeg",
+            "موسى سميح": "موسى.jpeg",
+            "موسى": "موسى.jpeg",
+            "مينا خالد": "مينا.jpeg",
+            "مينا": "مينا.jpeg",
+            "يوحنا": "يوحنا.jpeg",
+            "يوساب": "يوساب.jpeg",
+            "يوسف": "يوسف.jpeg"
+        };
+
+        const defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
+        function getPlayerAvatar(text) {
+            let imgSrc = defaultAvatar;
+            for (let name in playerImages) {
+                if (text.includes(name)) {
+                    imgSrc = playerImages[name];
+                    break;
+                }
+            }
+            return `<img src="${imgSrc}" class="player-avatar" alt="avatar">`;
+        }
 
         const leagueData = [
             {
@@ -402,7 +455,9 @@
             matchesContainer.innerHTML = '';
 
             round.matches.forEach((match, index) => {
-                const generateList = (items) => items.length > 0 ? items.map(i => `<li>${i}</li>`).join('') : '<li>-</li>';
+                const generateList = (items) => items.length > 0 
+                    ? items.map(i => `<li class="event-item">${getPlayerAvatar(i)} <span>${i}</span></li>`).join('') 
+                    : '<li style="text-align:center; padding:5px;">-</li>';
 
                 const matchHtml = `
                     <div class="glass-card animated" style="animation-delay: ${index * 0.1}s">
@@ -418,10 +473,7 @@
                             </div>
                         </div>
 
-                        <!-- استخدام Grid لضبط المستويات الأفقية -->
                         <div class="match-events-grid">
-                            
-                            <!-- صف الأهداف -->
                             <div class="event-cell team-a-cell">
                                 <div class="event-type">⚽</div>
                                 <ul class="event-list">${generateList(match.eventsA.goals)}</ul>
@@ -431,7 +483,6 @@
                                 <ul class="event-list">${generateList(match.eventsB.goals)}</ul>
                             </div>
 
-                            <!-- صف الإنذارات -->
                             <div class="event-cell team-a-cell">
                                 <div class="event-type">🟨</div>
                                 <ul class="event-list">${generateList(match.eventsA.yellowCards)}</ul>
@@ -441,7 +492,6 @@
                                 <ul class="event-list">${generateList(match.eventsB.yellowCards)}</ul>
                             </div>
 
-                            <!-- صف الطرد -->
                             <div class="event-cell team-a-cell">
                                 <div class="event-type">🟥</div>
                                 <ul class="event-list">${generateList(match.eventsA.redCards)}</ul>
@@ -450,7 +500,6 @@
                                 <div class="event-type">🟥</div>
                                 <ul class="event-list">${generateList(match.eventsB.redCards)}</ul>
                             </div>
-
                         </div>
                     </div>
                 `;
@@ -487,9 +536,12 @@
                 dataList.forEach(player => {
                     container.innerHTML += `
                         <div class="stat-row">
-                            <div>
-                                <div class="stat-name">${player.name}</div>
-                                <div class="stat-team">${player.team}</div>
+                            <div class="stat-player-info">
+                                ${getPlayerAvatar(player.name)}
+                                <div>
+                                    <div class="stat-name">${player.name}</div>
+                                    <div class="stat-team">${player.team}</div>
+                                </div>
                             </div>
                             <div class="stat-number">${player.count}</div>
                         </div>
