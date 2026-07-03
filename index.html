@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marmina League</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --card-bg: rgba(20, 30, 48, 0.7);
+            --card-border: rgba(255, 255, 255, 0.15);
+            --primary-accent: #00e5ff;
+            --secondary-accent: #ff007f;
+            --text-main: #ffffff;
+            --text-muted: #b0bec5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            /* خلفية شبابية لملعب */
+            background: linear-gradient(rgba(10, 20, 30, 0.8), rgba(15, 32, 39, 0.9)), 
+                        url('https://images.unsplash.com/photo-1522778119026-d647f0596c20?q=80&w=1080&auto=format&fit=crop') center/cover fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .app-container {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+            backdrop-filter: blur(5px);
+            padding-bottom: 30px;
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px rgba(0, 229, 255, 0.2); }
+            50% { box-shadow: 0 0 20px rgba(0, 229, 255, 0.5); }
+            100% { box-shadow: 0 0 10px rgba(0, 229, 255, 0.2); }
+        }
+
+        .animated { animation: slideInUp 0.4s ease-out forwards; }
+
+        header {
+            padding: 30px 20px 20px;
+            text-align: center;
+            font-size: 32px;
+            font-weight: 900;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(10, 20, 30, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--card-border);
+            color: transparent;
+            background-image: linear-gradient(45deg, var(--primary-accent), var(--secondary-accent));
+            background-clip: text;
+            -webkit-background-clip: text;
+        }
+
+        .nav-tabs {
+            display: flex;
+            background: rgba(0, 0, 0, 0.5);
+            margin: 15px;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--card-border);
+        }
+
+        .nav-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            font-weight: bold;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .nav-tab.active {
+            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            border-bottom: 3px solid var(--primary-accent);
+        }
+
+        .content { padding: 0 15px; }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            transition: 0.3s;
+        }
+
+        .glass-card:hover { border-color: var(--primary-accent); transform: translateY(-3px); }
+
+        .round-item { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .round-item:active { transform: scale(0.97); }
+        .round-name { font-size: 20px; font-weight: 900; color: var(--primary-accent); }
+        .round-date { color: var(--text-muted); font-size: 14px; margin-top: 5px;}
+
+        .back-btn {
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid var(--primary-accent);
+            color: var(--primary-accent);
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .back-btn:active { background: var(--primary-accent); color: #000; }
+
+        .score-board {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 15px;
+        }
+
+        .team-container { display: flex; flex-direction: column; align-items: center; width: 35%; }
+        .team-logo { width: 50px; height: 50px; object-fit: contain; margin-bottom: 8px; filter: drop-shadow(0px 2px 5px #000); }
+        .team { font-size: 14px; font-weight: 900; text-align: center; }
+        
+        .score {
+            font-size: 26px;
+            font-weight: 900;
+            background: linear-gradient(45deg, var(--secondary-accent), var(--primary-accent));
+            color: #000;
+            padding: 6px 15px;
+            border-radius: 10px;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .match-events-split {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px dashed rgba(255,255,255,0.2);
+            padding-top: 15px;
+        }
+
+        .team-events { width: 48%; text-align: center; }
+        .team-events:first-child { border-left: 1px solid rgba(255,255,255,0.1); }
+        .event-type { font-size: 14px; margin-bottom: 8px; color: var(--primary-accent); font-weight: bold;}
+        .event-list { list-style: none; color: var(--text-muted); font-size: 12px; line-height: 1.6; margin-bottom: 10px; }
+
+        .league-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .league-table th { color: var(--primary-accent); padding: 10px 2px; border-bottom: 1px solid rgba(255,255,255,0.2); font-size: 12px; }
+        .league-table td { padding: 12px 2px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; font-size: 14px; font-weight: bold; }
+        .league-table tr:last-child td { border-bottom: none; }
+        .league-table td.team-name { text-align: right; color: #fff; display: flex; align-items: center; gap: 5px; }
+        .league-table td.team-name img { width: 20px; height: 20px; }
+        .league-table td.pts { color: var(--secondary-accent); font-size: 16px; }
+
+        .stats-title {
+            color: var(--primary-accent);
+            font-size: 18px;
+            font-weight: 900;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .stat-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .stat-row:last-child { border-bottom: none; }
+        .stat-name { font-weight: 900; font-size: 15px; color: #fff; }
+        .stat-team { font-size: 12px; color: var(--text-muted); }
+        .stat-number {
+            background: linear-gradient(45deg, var(--secondary-accent), #ff4b2b);
+            color: #fff;
+            font-weight: bold;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <header>⚡ Marmina League</header>
+
+        <div class="nav-tabs">
+            <div class="nav-tab active" id="tab-rounds" onclick="switchTab('rounds')">المباريات</div>
+            <div class="nav-tab" id="tab-stats" onclick="switchTab('stats')">الإحصائيات والترتيب</div>
+        </div>
+
+        <div class="content">
+            <div id="rounds-view"></div>
+
+            <div id="match-details-view" class="hidden">
+                <button class="back-btn" onclick="showRounds()">⬅ رجوع للجولات</button>
+                <h3 id="current-round-title" style="margin-bottom: 20px; text-align: center; color: var(--text-main); font-weight: 900;"></h3>
+                <div id="matches-container"></div>
+            </div>
+
+            <div id="stats-view" class="hidden">
+                <div class="glass-card animated" style="animation-delay: 0.1s;">
+                    <div class="stats-title">📊 جدول الترتيب</div>
+                    <table class="league-table">
+                        <thead>
+                            <tr>
+                                <th style="text-align: right;">الفريق</th>
+                                <th>لعب</th>
+                                <th>ف</th>
+                                <th>ت</th>
+                                <th>خ</th>
+                                <th>نقاط</th>
+                            </tr>
+                        </thead>
+                        <tbody id="league-standings-body"></tbody>
+                    </table>
+                </div>
+
+                <div class="glass-card animated" style="animation-delay: 0.2s;">
+                    <div class="stats-title">⚽ هدافي البطولة</div>
+                    <div id="top-scorers-container"></div>
+                </div>
+
+                <div class="glass-card animated" style="animation-delay: 0.3s;">
+                    <div class="stats-title">🎯 صناع اللعب (أسيست)</div>
+                    <div id="top-assists-container"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const logos = {
+            "بايرن ميونخ": "https://upload.wikimedia.org/wikipedia/commons/1/1b/FC_Bayern_M%C3%BCnchen_logo_%282017%29.svg",
+            "برشلونة": "https://upload.wikimedia.org/wikipedia/en/4/47/FC_Barcelona_%28crest%29.svg",
+            "تشيلسي": "https://upload.wikimedia.org/wikipedia/en/c/cc/Chelsea_FC.svg",
+            "ليفربول": "https://upload.wikimedia.org/wikipedia/en/0/0c/Liverpool_FC.svg"
+        };
+
+        const leagueData = [
+            {
+                id: 1,
+                name: "الجولة الأولى",
+                date: "مباريات الافتتاح",
+                matches: [
+                    {
+                        teamA: "بايرن ميونخ", logoA: logos["بايرن ميونخ"],
+                        teamB: "برشلونة", logoB: logos["برشلونة"],
+                        scoreA: 0, scoreB: 1, 
+                        eventsA: { goals: [], yellowCards: [], redCards: [] },
+                        eventsB: { goals: ["مينا خالد"], yellowCards: [], redCards: [] }
+                    },
+                    {
+                        teamA: "تشيلسي", logoA: logos["تشيلسي"],
+                        teamB: "ليفربول", logoB: logos["ليفربول"],
+                        scoreA: 1, scoreB: 2,
+                        eventsA: { goals: ["أبانوب ناصر"], yellowCards: [], redCards: ["أبانوب ماهر"] },
+                        eventsB: { goals: ["فيلو", "فيلو"], yellowCards: [], redCards: [] }
+                    },
+                    {
+                        teamA: "بايرن ميونخ", logoA: logos["بايرن ميونخ"],
+                        teamB: "تشيلسي", logoB: logos["تشيلسي"],
+                        scoreA: 2, scoreB: 6,
+                        eventsA: { goals: ["أستاذ هاني", "كاراس"], yellowCards: [], redCards: [] },
+                        eventsB: { goals: ["أبانوب ناصر (أسيست كاراس)", "أبانوب ناصر", "موسى سميح", "كاراس (أسيست أبانوب)", "كاراس (أسيست أبانوب)", "أبانوب ناصر (أسيست كاراس)"], yellowCards: ["يوسف", "فيلو أمجد"], redCards: [] }
+                    },
+                    {
+                        teamA: "برشلونة", logoA: logos["برشلونة"],
+                        teamB: "ليفربول", logoB: logos["ليفربول"],
+                        scoreA: 3, scoreB: 0,
+                        eventsA: { goals: ["أستاذ صالح", "يوساب (أسيست مينا خالد)", "يوساب (أسيست مينا خالد)"], yellowCards: [], redCards: [] },
+                        eventsB: { goals: [], yellowCards: [], redCards: [] }
+                    }
+                ]
+            }
+        ];
+
+        const statsData = {
+            topScorers: [
+                { name: "أبانوب ناصر", team: "تشيلسي", count: 4 },
+                { name: "يوساب", team: "برشلونة", count: 2 },
+                { name: "كاراس", team: "تشيلسي", count: 2 },
+                { name: "فيلو", team: "ليفربول", count: 2 },
+                { name: "مينا خالد", team: "برشلونة", count: 1 },
+                { name: "أستاذ صالح", team: "برشلونة", count: 1 },
+                { name: "موسى سميح", team: "تشيلسي", count: 1 },
+                { name: "أستاذ هاني", team: "بايرن ميونخ", count: 1 },
+                { name: "كاراس", team: "بايرن ميونخ", count: 1 }
+            ],
+            topAssists: [
+                { name: "مينا خالد", team: "برشلونة", count: 3 },
+                { name: "كاراس", team: "تشيلسي", count: 2 },
+                { name: "أبانوب ناصر", team: "تشيلسي", count: 2 }
+            ]
+        };
+
+        function calculateStandings() {
+            const standings = {};
+
+            Object.keys(logos).forEach(team => {
+                standings[team] = { name: team, logo: logos[team], played: 0, won: 0, drawn: 0, lost: 0, points: 0 };
+            });
+
+            leagueData.forEach(round => {
+                round.matches.forEach(match => {
+                    standings[match.teamA].played++;
+                    standings[match.teamB].played++;
+
+                    if (match.scoreA > match.scoreB) {
+                        standings[match.teamA].won++; standings[match.teamA].points += 3;
+                        standings[match.teamB].lost++;
+                    } else if (match.scoreB > match.scoreA) {
+                        standings[match.teamB].won++; standings[match.teamB].points += 3;
+                        standings[match.teamA].lost++;
+                    } else {
+                        standings[match.teamA].drawn++; standings[match.teamA].points += 1;
+                        standings[match.teamB].drawn++; standings[match.teamB].points += 1;
+                    }
+                });
+            });
+
+            return Object.values(standings).sort((a, b) => {
+                if (b.points !== a.points) return b.points - a.points;
+                // في حالة التساوي في النقاط يمكن إضافة حساب فارق الأهداف هنا مستقبلاً
+                return 0; 
+            });
+        }
+
+        function switchTab(tabName) {
+            document.getElementById('tab-rounds').classList.remove('active');
+            document.getElementById('tab-stats').classList.remove('active');
+            
+            document.getElementById('rounds-view').classList.add('hidden');
+            document.getElementById('match-details-view').classList.add('hidden');
+            document.getElementById('stats-view').classList.add('hidden');
+
+            if (tabName === 'rounds') {
+                document.getElementById('tab-rounds').classList.add('active');
+                document.getElementById('rounds-view').classList.remove('hidden');
+                renderRounds();
+            } else if (tabName === 'stats') {
+                document.getElementById('tab-stats').classList.add('active');
+                document.getElementById('stats-view').classList.remove('hidden');
+                renderStats();
+            }
+        }
+
+        function renderRounds() {
+            const roundsView = document.getElementById('rounds-view');
+            roundsView.innerHTML = '';
+            leagueData.forEach((round, index) => {
+                const roundDiv = document.createElement('div');
+                roundDiv.className = 'glass-card round-item animated';
+                roundDiv.style.animationDelay = `${index * 0.1}s`;
+                roundDiv.onclick = () => showMatchDetails(round.id);
+                
+                roundDiv.innerHTML = `
+                    <div>
+                        <div class="round-name">${round.name}</div>
+                        <div class="round-date">${round.date}</div>
+                    </div>
+                    <div style="font-size: 26px;">🔥</div>
+                `;
+                roundsView.appendChild(roundDiv);
+            });
+        }
+
+        function showMatchDetails(roundId) {
+            const round = leagueData.find(r => r.id === roundId);
+            if (!round) return;
+
+            document.getElementById('current-round-title').innerText = round.name;
+            const matchesContainer = document.getElementById('matches-container');
+            matchesContainer.innerHTML = '';
+
+            round.matches.forEach((match, index) => {
+                const generateList = (items) => items.length > 0 ? items.map(i => `<li>${i}</li>`).join('') : '<li>-</li>';
+
+                const matchHtml = `
+                    <div class="glass-card animated" style="animation-delay: ${index * 0.1}s">
+                        <div class="score-board">
+                            <div class="team-container">
+                                <img src="${match.logoA}" class="team-logo" alt="${match.teamA}">
+                                <div class="team">${match.teamA}</div>
+                            </div>
+                            <div class="score">${match.scoreA} - ${match.scoreB}</div>
+                            <div class="team-container">
+                                <img src="${match.logoB}" class="team-logo" alt="${match.teamB}">
+                                <div class="team">${match.teamB}</div>
+                            </div>
+                        </div>
+
+                        <div class="match-events-split">
+                            <div class="team-events">
+                                <div class="event-type">⚽</div>
+                                <ul class="event-list">${generateList(match.eventsA.goals)}</ul>
+                                <div class="event-type">🟨</div>
+                                <ul class="event-list">${generateList(match.eventsA.yellowCards)}</ul>
+                                <div class="event-type">🟥</div>
+                                <ul class="event-list">${generateList(match.eventsA.redCards)}</ul>
+                            </div>
+
+                            <div class="team-events">
+                                <div class="event-type">⚽</div>
+                                <ul class="event-list">${generateList(match.eventsB.goals)}</ul>
+                                <div class="event-type">🟨</div>
+                                <ul class="event-list">${generateList(match.eventsB.yellowCards)}</ul>
+                                <div class="event-type">🟥</div>
+                                <ul class="event-list">${generateList(match.eventsB.redCards)}</ul>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                matchesContainer.innerHTML += matchHtml;
+            });
+
+            document.getElementById('rounds-view').classList.add('hidden');
+            document.getElementById('match-details-view').classList.remove('hidden');
+        }
+
+        function renderStats() {
+            const standings = calculateStandings();
+            const standingsBody = document.getElementById('league-standings-body');
+            standingsBody.innerHTML = '';
+            standings.forEach(team => {
+                standingsBody.innerHTML += `
+                    <tr>
+                        <td class="team-name">
+                            <img src="${team.logo}" alt="${team.name}">
+                            ${team.name}
+                        </td>
+                        <td>${team.played}</td>
+                        <td>${team.won}</td>
+                        <td>${team.drawn}</td>
+                        <td>${team.lost}</td>
+                        <td class="pts">${team.points}</td>
+                    </tr>
+                `;
+            });
+
+            const renderList = (dataList, containerId) => {
+                const container = document.getElementById(containerId);
+                container.innerHTML = '';
+                dataList.forEach(player => {
+                    container.innerHTML += `
+                        <div class="stat-row">
+                            <div>
+                                <div class="stat-name">${player.name}</div>
+                                <div class="stat-team">${player.team}</div>
+                            </div>
+                            <div class="stat-number">${player.count}</div>
+                        </div>
+                    `;
+                });
+            };
+
+            renderList(statsData.topScorers, 'top-scorers-container');
+            renderList(statsData.topAssists, 'top-assists-container');
+        }
+
+        function showRounds() {
+            document.getElementById('match-details-view').classList.add('hidden');
+            document.getElementById('rounds-view').classList.remove('hidden');
+        }
+
+        renderRounds();
+    </script>
+</body>
+</html>
