@@ -151,15 +151,24 @@
             animation: pulseGlow 2s infinite;
         }
 
-        .match-events-split {
-            display: flex;
-            justify-content: space-between;
+        /* التصميم الجديد بالـ Grid لضبط المسافات الأفقية */
+        .match-events-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
             border-top: 1px dashed rgba(255,255,255,0.2);
             padding-top: 15px;
+            margin-top: 5px;
         }
 
-        .team-events { width: 48%; text-align: center; }
-        .team-events:first-child { border-left: 1px solid rgba(255,255,255,0.1); }
+        .event-cell {
+            text-align: center;
+            padding: 0 5px;
+        }
+
+        .team-a-cell {
+            border-left: 1px solid rgba(255,255,255,0.1);
+        }
+
         .event-type { font-size: 14px; margin-bottom: 8px; color: var(--primary-accent); font-weight: bold;}
         .event-list { list-style: none; color: var(--text-muted); font-size: 12px; line-height: 1.6; margin-bottom: 10px; }
 
@@ -261,7 +270,7 @@
             {
                 id: 1,
                 name: "الجولة الأولى",
-                date: "الخميس 2 يوليو 2026", // تم التعديل هنا
+                date: "الخميس 2 يوليو 2026",
                 matches: [
                     {
                         teamA: "بايرن ميونخ", logoA: logos["بايرن ميونخ"],
@@ -409,24 +418,39 @@
                             </div>
                         </div>
 
-                        <div class="match-events-split">
-                            <div class="team-events">
+                        <!-- استخدام Grid لضبط المستويات الأفقية -->
+                        <div class="match-events-grid">
+                            
+                            <!-- صف الأهداف -->
+                            <div class="event-cell team-a-cell">
                                 <div class="event-type">⚽</div>
                                 <ul class="event-list">${generateList(match.eventsA.goals)}</ul>
+                            </div>
+                            <div class="event-cell">
+                                <div class="event-type">⚽</div>
+                                <ul class="event-list">${generateList(match.eventsB.goals)}</ul>
+                            </div>
+
+                            <!-- صف الإنذارات -->
+                            <div class="event-cell team-a-cell">
                                 <div class="event-type">🟨</div>
                                 <ul class="event-list">${generateList(match.eventsA.yellowCards)}</ul>
+                            </div>
+                            <div class="event-cell">
+                                <div class="event-type">🟨</div>
+                                <ul class="event-list">${generateList(match.eventsB.yellowCards)}</ul>
+                            </div>
+
+                            <!-- صف الطرد -->
+                            <div class="event-cell team-a-cell">
                                 <div class="event-type">🟥</div>
                                 <ul class="event-list">${generateList(match.eventsA.redCards)}</ul>
                             </div>
-
-                            <div class="team-events">
-                                <div class="event-type">⚽</div>
-                                <ul class="event-list">${generateList(match.eventsB.goals)}</ul>
-                                <div class="event-type">🟨</div>
-                                <ul class="event-list">${generateList(match.eventsB.yellowCards)}</ul>
+                            <div class="event-cell">
                                 <div class="event-type">🟥</div>
                                 <ul class="event-list">${generateList(match.eventsB.redCards)}</ul>
                             </div>
+
                         </div>
                     </div>
                 `;
