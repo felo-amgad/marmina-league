@@ -261,7 +261,7 @@
             {
                 id: 1,
                 name: "الجولة الأولى",
-                date: "مباريات الافتتاح",
+                date: "الخميس 2 يوليو 2026", // تم التعديل هنا
                 matches: [
                     {
                         teamA: "بايرن ميونخ", logoA: logos["بايرن ميونخ"],
@@ -341,7 +341,6 @@
 
             return Object.values(standings).sort((a, b) => {
                 if (b.points !== a.points) return b.points - a.points;
-                // في حالة التساوي في النقاط يمكن إضافة حساب فارق الأهداف هنا مستقبلاً
                 return 0; 
             });
         }
