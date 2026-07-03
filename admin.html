@@ -26,6 +26,8 @@
         .btn-secondary { background: var(--secondary); color: white; }
         .btn-success { background: #00ff88; color: black; font-size: 16px; padding: 15px; box-shadow: 0 0 15px rgba(0,255,136,0.4);}
         .btn-danger { background: #ff4b2b; color: white; padding: 6px; font-size: 12px; margin:0;}
+        .btn-delete-match { background: transparent; color: #ff4b2b; border: 1px solid #ff4b2b; margin-top: 15px; }
+        .btn-delete-match:hover { background: #ff4b2b; color: white; }
         
         .admin-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         .tab-btn { flex: 1; padding: 10px; background: rgba(255,255,255,0.05); color: #aaa; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-weight: bold; text-align: center;}
@@ -150,6 +152,9 @@
                     </div>
 
                     <div id="match-events-list"></div>
+
+                    <!-- زرار حذف المباراة بالكامل -->
+                    <button class="btn-delete-match" onclick="deleteMatch()">🗑️ حذف هذه المباراة بالكامل</button>
                 </div>
             </div>
         </div>
@@ -209,7 +214,7 @@
             loadRoundMatchesList();
         }
 
-        /* ====== نظام الحضور المطور ====== */
+        /* ====== نظام الحضور ====== */
         function updateFridaysList() {
             const mIdx = document.getElementById('attend-month-select').value;
             const fSelect = document.getElementById('attend-friday-select');
@@ -267,7 +272,7 @@
             f.hasAttendance = document.getElementById('friday-active-check').checked;
         }
 
-        /* ====== نظام المباريات المطور ====== */
+        /* ====== نظام المباريات ====== */
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.glass-card').forEach(c => { if(c.id !== 'login-section') c.classList.add('hidden'); });
@@ -312,7 +317,6 @@
             
             const match = db.leagueData.find(r => r.id == rId).matches[mIdx];
             
-            // تحديث الاسكور والأطراف
             document.getElementById('live-score-display').innerText = `${match.teamA} (${match.scoreA}) - (${match.scoreB}) ${match.teamB}`;
             document.getElementById('event-team').innerHTML = `<option value="A">${match.teamA}</option><option value="B">${match.teamB}</option>`;
             
@@ -353,11 +357,10 @@
 
             match[`events${team}`][type].push(eventText);
             
-            // إعادة ضبط الخيارات
             document.getElementById('event-owngoal').checked = false;
             document.getElementById('event-assist').value = "";
             
-            loadMatchDetails(); // إعادة تحميل العرض
+            loadMatchDetails(); 
         }
 
         function removeEvent(team, type, eventIndex) {
@@ -365,7 +368,6 @@
             const mIdx = document.getElementById('match-edit-select').value;
             const match = db.leagueData.find(r => r.id == rId).matches[mIdx];
             
-            // لو بنمسح جول، ننقص الاسكور
             if (type === 'goals') {
                 if (team === 'A' && match.scoreA > 0) match.scoreA--;
                 if (team === 'B' && match.scoreB > 0) match.scoreB--;
@@ -375,24 +377,18 @@
             loadMatchDetails();
         }
 
-        function renderMatchEvents(match, mIdx) {
-            const list = document.getElementById('match-events-list');
-            let html = '<div style="font-size:12px; color:#aaa; margin-top:15px; margin-bottom:5px;">الأحداث المسجلة:</div>';
-            
-            const eventTypes = { 'goals': '⚽', 'yellowCards': '🟨', 'redCards': '🟥' };
-            
-            ['A', 'B'].forEach(team => {
-                let teamName = team === 'A' ? match.teamA : match.teamB;
-                ['goals', 'yellowCards', 'redCards'].forEach(type => {
-                    match[`events${team}`][type].forEach((ev, idx) => {
-                        html += `<div class="event-badge">
-                                    <span>${eventTypes[type]} ${teamName}: ${ev}</span>
-                                    <button class="btn-danger" onclick="removeEvent('${team}', '${type}', ${idx})">حذف</button>
-                                 </div>`;
-                    });
-                });
-            });
-            list.innerHTML = html;
+        // دالة مسح المباراة بالكامل
+        function deleteMatch() {
+            const rId = document.getElementById('round-matches-select').value;
+            const mIdx = document.getElementById('match-edit-select').value;
+            if (mIdx === "") return;
+
+            if (confirm("⚠️ هل أنت متأكد أنك تريد حذف هذه المباراة بالكامل؟\n\nسيتم مسحها وكل الأهداف والإنذارات بداخلها، ولا يمكن التراجع عن هذا الإجراء!")) {
+                const round = db.leagueData.find(r => r.id == rId);
+                round.matches.splice(mIdx, 1); // حذف المباراة من القائمة
+                alert("🗑️ تم حذف المباراة بنجاح!");
+                loadRoundMatchesList(); // إعادة تحميل القائمة
+            }
         }
 
         // السحر: حساب الإحصائيات أوتوماتيكياً قبل الرفع
