@@ -76,7 +76,7 @@
         .tier-1 .podium-name { font-size: 14px; color: var(--gold); }
         .podium-team { font-size: 10px; color: var(--text-muted); text-align: center; }
 
-        /* ستايل صفحة الحضور المحدث */
+        /* ستايل صفحة الحضور */
         .month-header { background: linear-gradient(90deg, rgba(0,229,255,0.1), rgba(255,0,127,0.1)); padding: 10px 15px; border-radius: 8px; font-weight: 900; color: #fff; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; border-right: 4px solid var(--primary-accent); }
         .friday-card { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); padding: 12px 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .friday-info { display: flex; flex-direction: column; }
@@ -84,13 +84,26 @@
         .friday-date { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
         .attendance-btn { background: var(--primary-accent); color: #000; border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,229,255,0.4); }
 
-        /* ستايل الكارت المنبثق لكشف الحضور (Modal) */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 20, 30, 0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-        .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 20px; max-width: 400px; width: 90%; max-height: 75vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 12px; margin-bottom: 15px; }
-        .modal-title { font-weight: 900; color: var(--primary-accent); font-size: 16px; }
+        /* ستايل الجداول المخصصة للمودال والتقرير الإجمالي */
+        .attendance-table { width: 100%; border-collapse: collapse; font-size: 12px; color: #fff; margin-top: 5px; }
+        .attendance-table th { background: rgba(0,0,0,0.4); color: var(--primary-accent); padding: 8px 4px; font-weight: 900; border-bottom: 2px solid var(--card-border); }
+        .attendance-table td { padding: 8px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; font-weight: bold; vertical-align: middle; }
+        .attendance-table td.player-cell { text-align: right; display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 900; }
+        
+        .check-icon { color: #00ff88; font-size: 14px; }
+        .cross-icon { color: #ff4b2b; font-size: 14px; opacity: 0.4; }
+
+        /* ستايل المودال (الكارت المنبثق) */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 20, 30, 0.9); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 20px; max-width: 460px; width: 95%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 12px; margin-bottom: 10px; }
+        .modal-title { font-weight: 900; color: var(--primary-accent); font-size: 15px; }
         .close-btn { background: transparent; border: none; color: var(--secondary-accent); font-size: 24px; cursor: pointer; font-weight: bold; }
-        .modal-list { display: grid; grid-template-columns: 1fr; gap: 8px; }
+
+        /* كارت التقرير الإجمالي للشهر */
+        .summary-card { background: linear-gradient(135deg, rgba(20, 30, 48, 0.9), rgba(36, 59, 85, 0.9)); border: 2px dashed var(--primary-accent); border-radius: 15px; padding: 15px; margin-top: 25px; box-shadow: 0 5px 15px rgba(0,229,255,0.1); }
+        .summary-title { font-size: 15px; font-weight: 900; color: var(--gold); text-align: center; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .badge-count { background: rgba(255,255,255,0.1); color: #fff; padding: 2px 6px; border-radius: 5px; font-size: 11px; }
 
         .hidden { display: none !important; }
         .loader { text-align: center; padding: 50px; color: var(--primary-accent); font-weight: bold; }
@@ -141,10 +154,7 @@
             </div>
 
             <div id="attendance-view" class="hidden">
-                <div class="glass-card animated">
-                    <div class="stats-title">🗓️ سجل الحضور والغياب</div>
-                    <div id="attendance-container"></div>
-                </div>
+                <div id="attendance-container"></div>
             </div>
         </div>
     </div>
@@ -155,12 +165,22 @@
                 <span id="modal-title" class="modal-title"></span>
                 <button class="close-btn" onclick="closeModal()">✕</button>
             </div>
-            <div id="modal-list-container" class="modal-list"></div>
+            <table class="attendance-table">
+                <thead>
+                    <tr>
+                        <th style="text-align: right; width: 45%;">الاسم</th>
+                        <th style="width: 18.33%;">جمعة</th>
+                        <th style="width: 18.33%;">دراسي</th>
+                        <th style="width: 18.33%;">اختياري</th>
+                    </tr>
+                </thead>
+                <tbody id="modal-table-body"></tbody>
+            </table>
         </div>
     </div>
 
     <script>
-        let logos = {}; let playerImages = {}; let leagueData = []; let statsData = {}; let attendanceData = [];
+        let logos = {}; let playerImages = {}; let players = []; let leagueData = []; let statsData = {}; let attendanceData = [];
         const defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
         async function fetchDatabase() {
@@ -170,6 +190,7 @@
                 
                 logos = data.logos;
                 playerImages = data.playerImages;
+                players = data.players;
                 leagueData = data.leagueData;
                 statsData = data.statsData;
                 attendanceData = data.attendanceData;
@@ -183,12 +204,8 @@
             }
         }
 
-        function getPlayerAvatarSrc(text) {
-            let imgSrc = defaultAvatar;
-            for (let name in playerImages) {
-                if (text.includes(name)) { imgSrc = playerImages[name]; break; }
-            }
-            return imgSrc;
+        function getPlayerAvatarSrc(name) {
+            return playerImages[name] || defaultAvatar;
         }
 
         function calculateStandings() {
@@ -253,7 +270,7 @@
             const matchesContainer = document.getElementById('matches-container'); matchesContainer.innerHTML = '';
 
             round.matches.forEach((match, index) => {
-                const generateList = (items) => items.length > 0 ? items.map(i => `<li class="event-item"><img src="${getPlayerAvatarSrc(i)}" class="player-avatar" alt="avatar"> <span>${i}</span></li>`).join('') : '<li style="text-align:center; padding:5px; color:#aaa;">-</li>';
+                const generateList = (items) => items.length > 0 ? items.map(i => `<li class="event-item"><img src="${getPlayerAvatarSrc(i.split(' ')[0])}" class="player-avatar" alt=""> <span>${i}</span></li>`).join('') : '<li style="text-align:center; padding:5px; color:#aaa;">-</li>';
                 const matchHtml = `
                     <div class="glass-card animated" style="animation-delay: ${index * 0.1}s">
                         <div class="score-board">
@@ -298,20 +315,24 @@
             scorersContainer.innerHTML = scorersHtml;
         }
 
-        // دالة عرض صفحة الحضور بناءً على الشروط الجديدة
+        // عرض صفحة الحضور مع التقرير الإجمالي للشهر
         function renderAttendance() {
             const container = document.getElementById('attendance-container'); container.innerHTML = '';
             
             attendanceData.forEach((monthData, monthIdx) => {
-                // نتحقق لو الشهر جواه على الأقل جمعة واحدة مرئية
                 let hasVisibleFriday = monthData.fridays.some(fri => fri.visible);
                 if (!hasVisibleFriday) return;
 
                 let fridaysHtml = '';
+                let totalActiveFridays = 0;
+
+                // قاموس تجميعي لحساب الحضور التراكمي لكل ولد طول الشهر
+                let monthlySummary = {};
+                players.forEach(p => monthlySummary[p] = { friday: 0, study: 0, activity: 0 });
+
                 monthData.fridays.forEach((fri, friIdx) => {
-                    if (!fri.visible) return; // لو مش مرئية متظهرش خالص
+                    if (!fri.visible) return;
                     
-                    // لو الحضور متسجل يظهر الزرار، لو مش متسجل يظهر الكارت فاضي
                     let buttonHtml = fri.hasAttendance 
                         ? `<button class="attendance-btn" onclick="showAttendanceDetails(${monthIdx}, ${friIdx})">عرض الكشف</button>` 
                         : '';
@@ -325,32 +346,89 @@
                             ${buttonHtml}
                         </div>
                     `;
+
+                    // تجميع البيانات التراكمية للشهر
+                    if (fri.hasAttendance && fri.records) {
+                        totalActiveFridays++;
+                        players.forEach(p => {
+                            let rec = fri.records[p];
+                            if (rec) {
+                                if (rec.friday) monthlySummary[p].friday++;
+                                if (rec.study) monthlySummary[p].study++;
+                                if (rec.activity) monthlySummary[p].activity++;
+                            }
+                        });
+                    }
                 });
 
+                // بناء جدول التقرير الإجمالي للشهر
+                let summaryRowsHtml = '';
+                // ترتيب التقرير أبجدياً أو بناءً على الأكثر حضوراً
+                players.sort().forEach(p => {
+                    summaryRowsHtml += `
+                        <tr>
+                            <td class="player-cell"><img src="${getPlayerAvatarSrc(p)}" class="player-avatar" style="width:28px; height:28px;"> ${p}</td>
+                            <td><span class="badge-count">${monthlySummary[p].friday}</span></td>
+                            <td><span class="badge-count">${monthlySummary[p].study}</span></td>
+                            <td><span class="badge-count">${monthlySummary[p].activity}</span></td>
+                        </tr>
+                    `;
+                });
+
+                let summaryCardHtml = totalActiveFridays > 0 ? `
+                    <div class="summary-card animated" style="animation-delay: 0.2s">
+                        <div class="summary-title">📊 التقرير الإجمالي لشهر ${monthData.month}</div>
+                        <table class="attendance-table">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: right;">الاسم</th>
+                                    <th>⛪ جمعة</th>
+                                    <th>📚 دراسي</th>
+                                    <th>🎯 نشاط</th>
+                                </tr>
+                            </thead>
+                            <tbody>${summaryRowsHtml}</tbody>
+                        </table>
+                    </div>
+                ` : '';
+
                 container.innerHTML += `
-                    <div style="animation-delay: ${monthIdx * 0.1}s" class="animated">
+                    <div class="glass-card animated" style="padding: 15px 10px;">
                         <div class="month-header">شهر ${monthData.month} 📅</div>
                         ${fridaysHtml}
+                        ${summaryCardHtml}
                     </div>
                 `;
             });
         }
 
-        // دالة فتح الكارت المنبثق للحضور
+        // دالة فتح المودال لعرض جدول كشف الجمعة المعينة
         function showAttendanceDetails(monthIdx, friIdx) {
             const fri = attendanceData[monthIdx].fridays[friIdx];
             const modal = document.getElementById('attendance-modal');
-            document.getElementById('modal-title').innerText = `كشف الحضور - ${fri.name} (${fri.date})`;
+            document.getElementById('modal-title').innerText = `كشف تفصيلي - ${fri.name} (${fri.date})`;
             
-            const listContainer = document.getElementById('modal-list-container');
-            listContainer.innerHTML = '';
+            const tbody = document.getElementById('modal-table-body');
+            tbody.innerHTML = '';
             
-            fri.present.forEach(playerName => {
-                listContainer.innerHTML += `
-                    <div class="event-item">
-                        <img src="${getPlayerAvatarSrc(playerName)}" class="player-avatar" alt="">
-                        <span>${playerName}</span>
-                    </div>
+            // ترتيب الأسامي وعرض الجدول بالصح والغلط للكل
+            players.sort().forEach(playerName => {
+                let record = fri.records[playerName] || { friday: false, study: false, activity: false };
+                
+                let friIcon = record.friday ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">➖</span>';
+                let studyIcon = record.study ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">➖</span>';
+                let actIcon = record.activity ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">➖</span>';
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td class="player-cell">
+                            <img src="${getPlayerAvatarSrc(playerName)}" class="player-avatar" style="width:30px; height:30px;">
+                            ${playerName}
+                        </td>
+                        <td>${friIcon}</td>
+                        <td>${studyIcon}</td>
+                        <td>${actIcon}</td>
+                    </tr>
                 `;
             });
             modal.style.display = 'flex';
