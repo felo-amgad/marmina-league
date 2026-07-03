@@ -46,9 +46,9 @@
         .team-b-cell { padding-right: 10px; }
         .event-type { font-size: 14px; margin-bottom: 10px; color: var(--primary-accent); font-weight: bold;}
         .event-list { list-style: none; padding: 0; margin: 0 0 10px 0; }
-        .event-item { display: flex; align-items: center; justify-content: flex-start; gap: 8px; margin-bottom: 8px; background: rgba(255,255,255,0.05); padding: 5px 8px; border-radius: 20px; }
-        .player-avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-accent); background-color: #fff; flex-shrink: 0; }
-        .event-item span { color: #fff; font-weight: 700; font-size: 12px; text-align: right; line-height: 1.4; }
+        .event-item { display: flex; align-items: center; justify-content: flex-start; gap: 10px; margin-bottom: 8px; background: rgba(255,255,255,0.05); padding: 6px 10px; border-radius: 20px; }
+        .player-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-accent); background-color: #fff; flex-shrink: 0; }
+        .event-item span { color: #fff; font-weight: 700; font-size: 13px; text-align: right; line-height: 1.4; }
         .own-goal { color: var(--secondary-accent) !important; font-size: 10px !important; }
 
         .league-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
@@ -76,12 +76,22 @@
         .tier-1 .podium-name { font-size: 14px; color: var(--gold); }
         .podium-team { font-size: 10px; color: var(--text-muted); text-align: center; }
 
+        /* ستايل صفحة الحضور المحدث */
         .month-header { background: linear-gradient(90deg, rgba(0,229,255,0.1), rgba(255,0,127,0.1)); padding: 10px 15px; border-radius: 8px; font-weight: 900; color: #fff; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; border-right: 4px solid var(--primary-accent); }
         .friday-card { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); padding: 12px 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
         .friday-info { display: flex; flex-direction: column; }
         .friday-name { font-weight: 900; color: var(--secondary-accent); font-size: 15px; }
         .friday-date { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
-        .attendance-btn { background: var(--primary-accent); color: #000; border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .attendance-btn { background: var(--primary-accent); color: #000; border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,229,255,0.4); }
+
+        /* ستايل الكارت المنبثق لكشف الحضور (Modal) */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 20, 30, 0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+        .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 20px; max-width: 400px; width: 90%; max-height: 75vh; overflow-y: auto; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 12px; margin-bottom: 15px; }
+        .modal-title { font-weight: 900; color: var(--primary-accent); font-size: 16px; }
+        .close-btn { background: transparent; border: none; color: var(--secondary-accent); font-size: 24px; cursor: pointer; font-weight: bold; }
+        .modal-list { display: grid; grid-template-columns: 1fr; gap: 8px; }
+
         .hidden { display: none !important; }
         .loader { text-align: center; padding: 50px; color: var(--primary-accent); font-weight: bold; }
     </style>
@@ -139,19 +149,22 @@
         </div>
     </div>
 
+    <div id="attendance-modal" class="modal" onclick="closeModalOnOutsideClick(event)">
+        <div class="modal-content animated">
+            <div class="modal-header">
+                <span id="modal-title" class="modal-title"></span>
+                <button class="close-btn" onclick="closeModal()">✕</button>
+            </div>
+            <div id="modal-list-container" class="modal-list"></div>
+        </div>
+    </div>
+
     <script>
-        // تعريف المتغيرات جلوبال عشان تتملي من الداتا بيز
-        let logos = {};
-        let playerImages = {};
-        let leagueData = [];
-        let statsData = {};
-        let attendanceData = [];
+        let logos = {}; let playerImages = {}; let leagueData = []; let statsData = {}; let attendanceData = [];
         const defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
-        // دالة لجلب البيانات من ملف database.json
         async function fetchDatabase() {
             try {
-                // بنضيف رقم عشوائي في آخر اللينك عشان نتفادى الكاش بتاع المتصفح
                 const response = await fetch('database.json?v=' + new Date().getTime());
                 const data = await response.json();
                 
@@ -161,13 +174,12 @@
                 statsData = data.statsData;
                 attendanceData = data.attendanceData;
 
-                // إخفاء التحميل وعرض الشاشة الرئيسية
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('rounds-view').classList.remove('hidden');
                 renderRounds();
             } catch (error) {
                 console.error("Error Loading DB:", error);
-                document.getElementById('loader').innerHTML = '❌ حدث خطأ في تحميل قاعدة البيانات. تأكد من رفع ملف database.json بشكل صحيح.';
+                document.getElementById('loader').innerHTML = '❌ حدث خطأ في تحميل قاعدة البيانات.';
             }
         }
 
@@ -187,13 +199,9 @@
 
             leagueData.forEach(round => {
                 round.matches.forEach(match => {
-                    standings[match.teamA].played++;
-                    standings[match.teamB].played++;
-                    
-                    standings[match.teamA].goalsFor += match.scoreA;
-                    standings[match.teamA].goalsAgainst += match.scoreB;
-                    standings[match.teamB].goalsFor += match.scoreB;
-                    standings[match.teamB].goalsAgainst += match.scoreA;
+                    standings[match.teamA].played++; standings[match.teamB].played++;
+                    standings[match.teamA].goalsFor += match.scoreA; standings[match.teamA].goalsAgainst += match.scoreB;
+                    standings[match.teamB].goalsFor += match.scoreB; standings[match.teamB].goalsAgainst += match.scoreA;
 
                     if (match.scoreA > match.scoreB) {
                         standings[match.teamA].won++; standings[match.teamA].points += 3; standings[match.teamB].lost++;
@@ -228,8 +236,7 @@
         }
 
         function renderRounds() {
-            const roundsView = document.getElementById('rounds-view');
-            roundsView.innerHTML = '';
+            const roundsView = document.getElementById('rounds-view'); roundsView.innerHTML = '';
             leagueData.forEach((round, index) => {
                 const roundDiv = document.createElement('div');
                 roundDiv.className = 'glass-card round-item animated';
@@ -241,11 +248,9 @@
         }
 
         function showMatchDetails(roundId) {
-            const round = leagueData.find(r => r.id === roundId);
-            if (!round) return;
+            const round = leagueData.find(r => r.id === roundId); if (!round) return;
             document.getElementById('current-round-title').innerText = round.name;
-            const matchesContainer = document.getElementById('matches-container');
-            matchesContainer.innerHTML = '';
+            const matchesContainer = document.getElementById('matches-container'); matchesContainer.innerHTML = '';
 
             round.matches.forEach((match, index) => {
                 const generateList = (items) => items.length > 0 ? items.map(i => `<li class="event-item"><img src="${getPlayerAvatarSrc(i)}" class="player-avatar" alt="avatar"> <span>${i}</span></li>`).join('') : '<li style="text-align:center; padding:5px; color:#aaa;">-</li>';
@@ -273,59 +278,57 @@
 
         function renderStats() {
             const standings = calculateStandings();
-            const standingsBody = document.getElementById('league-standings-body');
-            standingsBody.innerHTML = '';
+            const standingsBody = document.getElementById('league-standings-body'); standingsBody.innerHTML = '';
             standings.forEach(team => {
                 let gdClass = team.goalDiff > 0 ? 'gd-positive' : (team.goalDiff < 0 ? 'gd-negative' : '');
                 let gdText = team.goalDiff > 0 ? `+${team.goalDiff}` : team.goalDiff;
-                
-                standingsBody.innerHTML += `
-                    <tr>
-                        <td class="team-name"><img src="${team.logo}" alt="${team.name}">${team.name}</td>
-                        <td>${team.played}</td>
-                        <td>${team.won}</td>
-                        <td>${team.drawn}</td>
-                        <td>${team.lost}</td>
-                        <td>${team.goalsFor}</td>
-                        <td>${team.goalsAgainst}</td>
-                        <td class="${gdClass}" dir="ltr">${gdText}</td>
-                        <td class="pts">${team.points}</td>
-                    </tr>`;
+                standingsBody.innerHTML += `<tr><td class="team-name"><img src="${team.logo}" alt="${team.name}">${team.name}</td><td>${team.played}</td><td>${team.won}</td><td>${team.drawn}</td><td>${team.lost}</td><td>${team.goalsFor}</td><td>${team.goalsAgainst}</td><td class="${gdClass}" dir="ltr">${gdText}</td><td class="pts">${team.points}</td></tr>`;
             });
 
             const scorersContainer = document.getElementById('top-scorers-container');
             let uniqueGoalCounts = [...new Set(statsData.topScorers.map(p => p.count))].sort((a, b) => b - a);
-            let top3GoalCounts = uniqueGoalCounts.slice(0, 3);
-            let scorersHtml = '';
-            const rankClasses = ['tier-1', 'tier-2', 'tier-3'];
-            const rankTitles = ['🥇 المركز الأول', '🥈 المركز الثاني', '🥉 المركز الثالث'];
+            let top3GoalCounts = uniqueGoalCounts.slice(0, 3); let scorersHtml = '';
+            const rankClasses = ['tier-1', 'tier-2', 'tier-3']; const rankTitles = ['🥇 المركز الأول', '🥈 المركز الثاني', '🥉 المركز الثالث'];
             
             top3GoalCounts.forEach((goalCount, index) => {
                 let tiedPlayers = statsData.topScorers.filter(p => p.count === goalCount);
-                let playersHtml = tiedPlayers.map(player => `
-                    <div class="player-podium-item"><img src="${getPlayerAvatarSrc(player.name)}" class="podium-avatar" alt="${player.name}"><div class="podium-name">${player.name}</div><div class="podium-team">${player.team}</div></div>
-                `).join('');
+                let playersHtml = tiedPlayers.map(player => `<div class="player-podium-item"><img src="${getPlayerAvatarSrc(player.name)}" class="podium-avatar" alt="${player.name}"><div class="podium-name">${player.name}</div><div class="podium-team">${player.team}</div></div>`).join('');
                 scorersHtml += `<div class="tier-card ${rankClasses[index]}"><div class="tier-header"><div class="tier-title">${rankTitles[index]}</div><div class="tier-badge">${goalCount} ⚽</div></div><div class="tied-players-container">${playersHtml}</div></div>`;
             });
             scorersContainer.innerHTML = scorersHtml;
         }
 
+        // دالة عرض صفحة الحضور بناءً على الشروط الجديدة
         function renderAttendance() {
-            const container = document.getElementById('attendance-container');
-            container.innerHTML = '';
-            attendanceData.forEach((monthData, index) => {
-                let fridaysHtml = monthData.fridays.map(fri => `
-                    <div class="friday-card">
-                        <div class="friday-info">
-                            <span class="friday-name">${fri.name}</span>
-                            <span class="friday-date">${fri.date}</span>
+            const container = document.getElementById('attendance-container'); container.innerHTML = '';
+            
+            attendanceData.forEach((monthData, monthIdx) => {
+                // نتحقق لو الشهر جواه على الأقل جمعة واحدة مرئية
+                let hasVisibleFriday = monthData.fridays.some(fri => fri.visible);
+                if (!hasVisibleFriday) return;
+
+                let fridaysHtml = '';
+                monthData.fridays.forEach((fri, friIdx) => {
+                    if (!fri.visible) return; // لو مش مرئية متظهرش خالص
+                    
+                    // لو الحضور متسجل يظهر الزرار، لو مش متسجل يظهر الكارت فاضي
+                    let buttonHtml = fri.hasAttendance 
+                        ? `<button class="attendance-btn" onclick="showAttendanceDetails(${monthIdx}, ${friIdx})">عرض الكشف</button>` 
+                        : '';
+                        
+                    fridaysHtml += `
+                        <div class="friday-card">
+                            <div class="friday-info">
+                                <span class="friday-name">${fri.name}</span>
+                                <span class="friday-date">${fri.date}</span>
+                            </div>
+                            ${buttonHtml}
                         </div>
-                        <button class="attendance-btn">عرض الكشف</button>
-                    </div>
-                `).join('');
+                    `;
+                });
 
                 container.innerHTML += `
-                    <div style="animation-delay: ${index * 0.1}s" class="animated">
+                    <div style="animation-delay: ${monthIdx * 0.1}s" class="animated">
                         <div class="month-header">شهر ${monthData.month} 📅</div>
                         ${fridaysHtml}
                     </div>
@@ -333,9 +336,30 @@
             });
         }
 
+        // دالة فتح الكارت المنبثق للحضور
+        function showAttendanceDetails(monthIdx, friIdx) {
+            const fri = attendanceData[monthIdx].fridays[friIdx];
+            const modal = document.getElementById('attendance-modal');
+            document.getElementById('modal-title').innerText = `كشف الحضور - ${fri.name} (${fri.date})`;
+            
+            const listContainer = document.getElementById('modal-list-container');
+            listContainer.innerHTML = '';
+            
+            fri.present.forEach(playerName => {
+                listContainer.innerHTML += `
+                    <div class="event-item">
+                        <img src="${getPlayerAvatarSrc(playerName)}" class="player-avatar" alt="">
+                        <span>${playerName}</span>
+                    </div>
+                `;
+            });
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('attendance-modal').style.display = 'none'; }
+        function closeModalOnOutsideClick(e) { if (e.target.id === 'attendance-modal') closeModal(); }
         function showRounds() { document.getElementById('match-details-view').classList.add('hidden'); document.getElementById('rounds-view').classList.remove('hidden'); }
         
-        // تشغيل التطبيق بجلب الداتا الأول
         fetchDatabase();
     </script>
 </body>
