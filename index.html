@@ -76,11 +76,8 @@
         .tier-1 .podium-name { font-size: 14px; color: var(--gold); }
         .podium-team { font-size: 10px; color: var(--text-muted); text-align: center; }
 
-        /* ستايل صفحة الحضور والـ Collapse الجديد */
         .month-header { background: linear-gradient(90deg, rgba(0,229,255,0.1), rgba(255,0,127,0.1)); padding: 12px 15px; border-radius: 8px; font-weight: 900; color: #fff; margin-bottom: 5px; display: flex; align-items: center; justify-content: space-between; border-right: 4px solid var(--primary-accent); cursor: pointer; transition: 0.3s; }
         .month-header:hover { background: rgba(0,229,255,0.2); }
-        
-        /* كونتينر الجمع الهيبقى مقفول */
         .month-body { display: none; padding: 10px 5px 5px 5px; margin-bottom: 15px; }
         
         .friday-card { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); padding: 12px 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
@@ -103,14 +100,12 @@
         .modal-title { font-weight: 900; color: var(--primary-accent); font-size: 15px; }
         .close-btn { background: transparent; border: none; color: var(--secondary-accent); font-size: 24px; cursor: pointer; font-weight: bold; }
 
-        /* ستايل الـ Collapse لتقرير الحضور الإجمالي */
         .summary-toggle-header { background: linear-gradient(135deg, rgba(20, 30, 48, 0.9), rgba(36, 59, 85, 0.9)); border: 1px solid var(--primary-accent); border-radius: 12px; padding: 12px 15px; margin-top: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 12px rgba(0,229,255,0.1); }
         .summary-title { font-size: 14px; font-weight: 900; color: var(--gold); display: flex; align-items: center; gap: 8px; }
         .summary-body { display: none; padding: 10px 5px; border: 1px dashed var(--primary-accent); border-top: none; border-radius: 0 0 12px 12px; background: rgba(0,0,0,0.2); }
         
         .arrow-icon { font-size: 14px; color: var(--primary-accent); transition: transform 0.3s; }
         .arrow-rotated { transform: rotate(180deg); }
-        
         .badge-count { background: rgba(255,255,255,0.1); color: #fff; padding: 2px 6px; border-radius: 5px; font-size: 11px; }
 
         .hidden { display: none !important; }
@@ -208,7 +203,28 @@
             }
         }
 
-        function getPlayerAvatarSrc(name) { return playerImages[name] || defaultAvatar; }
+        // دالة الصور الذكية المحدثة لحل مشكلة التطابق في الماتشات
+        function getPlayerAvatarSrc(text) {
+            if (!text) return defaultAvatar;
+            let cleanText = text.replace(/<[^>]*>/g, '').trim(); // تنظيف السبان والأنميشن
+            
+            // 1. البحث بالتطابق المباشر أو الاحتواء الكامل
+            for (let name in playerImages) {
+                if (cleanText.includes(name) || name.includes(cleanText)) {
+                    return playerImages[name];
+                }
+            }
+            // 2. البحث بالكلمة الأولى كخيار احتياطي لضمان اللقط
+            let firstWord = cleanText.split(' ')[0];
+            if (firstWord && firstWord.length > 2) {
+                for (let name in playerImages) {
+                    if (name.includes(firstWord)) {
+                        return playerImages[name];
+                    }
+                }
+            }
+            return defaultAvatar;
+        }
 
         function calculateStandings() {
             const standings = {};
@@ -272,7 +288,8 @@
             const matchesContainer = document.getElementById('matches-container'); matchesContainer.innerHTML = '';
 
             round.matches.forEach((match, index) => {
-                const generateList = (items) => items.length > 0 ? items.map(i => `<li class="event-item"><img src="${getPlayerAvatarSrc(i.split(' ')[0])}" class="player-avatar" alt=""> <span>${i}</span></li>`).join('') : '<li style="text-align:center; padding:5px; color:#aaa;">-</li>';
+                // تعديل هنا: تمرير النص بالكامل للدالة الذكية بدون عمل قص خاطئ
+                const generateList = (items) => items.length > 0 ? items.map(i => `<li class="event-item"><img src="${getPlayerAvatarSrc(i)}" class="player-avatar" alt=""> <span>${i}</span></li>`).join('') : '<li style="text-align:center; padding:5px; color:#aaa;">-</li>';
                 const matchHtml = `
                     <div class="glass-card animated" style="animation-delay: ${index * 0.1}s">
                         <div class="score-board">
@@ -283,8 +300,8 @@
                         <div class="match-events-grid">
                             <div class="event-cell team-a-cell"><div class="event-type">⚽ الأهداف</div><ul class="event-list">${generateList(match.eventsA.goals)}</ul></div>
                             <div class="event-cell team-b-cell"><div class="event-type">⚽ الأهداف</div><ul class="event-list">${generateList(match.eventsB.goals)}</ul></div>
-                            <div class="event-cell team-a-cell"><div class="event-type">🟨 إنذارات</div><ul class="event-list">${generateList(match.eventsA.yellowCards)}</ul></div>
-                            <div class="event-cell team-b-cell"><div class="event-type">🟨 إنذارات</div><ul class="event-list">${generateList(match.eventsB.yellowCards)}</ul></div>
+                            <div class="event-cell team-a-cell"><div class="event-type">🟨 الإنذارات</div><ul class="event-list">${generateList(match.eventsA.yellowCards)}</ul></div>
+                            <div class="event-cell team-b-cell"><div class="event-type">🟨 الإنذارات</div><ul class="event-list">${generateList(match.eventsB.yellowCards)}</ul></div>
                             <div class="event-cell team-a-cell"><div class="event-type">🟥 طرد</div><ul class="event-list">${generateList(match.eventsA.redCards)}</ul></div>
                             <div class="event-cell team-b-cell"><div class="event-type">🟥 طرد</div><ul class="event-list">${generateList(match.eventsB.redCards)}</ul></div>
                         </div>
@@ -317,7 +334,6 @@
             scorersContainer.innerHTML = scorersHtml;
         }
 
-        // دالة عرض صفحة الحضور مع نظام الـ Collapse والأسهم التفاعلية
         function renderAttendance() {
             const container = document.getElementById('attendance-container'); container.innerHTML = '';
             
@@ -325,28 +341,14 @@
                 let hasVisibleFriday = monthData.fridays.some(fri => fri.visible);
                 if (!hasVisibleFriday) return;
 
-                let fridaysHtml = '';
-                let totalActiveFridays = 0;
-
+                let fridaysHtml = ''; let totalActiveFridays = 0;
                 let monthlySummary = {};
                 players.forEach(p => monthlySummary[p] = { friday: 0, study: 0, activity: 0 });
 
                 monthData.fridays.forEach((fri, friIdx) => {
                     if (!fri.visible) return;
-                    
-                    let buttonHtml = fri.hasAttendance 
-                        ? `<button class="attendance-btn" onclick="showAttendanceDetails(${monthIdx}, ${friIdx})">عرض الكشف</button>` 
-                        : '';
-                        
-                    fridaysHtml += `
-                        <div class="friday-card">
-                            <div class="friday-info">
-                                <span class="friday-name">${fri.name}</span>
-                                <span class="friday-date">${fri.date}</span>
-                            </div>
-                            ${buttonHtml}
-                        </div>
-                    `;
+                    let buttonHtml = fri.hasAttendance ? `<button class="attendance-btn" onclick="showAttendanceDetails(${monthIdx}, ${friIdx})">عرض الكشف</button>` : '';
+                    fridaysHtml += `<div class="friday-card"><div class="friday-info"><span class="friday-name">${fri.name}</span><span class="friday-date">${fri.date}</span></div>${buttonHtml}</div>`;
 
                     if (fri.hasAttendance && fri.records) {
                         totalActiveFridays++;
@@ -363,17 +365,9 @@
 
                 let summaryRowsHtml = '';
                 players.sort().forEach(p => {
-                    summaryRowsHtml += `
-                        <tr>
-                            <td class="player-cell"><img src="${getPlayerAvatarSrc(p)}" class="player-avatar" style="width:28px; height:28px;"> ${p}</td>
-                            <td><span class="badge-count">${monthlySummary[p].friday}</span></td>
-                            <td><span class="badge-count">${monthlySummary[p].study}</span></td>
-                            <td><span class="badge-count">${monthlySummary[p].activity}</span></td>
-                        </tr>
-                    `;
+                    summaryRowsHtml += `<tr><td class="player-cell"><img src="${getPlayerAvatarSrc(p)}" class="player-avatar" style="width:28px; height:28px;"> ${p}</td><td><span class="badge-count">${monthlySummary[p].friday}</span></td><td><span class="badge-count">${monthlySummary[p].study}</span></td><td><span class="badge-count">${monthlySummary[p].activity}</span></td></tr>`;
                 });
 
-                // تعديل هيكل كارت التقرير الإجمالي عشان يدعم الـ Collapse
                 let summaryCardHtml = totalActiveFridays > 0 ? `
                     <div class="summary-toggle-header" onclick="toggleSummary(${monthIdx})">
                         <div class="summary-title">📊 التقرير الإجمالي للشهر</div>
@@ -381,16 +375,10 @@
                     </div>
                     <div class="summary-body" id="summary-body-${monthIdx}">
                         <table class="attendance-table">
-                            <thead>
-                                <tr>
-                                    <th style="text-align: right;">الاسم</th>
-                                    <th>⛪ جمعة</th><th>📚 دراسي</th><th>🎯 نشاط</th>
-                                </tr>
-                            </thead>
+                            <thead><tr><th style="text-align: right;">الاسم</th><th>⛪ جمعة</th><th>📚 دراسي</th><th>🎯 نشاط</th></tr></thead>
                             <tbody>${summaryRowsHtml}</tbody>
                         </table>
-                    </div>
-                ` : '';
+                    </div>` : '';
 
                 container.innerHTML += `
                     <div class="glass-card animated" style="padding: 12px 10px; margin-bottom:15px;">
@@ -402,49 +390,35 @@
                             ${fridaysHtml}
                             ${summaryCardHtml}
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
         }
 
-        // دوال التحكم بالـ Collapse (الفتح والقفل)
         function toggleMonth(monthIdx) {
             const body = document.getElementById(`month-body-${monthIdx}`);
             const arrow = document.getElementById(`month-arrow-${monthIdx}`);
-            if (body.style.display === "block") {
-                body.style.display = "none";
-                arrow.classList.remove("arrow-rotated");
-            } else {
-                body.style.display = "block";
-                arrow.classList.add("arrow-rotated");
-            }
+            if (body.style.display === "block") { body.style.display = "none"; arrow.classList.remove("arrow-rotated"); } 
+            else { body.style.display = "block"; arrow.classList.add("arrow-rotated"); }
         }
 
         function toggleSummary(monthIdx) {
             const body = document.getElementById(`summary-body-${monthIdx}`);
             const arrow = document.getElementById(`summary-arrow-${monthIdx}`);
-            if (body.style.display === "block") {
-                body.style.display = "none";
-                arrow.classList.remove("arrow-rotated");
-            } else {
-                body.style.display = "block";
-                arrow.classList.add("arrow-rotated");
-            }
+            if (body.style.display === "block") { body.style.display = "none"; arrow.classList.remove("arrow-rotated"); } 
+            else { body.style.display = "block"; arrow.classList.add("arrow-rotated"); }
         }
 
         function showAttendanceDetails(monthIdx, friIdx) {
             const fri = attendanceData[monthIdx].fridays[friIdx];
             const modal = document.getElementById('attendance-modal');
             document.getElementById('modal-title').innerText = `كشف تفصيلي - ${fri.name} (${fri.date})`;
-            
             const tbody = document.getElementById('modal-table-body'); tbody.innerHTML = '';
             
             players.sort().forEach(playerName => {
                 let record = fri.records[playerName] || { friday: false, study: false, activity: false };
-                let friIcon = record.friday ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">➖</span>';
-                let studyIcon = record.study ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">➖</span>';
-                let actIcon = record.activity ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">➖</span>';
-
+                let friIcon = record.friday ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">&mdash;</span>';
+                let studyIcon = record.study ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">&mdash;</span>';
+                let actIcon = record.activity ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">&mdash;</span>';
                 tbody.innerHTML += `<tr><td class="player-cell"><img src="${getPlayerAvatarSrc(playerName)}" class="player-avatar" style="width:30px; height:30px;">${playerName}</td><td>${friIcon}</td><td>${studyIcon}</td><td>${actIcon}</td></tr>`;
             });
             modal.style.display = 'flex';
