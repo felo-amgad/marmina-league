@@ -17,7 +17,7 @@
     "كاراس عادل": "كاراس عادل.jpeg",
     "كيرلس مجدي": "كيرلس مجدي.jpeg",
     "كيفين": "كيفين.jpeg",
-    "موسى سميح": "موسى.jpeg",
+    "موسى سميح": "mousa.jpeg",
     "موسى": "موسى.jpeg",
     "مينا خالد": "مينا.jpeg",
     "مينا": "مينا.jpeg",
@@ -32,7 +32,7 @@
     "موسى سميح", "يوحنا أسامة", "كاراس عادل", "مينا خالد", "بولا عريان", 
     "كيرلس مجدي", "جون رامز", "بيشوي هشام", "كيفين", "فادي عادل", 
     "شنودة سمير", "كاراس ميلاد", "كاراس أمجد", "كيرلس عماد", "يوسف رامي",
-    "بافلي", "فيلو", "يوساب", "أستاذ هاني", "أستاذ صالح"
+    "بافلي", "فيلو", "يوساب"
   ],
   "leagueData": [
     {
@@ -92,45 +92,34 @@
           "visible": true,
           "hasAttendance": true,
           "records": {
-            "أبانوب ماهر": { "friday": true, "study": true, "activity": true },
-            "أبانوب ناصر": { "friday": true, "study": true, "activity": true },
-            "بيتر عماد": { "friday": true, "study": true, "activity": false },
-            "أمير ملاك": { "friday": true, "study": false, "activity": true },
-            "ماركو أمير": { "friday": true, "study": true, "activity": false },
-            "موسى سميح": { "friday": true, "study": true, "activity": true },
-            "يوحنا أسامة": { "friday": true, "study": true, "activity": true },
-            "كاراس عادل": { "friday": true, "study": true, "activity": true },
-            "مينا خالد": { "friday": true, "study": true, "activity": true },
-            "بولا عريان": { "friday": true, "study": true, "activity": false },
-            "كيرلس مجدي": { "friday": true, "study": true, "activity": true },
-            "جون رامز": { "friday": true, "study": true, "activity": true },
+            "أبانوب ماهر": { "friday": true, "study": false, "activity": false },
+            "أبانوب ناصر": { "friday": true, "study": false, "activity": false },
+            "بيتر عماد": { "friday": true, "study": false, "activity": false },
+            "أمير ملاك": { "friday": true, "study": false, "activity": false },
+            "ماركو أمير": { "friday": true, "study": false, "activity": false },
+            "موسى سميح": { "friday": true, "study": false, "activity": false },
+            "يوحنا أسامة": { "friday": true, "study": false, "activity": false },
+            "كاراس عادل": { "friday": true, "study": false, "activity": false },
+            "مينا خالد": { "friday": true, "study": false, "activity": false },
+            "بولا عريان": { "friday": true, "study": false, "activity": false },
+            "كيرلس مجدي": { "friday": true, "study": false, "activity": false },
+            "جون رامز": { "friday": true, "study": false, "activity": false },
             "بيشوي هشام": { "friday": true, "study": false, "activity": false },
-            "كيفين": { "friday": true, "study": true, "activity": true },
-            "فادي عادل": { "friday": true, "study": true, "activity": false },
-            "شنودة سمير": { "friday": true, "study": true, "activity": true },
-            "كاراس ميلاد": { "friday": true, "study": false, "activity": true },
-            "كاراس أمجد": { "friday": true, "study": true, "activity": false },
-            "كيرلس عماد": { "friday": true, "study": true, "activity": true },
-            "يوسف رامي": { "friday": true, "study": true, "activity": true },
+            "كيفين": { "friday": true, "study": false, "activity": false },
+            "فادي عادل": { "friday": true, "study": false, "activity": false },
+            "شنودة سمير": { "friday": true, "study": false, "activity": false },
+            "كاراس ميلاد": { "friday": true, "study": false, "activity": false },
+            "كاراس أمجد": { "friday": true, "study": false, "activity": false },
+            "كيرلس عماد": { "friday": true, "study": false, "activity": false },
+            "يوسف رامي": { "friday": true, "study": false, "activity": false },
             "بافلي": { "friday": false, "study": false, "activity": false },
             "فيلو": { "friday": false, "study": false, "activity": false },
-            "يوساب": { "friday": false, "study": false, "activity": false },
-            "أستاذ هاني": { "friday": false, "study": false, "activity": false },
-            "أستاذ صالح": { "friday": false, "study": false, "activity": false }
+            "يوساب": { "friday": false, "study": false, "activity": false }
           }
         },
-        { 
-          "name": "الجمعة الثانية", "date": "10 يوليو 2026",
-          "visible": false, "hasAttendance": false, "records": {}
-        },
-        { 
-          "name": "الجمعة الثالثة", "date": "17 يوليو 2026",
-          "visible": false, "hasAttendance": false, "records": {}
-        },
-        { 
-          "name": "الجمعة الرابعة", "date": "24 يوليو 2026",
-          "visible": false, "hasAttendance": false, "records": {}
-        }
+        { "name": "الجمعة الثانية", "date": "10 يوليو 2026", "visible": false, "hasAttendance": false, "records": {} },
+        { "name": "الجمعة الثالثة", "date": "17 يوليو 2026", "visible": false, "hasAttendance": false, "records": {} },
+        { "name": "الجمعة الرابعة", "date": "24 يوليو 2026", "visible": false, "hasAttendance": false, "records": {} }
       ]
     }
   ]
