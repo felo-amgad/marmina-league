@@ -18,11 +18,15 @@
         @keyframes slideInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .animated { animation: slideInUp 0.4s ease-out forwards; }
         header { padding: 25px 20px 15px; text-align: center; font-size: 28px; font-weight: 900; position: sticky; top: 0; z-index: 100; background: rgba(10, 20, 30, 0.9); backdrop-filter: blur(10px); border-bottom: 1px solid var(--card-border); color: transparent; background-image: linear-gradient(45deg, var(--primary-accent), var(--secondary-accent)); background-clip: text; -webkit-background-clip: text; }
+        
         .nav-tabs { display: flex; background: rgba(0, 0, 0, 0.5); margin: 15px; border-radius: 12px; overflow: hidden; border: 1px solid var(--card-border); }
         .nav-tab { flex: 1; padding: 10px 5px; text-align: center; font-weight: bold; font-size: 14px; color: var(--text-muted); cursor: pointer; transition: 0.3s; }
         .nav-tab.active { color: #fff; background: rgba(255, 255, 255, 0.1); border-bottom: 3px solid var(--primary-accent); }
+        
         .content { padding: 0 15px; }
         .glass-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--card-border); border-radius: 15px; padding: 15px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); transition: 0.3s; }
+        
+        /* المباريات */
         .round-item { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .round-name { font-size: 18px; font-weight: 900; color: var(--primary-accent); }
         .round-date { color: var(--text-muted); font-size: 13px; margin-top: 5px;}
@@ -42,6 +46,8 @@
         .player-avatar { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-accent); background-color: #fff; flex-shrink: 0; }
         .event-item span { color: #fff; font-weight: 700; font-size: 13px; text-align: right; line-height: 1.4; }
         .own-goal { color: var(--secondary-accent) !important; font-size: 10px !important; }
+        
+        /* الترتيب والإحصائيات */
         .league-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
         .league-table th { color: var(--primary-accent); padding: 8px 2px; border-bottom: 1px solid rgba(255,255,255,0.2); font-size: 11px; }
         .league-table td { padding: 10px 2px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; font-weight: bold; }
@@ -50,6 +56,7 @@
         .league-table td.pts { color: var(--secondary-accent); font-size: 15px; }
         .gd-positive { color: #00ff88; } .gd-negative { color: #ff4b2b; }
         .stats-title { color: var(--primary-accent); font-size: 16px; font-weight: 900; margin-bottom: 15px; text-align: center; }
+        
         .tier-card { background: rgba(0, 0, 0, 0.3); border-radius: 12px; margin-bottom: 15px; padding: 12px; position: relative; }
         .tier-1 { border: 2px solid var(--gold); } .tier-2 { border: 2px solid var(--silver); } .tier-3 { border: 2px solid var(--bronze); }
         .tier-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 8px; margin-bottom: 12px; }
@@ -64,6 +71,25 @@
         .podium-name { font-weight: 900; font-size: 12px; color: #fff; text-align: center; margin-bottom: 2px; }
         .tier-1 .podium-name { font-size: 14px; color: var(--gold); }
         .podium-team { font-size: 10px; color: var(--text-muted); text-align: center; }
+        
+        /* الحضور */
+        .month-header { background: linear-gradient(90deg, rgba(0,229,255,0.1), rgba(255,0,127,0.1)); padding: 12px 15px; border-radius: 8px; font-weight: 900; color: #fff; margin-bottom: 5px; display: flex; align-items: center; justify-content: space-between; border-right: 4px solid var(--primary-accent); cursor: pointer; }
+        .month-body { display: none; padding: 10px 5px; margin-bottom: 5px; }
+        .friday-card { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); padding: 12px 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .friday-name { font-weight: 900; color: var(--secondary-accent); font-size: 15px; }
+        .friday-date { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+        .attendance-btn { background: var(--primary-accent); color: #000; border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .arrow-rotated { transform: rotate(180deg); transition: 0.3s; }
+        
+        /* المودال */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 20, 30, 0.9); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
+        .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 20px; max-width: 460px; width: 95%; max-height: 85vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 12px; margin-bottom: 10px; }
+        .modal-title { font-weight: 900; color: var(--primary-accent); font-size: 15px; }
+        .close-btn { background: transparent; border: none; color: var(--secondary-accent); font-size: 24px; cursor: pointer; font-weight: bold; }
+        .check-icon { color: #00ff88; font-size: 14px; }
+        .cross-icon { color: #ff4b2b; font-size: 14px; opacity: 0.3; }
+
         .hidden { display: none !important; }
         .loader { text-align: center; padding: 50px; color: var(--primary-accent); font-weight: bold; }
     </style>
@@ -71,18 +97,26 @@
 <body>
     <div class="app-container">
         <header>⚡ Marmina League</header>
+        
         <div class="nav-tabs">
             <div class="nav-tab active" id="tab-rounds" onclick="switchTab('rounds')">المباريات</div>
             <div class="nav-tab" id="tab-stats" onclick="switchTab('stats')">الترتيب والإحصائيات</div>
+            <div class="nav-tab" id="tab-attendance" onclick="switchTab('attendance')">الحضور</div>
         </div>
+        
         <div class="content">
             <div id="loader" class="loader">جاري تحميل البيانات... ⏳</div>
+            
+            <!-- قسم المباريات -->
             <div id="rounds-view" class="hidden"></div>
+            
             <div id="match-details-view" class="hidden">
                 <button class="back-btn" onclick="showRounds()">⬅ رجوع للجولات</button>
                 <h3 id="current-round-title" style="margin-bottom: 20px; text-align: center; color: var(--text-main); font-weight: 900;"></h3>
                 <div id="matches-container"></div>
             </div>
+            
+            <!-- قسم الإحصائيات -->
             <div id="stats-view" class="hidden">
                 <div class="glass-card animated" style="animation-delay: 0.1s; padding: 15px 5px;">
                     <div class="stats-title">📊 جدول الترتيب</div>
@@ -102,11 +136,33 @@
                     <div class="stats-title">⚽ أعلى الهدافين</div>
                     <div id="top-scorers-container"></div>
                 </div>
+                <div class="glass-card animated" style="animation-delay: 0.3s;">
+                    <div class="stats-title">🎯 صناع اللعب (الأسيست)</div>
+                    <div id="top-assists-container"></div>
+                </div>
             </div>
+
+            <!-- قسم الحضور -->
+            <div id="attendance-view" class="hidden"></div>
         </div>
     </div>
+
+    <!-- كارت منبثق للمودال الخاص بالحضور -->
+    <div id="attendance-modal" class="modal" onclick="closeModalOnOutsideClick(event)">
+        <div class="modal-content animated">
+            <div class="modal-header">
+                <span id="modal-title" class="modal-title"></span>
+                <button class="close-btn" onclick="closeModal()">✕</button>
+            </div>
+            <table class="league-table">
+                <thead><tr><th style="text-align: right; width: 45%;">الاسم</th><th style="width: 18.33%;">جمعة</th><th style="width: 18.33%;">دراسي</th><th style="width: 18.33%;">نشاط</th></tr></thead>
+                <tbody id="modal-table-body"></tbody>
+            </table>
+        </div>
+    </div>
+
     <script>
-        let logos = {}; let playerImages = {}; let leagueData = []; let statsData = {};
+        let logos = {}; let playerImages = {}; let leagueData = []; let statsData = {}; let attendanceData = []; let playersList = [];
         const defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
         async function fetchDatabase() {
@@ -114,7 +170,9 @@
                 const response = await fetch('database.json?v=' + new Date().getTime());
                 const data = await response.json();
                 logos = data.logos; playerImages = data.playerImages; 
-                leagueData = data.leagueData; statsData = data.statsData;
+                leagueData = data.leagueData; statsData = data.statsData; 
+                attendanceData = data.attendanceData; playersList = data.players;
+                
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('rounds-view').classList.remove('hidden');
                 renderRounds();
@@ -146,6 +204,9 @@
             });
             leagueData.forEach(round => {
                 round.matches.forEach(match => {
+                    if (match.scoreA === 0 && match.scoreB === 0 && match.eventsA.goals.length === 0 && match.eventsB.goals.length === 0 && !match.isPlayed) {
+                        // ممكن نضيف شرط ان الماتش لسة متلعبش لو حابين
+                    }
                     standings[match.teamA].played++; standings[match.teamB].played++;
                     standings[match.teamA].goalsFor += match.scoreA; standings[match.teamA].goalsAgainst += match.scoreB;
                     standings[match.teamB].goalsFor += match.scoreB; standings[match.teamB].goalsAgainst += match.scoreA;
@@ -165,13 +226,18 @@
         function switchTab(tabName) {
             document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
             document.getElementById(`tab-${tabName}`).classList.add('active');
+            
             document.getElementById('rounds-view').classList.add('hidden');
             document.getElementById('match-details-view').classList.add('hidden');
             document.getElementById('stats-view').classList.add('hidden');
+            document.getElementById('attendance-view').classList.add('hidden');
+            
             if (tabName === 'rounds') { document.getElementById('rounds-view').classList.remove('hidden'); renderRounds(); } 
             else if (tabName === 'stats') { document.getElementById('stats-view').classList.remove('hidden'); renderStats(); }
+            else if (tabName === 'attendance') { document.getElementById('attendance-view').classList.remove('hidden'); renderAttendance(); }
         }
 
+        // ================= المباريات =================
         function renderRounds() {
             const roundsView = document.getElementById('rounds-view'); roundsView.innerHTML = '';
             leagueData.forEach((round, index) => {
@@ -188,6 +254,11 @@
             const round = leagueData.find(r => r.id === roundId); if (!round) return;
             document.getElementById('current-round-title').innerText = round.name;
             const matchesContainer = document.getElementById('matches-container'); matchesContainer.innerHTML = '';
+            
+            if (round.matches.length === 0) {
+                matchesContainer.innerHTML = `<div style="text-align:center; color:#aaa; padding:20px;">لم يتم تسجيل مباريات لهذه الجولة بعد.</div>`;
+            }
+
             round.matches.forEach((match, index) => {
                 const generateList = (items) => items.length > 0 ? items.map(i => `<li class="event-item"><img src="${getPlayerAvatarSrc(i)}" class="player-avatar" alt=""> <span>${i}</span></li>`).join('') : '<li style="text-align:center; padding:5px; color:#aaa;">-</li>';
                 matchesContainer.innerHTML += `
@@ -211,7 +282,14 @@
             document.getElementById('match-details-view').classList.remove('hidden');
         }
 
+        function showRounds() { 
+            document.getElementById('match-details-view').classList.add('hidden'); 
+            document.getElementById('rounds-view').classList.remove('hidden'); 
+        }
+
+        // ================= الإحصائيات =================
         function renderStats() {
+            // الترتيب
             const standings = calculateStandings();
             const standingsBody = document.getElementById('league-standings-body'); standingsBody.innerHTML = '';
             standings.forEach(team => {
@@ -219,19 +297,123 @@
                 let gdText = team.goalDiff > 0 ? `+${team.goalDiff}` : team.goalDiff;
                 standingsBody.innerHTML += `<tr><td class="team-name"><img src="${team.logo}" alt="${team.name}">${team.name}</td><td>${team.played}</td><td>${team.won}</td><td>${team.drawn}</td><td>${team.lost}</td><td>${team.goalsFor}</td><td>${team.goalsAgainst}</td><td class="${gdClass}" dir="ltr">${gdText}</td><td class="pts">${team.points}</td></tr>`;
             });
+
+            const rankClasses = ['tier-1', 'tier-2', 'tier-3']; 
+            const rankTitles = ['🥇 المركز الأول', '🥈 المركز الثاني', '🥉 المركز الثالث'];
+
+            // الهدافين
             const scorersContainer = document.getElementById('top-scorers-container');
-            let uniqueGoalCounts = [...new Set(statsData.topScorers.map(p => p.count))].sort((a, b) => b - a);
+            let uniqueGoalCounts = [...new Set(statsData.topScorers.map(p => p.count))].sort((a, b) => b - a).filter(c => c > 0);
             let top3GoalCounts = uniqueGoalCounts.slice(0, 3); let scorersHtml = '';
-            const rankClasses = ['tier-1', 'tier-2', 'tier-3']; const rankTitles = ['🥇 المركز الأول', '🥈 المركز الثاني', '🥉 المركز الثالث'];
+            
+            if (top3GoalCounts.length === 0) { scorersHtml = '<div style="text-align:center; color:#aaa;">لم يتم تسجيل أهداف بعد.</div>'; }
             top3GoalCounts.forEach((goalCount, index) => {
                 let tiedPlayers = statsData.topScorers.filter(p => p.count === goalCount);
                 let playersHtml = tiedPlayers.map(player => `<div class="player-podium-item"><img src="${getPlayerAvatarSrc(player.name)}" class="podium-avatar" alt="${player.name}"><div class="podium-name">${player.name}</div><div class="podium-team">${player.team}</div></div>`).join('');
                 scorersHtml += `<div class="tier-card ${rankClasses[index]}"><div class="tier-header"><div class="tier-title">${rankTitles[index]}</div><div class="tier-badge">${goalCount} ⚽</div></div><div class="tied-players-container">${playersHtml}</div></div>`;
             });
             scorersContainer.innerHTML = scorersHtml;
+
+            // الأسيست
+            const assistsContainer = document.getElementById('top-assists-container');
+            let uniqueAssistCounts = [...new Set(statsData.topAssists.map(p => p.count))].sort((a, b) => b - a).filter(c => c > 0);
+            let top3AssistCounts = uniqueAssistCounts.slice(0, 3); let assistsHtml = '';
+            
+            if (top3AssistCounts.length === 0) { assistsHtml = '<div style="text-align:center; color:#aaa;">لم يتم تسجيل صناعة أهداف بعد.</div>'; }
+            top3AssistCounts.forEach((assistCount, index) => {
+                let tiedPlayers = statsData.topAssists.filter(p => p.count === assistCount);
+                let playersHtml = tiedPlayers.map(player => `<div class="player-podium-item"><img src="${getPlayerAvatarSrc(player.name)}" class="podium-avatar" alt="${player.name}"><div class="podium-name">${player.name}</div><div class="podium-team">${player.team}</div></div>`).join('');
+                assistsHtml += `<div class="tier-card ${rankClasses[index]}"><div class="tier-header"><div class="tier-title">${rankTitles[index]}</div><div class="tier-badge">${assistCount} 🎯</div></div><div class="tied-players-container">${playersHtml}</div></div>`;
+            });
+            assistsContainer.innerHTML = assistsHtml;
         }
 
-        function showRounds() { document.getElementById('match-details-view').classList.add('hidden'); document.getElementById('rounds-view').classList.remove('hidden'); }
+        // ================= الحضور =================
+        function renderAttendance() {
+            const container = document.getElementById('attendance-view'); 
+            container.innerHTML = '';
+            
+            let hasAnyVisible = false;
+
+            attendanceData.forEach((monthData, monthIdx) => {
+                let hasVisibleFriday = monthData.fridays.some(fri => fri.visible);
+                if (!hasVisibleFriday) return;
+                
+                hasAnyVisible = true;
+                let fridaysHtml = '';
+                
+                monthData.fridays.forEach((fri, friIdx) => {
+                    if (!fri.visible) return;
+                    let buttonHtml = fri.hasAttendance ? `<button class="attendance-btn" onclick="showAttendanceDetails(${monthIdx}, ${friIdx})">عرض الكشف</button>` : '';
+                    fridaysHtml += `
+                        <div class="friday-card">
+                            <div>
+                                <div class="friday-name">${fri.name}</div>
+                                <div class="friday-date">${fri.date}</div>
+                            </div>
+                            ${buttonHtml}
+                        </div>`;
+                });
+
+                container.innerHTML += `
+                    <div class="glass-card animated" style="padding: 10px; margin-bottom:15px;">
+                        <div class="month-header" onclick="toggleMonth(${monthIdx})">
+                            <span>شهر ${monthData.month} 📅</span>
+                            <span class="arrow-icon" id="month-arrow-${monthIdx}">▼</span>
+                        </div>
+                        <div class="month-body" id="month-body-${monthIdx}">${fridaysHtml}</div>
+                    </div>`;
+            });
+
+            if (!hasAnyVisible) {
+                container.innerHTML = '<div style="text-align:center; color:#aaa; margin-top:30px;">لا يوجد كشوفات حضور متاحة حالياً.</div>';
+            }
+        }
+
+        function toggleMonth(monthIdx) {
+            const body = document.getElementById(`month-body-${monthIdx}`);
+            const arrow = document.getElementById(`month-arrow-${monthIdx}`);
+            if (body.style.display === "block") { 
+                body.style.display = "none"; 
+                arrow.classList.remove("arrow-rotated"); 
+            } else { 
+                body.style.display = "block"; 
+                arrow.classList.add("arrow-rotated"); 
+            }
+        }
+
+        function showAttendanceDetails(monthIdx, friIdx) {
+            const fri = attendanceData[monthIdx].fridays[friIdx];
+            const modal = document.getElementById('attendance-modal');
+            document.getElementById('modal-title').innerText = `كشف تفصيلي - ${fri.name} (${fri.date})`;
+            
+            const tbody = document.getElementById('modal-table-body'); 
+            tbody.innerHTML = '';
+            
+            playersList.sort().forEach(playerName => {
+                let record = fri.records[playerName] || { friday: false, study: false, activity: false };
+                let friIcon = record.friday ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">&mdash;</span>';
+                let studyIcon = record.study ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">&mdash;</span>';
+                let actIcon = record.activity ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">&mdash;</span>';
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="text-align: right; display: flex; align-items: center; gap: 8px; font-weight: bold;">
+                            <img src="${getPlayerAvatarSrc(playerName)}" style="width:25px; height:25px; border-radius:50%; object-fit:cover;">
+                            ${playerName}
+                        </td>
+                        <td>${friIcon}</td>
+                        <td>${studyIcon}</td>
+                        <td>${actIcon}</td>
+                    </tr>`;
+            });
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('attendance-modal').style.display = 'none'; }
+        function closeModalOnOutsideClick(e) { if (e.target.id === 'attendance-modal') closeModal(); }
+
+        // بدء التشغيل
         fetchDatabase();
     </script>
 </body>
