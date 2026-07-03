@@ -47,7 +47,7 @@
         {
           "teamA": "بايرن ميونخ", "teamB": "برشلونة",
           "scoreA": 0, "scoreB": 1,
-          "eventsA": { "goals": [], "yellowCards": [], "redCards": [] },
+          "eventsA": { "goals": [], "yellowCards": ["بافلي"], "redCards": [] },
           "eventsB": { "goals": ["جون"], "yellowCards": [], "redCards": [] }
         },
         {
