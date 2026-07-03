@@ -2,76 +2,199 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Panel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Marmina League</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
-        body { background: #0f172a; color: white; font-family: sans-serif; padding: 20px; }
-        .hidden { display: none; }
-        .month-header { background: #334155; padding: 15px; margin: 10px 0; cursor: pointer; border-radius: 8px; display: flex; justify-content: space-between; }
-        .month-body { padding: 10px; background: #1e293b; border-radius: 8px; margin-bottom: 10px; }
-        .summary-body { margin-top: 10px; padding: 10px; background: #0f172a; border: 1px solid #475569; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        td, th { padding: 8px; border: 1px solid #475569; text-align: center; }
+        :root {
+            --card-bg: rgba(20, 30, 48, 0.7); --card-border: rgba(255, 255, 255, 0.15);
+            --primary-accent: #00e5ff; --secondary-accent: #ff007f;
+            --text-main: #ffffff; --text-muted: #b0bec5; --gold: #ffd700;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
+        body { background: linear-gradient(rgba(10, 20, 30, 0.8), rgba(15, 32, 39, 0.9)), url('https://images.unsplash.com/photo-1522778119026-d647f0596c20?q=80&w=1080&auto=format&fit=crop') center/cover fixed; color: var(--text-main); min-height: 100vh; -webkit-tap-highlight-color: transparent; }
+        .app-container { max-width: 480px; margin: 0 auto; padding: 20px; min-height: 100vh; backdrop-filter: blur(5px); }
+        header { text-align: center; font-size: 26px; font-weight: 900; margin-bottom: 20px; color: var(--primary-accent); }
+        .glass-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 15px; padding: 15px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); }
+        
+        .login-box { text-align: center; margin-top: 100px; }
+        .login-box input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid var(--primary-accent); background: rgba(0,0,0,0.5); color: white; margin-bottom: 15px; text-align: center; font-size: 16px; font-family: 'Tajawal', sans-serif;}
+        .login-box button { width: 100%; padding: 12px; background: var(--primary-accent); border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; color: black; font-family: 'Tajawal', sans-serif;}
+        
+        .month-header { background: linear-gradient(90deg, rgba(0,229,255,0.1), rgba(255,0,127,0.1)); padding: 12px 15px; border-radius: 8px; font-weight: 900; color: #fff; margin-bottom: 5px; display: flex; align-items: center; justify-content: space-between; border-right: 4px solid var(--primary-accent); cursor: pointer; }
+        .month-body { display: none; padding: 10px 5px; margin-bottom: 15px; }
+        .friday-card { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); padding: 12px 15px; border-radius: 10px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .friday-info { display: flex; flex-direction: column; }
+        .friday-name { font-weight: 900; color: var(--secondary-accent); font-size: 15px; }
+        .friday-date { color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+        .attendance-btn { background: var(--primary-accent); color: #000; border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        
+        .attendance-table { width: 100%; border-collapse: collapse; font-size: 12px; color: #fff; margin-top: 5px; }
+        .attendance-table th { background: rgba(0,0,0,0.4); color: var(--primary-accent); padding: 8px 4px; border-bottom: 2px solid var(--card-border); }
+        .attendance-table td { padding: 8px 4px; border-bottom: 1px solid rgba(255,255,255,0.05); text-align: center; font-weight: bold; }
+        .player-cell { text-align: right; display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 900; }
+        .player-avatar { width: 30px; height: 30px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary-accent); background-color: #fff; }
+        
+        .summary-toggle-header { background: linear-gradient(135deg, rgba(20, 30, 48, 0.9), rgba(36, 59, 85, 0.9)); border: 1px solid var(--primary-accent); border-radius: 12px; padding: 12px 15px; margin-top: 15px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .summary-title { font-size: 14px; font-weight: 900; color: var(--gold); }
+        .summary-body { display: none; padding: 10px 5px; border: 1px dashed var(--primary-accent); border-top: none; border-radius: 0 0 12px 12px; background: rgba(0,0,0,0.2); }
+        .arrow-rotated { transform: rotate(180deg); }
+        .badge-count { background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 5px; font-size: 11px; }
+
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 20, 30, 0.9); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
+        .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 20px; max-width: 460px; width: 95%; max-height: 85vh; overflow-y: auto; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 12px; margin-bottom: 10px; }
+        .modal-title { font-weight: 900; color: var(--primary-accent); font-size: 15px; }
+        .close-btn { background: transparent; border: none; color: var(--secondary-accent); font-size: 24px; cursor: pointer; font-weight: bold; }
+        .check-icon { color: #00ff88; font-size: 14px; }
+        .cross-icon { color: #ff4b2b; font-size: 14px; opacity: 0.3; }
+        
+        .hidden { display: none !important; }
+        .loader { text-align: center; padding: 50px; color: var(--primary-accent); font-weight: bold; }
     </style>
 </head>
 <body>
-    <div id="login">
-        <input type="password" id="pass" placeholder="كلمة المرور">
-        <button onclick="check()">دخول</button>
+
+    <div class="app-container">
+        <header>🔒 لوحة الإدارة</header>
+
+        <div id="login-screen" class="glass-card login-box animated">
+            <h3 style="margin-bottom: 20px; color: var(--primary-accent);">تسجيل الدخول</h3>
+            <input type="password" id="pass" placeholder="أدخل كلمة المرور">
+            <button onclick="checkPass()">دخول للوحة</button>
+        </div>
+
+        <div id="admin-panel" class="hidden">
+            <div id="loader" class="loader">جاري تحميل داتا الحضور... ⏳</div>
+            <div id="attendance-container"></div>
+        </div>
     </div>
 
-    <div id="panel" class="hidden">
-        <h1>لوحة التحكم</h1>
-        <div id="attendance-container"></div>
+    <!-- كارت منبثق للمودال -->
+    <div id="attendance-modal" class="modal" onclick="closeModalOnOutsideClick(event)">
+        <div class="modal-content animated">
+            <div class="modal-header">
+                <span id="modal-title" class="modal-title"></span>
+                <button class="close-btn" onclick="closeModal()">✕</button>
+            </div>
+            <table class="attendance-table">
+                <thead><tr><th style="text-align: right; width: 45%;">الاسم</th><th style="width: 18.33%;">جمعة</th><th style="width: 18.33%;">دراسي</th><th style="width: 18.33%;">اختياري</th></tr></thead>
+                <tbody id="modal-table-body"></tbody>
+            </table>
+        </div>
     </div>
+
     <script>
-        function check() {
+        let playerImages = {}; let players = []; let attendanceData = [];
+        const defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+
+        function checkPass() {
             if(document.getElementById('pass').value === "1234") {
-                document.getElementById('login').classList.add('hidden');
-                document.getElementById('panel').classList.remove('hidden');
-                loadData();
-            } else { alert("باصورد غلط يا كابتن!"); }
+                document.getElementById('login-screen').classList.add('hidden');
+                document.getElementById('admin-panel').classList.remove('hidden');
+                fetchDatabase();
+            } else { alert("كلمة المرور غير صحيحة!"); }
         }
 
-        async function loadData() {
-            const res = await fetch('database.json?v=' + new Date().getTime());
-            const data = await res.json();
-            const container = document.getElementById('attendance-container');
-            
-            data.attendanceData.forEach((m, mIdx) => {
-                let monthlySummary = {};
-                data.players.forEach(p => monthlySummary[p] = { friday: 0, study: 0, activity: 0 });
+        async function fetchDatabase() {
+            try {
+                const response = await fetch('database.json?v=' + new Date().getTime());
+                const data = await response.json();
+                playerImages = data.playerImages; players = data.players; attendanceData = data.attendanceData;
+                document.getElementById('loader').style.display = 'none';
+                renderAttendance();
+            } catch (error) { document.getElementById('loader').innerHTML = '❌ حدث خطأ في تحميل قاعدة البيانات.'; }
+        }
 
-                m.fridays.filter(f => f.visible).forEach(f => {
-                    data.players.forEach(p => {
-                        if(f.records[p]?.friday) monthlySummary[p].friday++;
-                        if(f.records[p]?.study) monthlySummary[p].study++;
-                        if(f.records[p]?.activity) monthlySummary[p].activity++;
-                    });
+        function getPlayerAvatarSrc(name) { return playerImages[name] || defaultAvatar; }
+
+        function renderAttendance() {
+            const container = document.getElementById('attendance-container'); container.innerHTML = '';
+            attendanceData.forEach((monthData, monthIdx) => {
+                let hasVisibleFriday = monthData.fridays.some(fri => fri.visible);
+                if (!hasVisibleFriday) return;
+
+                let fridaysHtml = ''; let totalActiveFridays = 0;
+                let monthlySummary = {};
+                players.forEach(p => monthlySummary[p] = { friday: 0, study: 0, activity: 0 });
+
+                monthData.fridays.forEach((fri, friIdx) => {
+                    if (!fri.visible) return;
+                    let buttonHtml = fri.hasAttendance ? `<button class="attendance-btn" onclick="showAttendanceDetails(${monthIdx}, ${friIdx})">عرض الكشف</button>` : '';
+                    fridaysHtml += `<div class="friday-card"><div class="friday-info"><span class="friday-name">${fri.name}</span><span class="friday-date">${fri.date}</span></div>${buttonHtml}</div>`;
+
+                    if (fri.hasAttendance && fri.records) {
+                        totalActiveFridays++;
+                        players.forEach(p => {
+                            let rec = fri.records[p];
+                            if (rec) {
+                                if (rec.friday) monthlySummary[p].friday++;
+                                if (rec.study) monthlySummary[p].study++;
+                                if (rec.activity) monthlySummary[p].activity++;
+                            }
+                        });
+                    }
                 });
 
+                let summaryRowsHtml = '';
+                players.sort().forEach(p => {
+                    summaryRowsHtml += `<tr><td class="player-cell"><img src="${getPlayerAvatarSrc(p)}" class="player-avatar"> ${p}</td><td><span class="badge-count">${monthlySummary[p].friday}</span></td><td><span class="badge-count">${monthlySummary[p].study}</span></td><td><span class="badge-count">${monthlySummary[p].activity}</span></td></tr>`;
+                });
+
+                let summaryCardHtml = totalActiveFridays > 0 ? `
+                    <div class="summary-toggle-header" onclick="toggleSummary(${monthIdx})">
+                        <div class="summary-title">📊 التقرير الإجمالي للشهر</div>
+                        <div class="arrow-icon" id="summary-arrow-${monthIdx}">▼</div>
+                    </div>
+                    <div class="summary-body" id="summary-body-${monthIdx}">
+                        <table class="attendance-table">
+                            <thead><tr><th style="text-align: right;">الاسم</th><th>⛪ جمعة</th><th>📚 دراسي</th><th>🎯 نشاط</th></tr></thead>
+                            <tbody>${summaryRowsHtml}</tbody>
+                        </table>
+                    </div>` : '';
+
                 container.innerHTML += `
-                    <div class="month-header" onclick="this.nextElementSibling.classList.toggle('hidden')">
-                        <span>شهر ${m.month}</span> <span>▼</span>
-                    </div>
-                    <div class="month-body hidden">
-                        ${m.fridays.filter(f => f.visible).map(f => `
-                            <div><strong>${f.name}</strong></div>
-                            <table>
-                                ${data.players.map(p => `<tr><td>${p}</td><td>${f.records[p]?.friday ? '✅' : '➖'}</td></tr>`).join('')}
-                            </table>
-                        `).join('')}
-                        
-                        <div class="month-header" onclick="this.nextElementSibling.classList.toggle('hidden')">التقرير الإجمالي للشهر ▼</div>
-                        <div class="summary-body hidden">
-                            <table>
-                                <tr><th>الاسم</th><th>جمعة</th><th>دراسي</th><th>نشاط</th></tr>
-                                ${data.players.map(p => `<tr><td>${p}</td><td>${monthlySummary[p].friday}</td><td>${monthlySummary[p].study}</td><td>${monthlySummary[p].activity}</td></tr>`).join('')}
-                            </table>
+                    <div class="glass-card animated" style="padding: 12px 10px; margin-bottom:15px;">
+                        <div class="month-header" onclick="toggleMonth(${monthIdx})">
+                            <span>شهر ${monthData.month} 📅</span><span class="arrow-icon" id="month-arrow-${monthIdx}">▼</span>
                         </div>
-                    </div>
-                `;
+                        <div class="month-body" id="month-body-${monthIdx}">${fridaysHtml}${summaryCardHtml}</div>
+                    </div>`;
             });
         }
+
+        function toggleMonth(monthIdx) {
+            const body = document.getElementById(`month-body-${monthIdx}`);
+            const arrow = document.getElementById(`month-arrow-${monthIdx}`);
+            if (body.style.display === "block") { body.style.display = "none"; arrow.classList.remove("arrow-rotated"); } 
+            else { body.style.display = "block"; arrow.classList.add("arrow-rotated"); }
+        }
+
+        function toggleSummary(monthIdx) {
+            const body = document.getElementById(`summary-body-${monthIdx}`);
+            const arrow = document.getElementById(`summary-arrow-${monthIdx}`);
+            if (body.style.display === "block") { body.style.display = "none"; arrow.classList.remove("arrow-rotated"); } 
+            else { body.style.display = "block"; arrow.classList.add("arrow-rotated"); }
+        }
+
+        function showAttendanceDetails(monthIdx, friIdx) {
+            const fri = attendanceData[monthIdx].fridays[friIdx];
+            const modal = document.getElementById('attendance-modal');
+            document.getElementById('modal-title').innerText = `كشف تفصيلي - ${fri.name} (${fri.date})`;
+            const tbody = document.getElementById('modal-table-body'); tbody.innerHTML = '';
+            
+            players.sort().forEach(playerName => {
+                let record = fri.records[playerName] || { friday: false, study: false, activity: false };
+                let friIcon = record.friday ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">&mdash;</span>';
+                let studyIcon = record.study ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">&mdash;</span>';
+                let actIcon = record.activity ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">&mdash;</span>';
+                tbody.innerHTML += `<tr><td class="player-cell"><img src="${getPlayerAvatarSrc(playerName)}" class="player-avatar">${playerName}</td><td>${friIcon}</td><td>${studyIcon}</td><td>${actIcon}</td></tr>`;
+            });
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() { document.getElementById('attendance-modal').style.display = 'none'; }
+        function closeModalOnOutsideClick(e) { if (e.target.id === 'attendance-modal') closeModal(); }
     </script>
 </body>
 </html>
