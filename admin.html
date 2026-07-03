@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Panel</title>
+    <style>
+        body { background: #0f172a; color: white; font-family: sans-serif; padding: 20px; }
+        .hidden { display: none; }
+        .month-header { background: #334155; padding: 15px; margin: 10px 0; cursor: pointer; border-radius: 8px; display: flex; justify-content: space-between; }
+        .month-body { padding: 10px; background: #1e293b; border-radius: 8px; margin-bottom: 10px; }
+        .summary-body { margin-top: 10px; padding: 10px; background: #0f172a; border: 1px solid #475569; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        td, th { padding: 8px; border: 1px solid #475569; text-align: center; }
+    </style>
+</head>
+<body>
+    <div id="login">
+        <input type="password" id="pass" placeholder="كلمة المرور">
+        <button onclick="check()">دخول</button>
+    </div>
+
+    <div id="panel" class="hidden">
+        <h1>لوحة التحكم</h1>
+        <div id="attendance-container"></div>
+    </div>
+
+    <script>
+        function check() {
+            if(document.getElementById('pass').value === "1234") {
+                document.getElementById('login').classList.add('hidden');
+                document.getElementById('panel').classList.remove('hidden');
+                loadData();
+            } else { alert("باصورد غلط يا كابتن!"); }
+        }
+
+        async function loadData() {
+            const res = await fetch('database.json?v=' + new Date().getTime());
+            const data = await res.json();
+            const container = document.getElementById('attendance-container');
+            
+            data.attendanceData.forEach((m, mIdx) => {
+                let monthlySummary = {};
+                data.players.forEach(p => monthlySummary[p] = { friday: 0, study: 0, activity: 0 });
+
+                m.fridays.filter(f => f.visible).forEach(f => {
+                    data.players.forEach(p => {
+                        if(f.records[p]?.friday) monthlySummary[p].friday++;
+                        if(f.records[p]?.study) monthlySummary[p].study++;
+                        if(f.records[p]?.activity) monthlySummary[p].activity++;
+                    });
+                });
+
+                container.innerHTML += `
+                    <div class="month-header" onclick="this.nextElementSibling.classList.toggle('hidden')">
+                        <span>شهر ${m.month}</span> <span>▼</span>
+                    </div>
+                    <div class="month-body hidden">
+                        ${m.fridays.filter(f => f.visible).map(f => `
+                            <div><strong>${f.name}</strong></div>
+                            <table>
+                                ${data.players.map(p => `<tr><td>${p}</td><td>${f.records[p]?.friday ? '✅' : '➖'}</td></tr>`).join('')}
+                            </table>
+                        `).join('')}
+                        
+                        <div class="month-header" onclick="this.nextElementSibling.classList.toggle('hidden')">التقرير الإجمالي للشهر ▼</div>
+                        <div class="summary-body hidden">
+                            <table>
+                                <tr><th>الاسم</th><th>جمعة</th><th>دراسي</th><th>نشاط</th></tr>
+                                ${data.players.map(p => `<tr><td>${p}</td><td>${monthlySummary[p].friday}</td><td>${monthlySummary[p].study}</td><td>${monthlySummary[p].activity}</td></tr>`).join('')}
+                            </table>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
