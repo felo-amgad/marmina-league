@@ -3,16 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم الكاملة - الأدمن</title>
+    <title>لوحة التحكم الشاملة - الأدمن</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: rgba(30, 41, 59, 0.7);
-            --primary: #00e5ff;
-            --secondary: #ff007f;
-            --text: #ffffff;
-            --border: rgba(255, 255, 255, 0.1);
+            --bg-color: #0f172a; --card-bg: rgba(30, 41, 59, 0.7);
+            --primary: #00e5ff; --secondary: #ff007f;
+            --text: #ffffff; --border: rgba(255, 255, 255, 0.1);
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Tajawal', sans-serif; }
         body { background: var(--bg-color); color: var(--text); padding: 20px; min-height: 100vh; }
@@ -27,7 +24,7 @@
         button { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; font-size: 15px; cursor: pointer; transition: 0.3s; margin-bottom: 10px; }
         .btn-primary { background: var(--primary); color: black; }
         .btn-secondary { background: var(--secondary); color: white; }
-        .btn-success { background: #00ff88; color: black; }
+        .btn-success { background: #00ff88; color: black; font-size: 16px; padding: 15px;}
         
         .admin-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
         .tab-btn { flex: 1; padding: 10px; background: rgba(255,255,255,0.05); color: #aaa; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-weight: bold; text-align: center;}
@@ -47,9 +44,7 @@
 <body>
 
     <div class="container">
-        <header>
-            <h1>🔒 لوحة التحكم الشاملة</h1>
-        </header>
+        <header><h1>🔒 الإدارة الذكية</h1></header>
 
         <div id="login-section" class="glass-card">
             <div class="title">تسجيل دخول الإدارة</div>
@@ -58,115 +53,68 @@
         </div>
 
         <div id="main-panel" class="hidden">
-            
             <div class="admin-tabs">
-                <div class="tab-btn active" id="btn-tab-config" onclick="switchTab('config')">إعدادات GitHub</div>
+                <div class="tab-btn active" id="btn-tab-config" onclick="switchTab('config')">إعدادات الربط</div>
                 <div class="tab-btn" id="btn-tab-attendance" onclick="switchTab('attendance')">الحضور</div>
-                <div class="tab-btn" id="btn-tab-matches" onclick="switchTab('matches')">المباريات والنتائج</div>
-                <div class="tab-btn" id="btn-tab-stats" onclick="switchTab('stats')">الهدافيين</div>
+                <div class="tab-btn" id="btn-tab-matches" onclick="switchTab('matches')">المباريات</div>
             </div>
 
             <div class="save-bar">
-                <button class="btn-success" onclick="pushChangesToGitHub()">💾 حفظ كل التغييرات ونشرها لايف</button>
+                <button class="btn-success" onclick="pushChangesToGitHub()">💾 حفظ وحساب الإحصائيات أوتوماتيكياً</button>
             </div>
 
             <div id="section-config" class="glass-card animated">
-                <div class="title">⚙️ إعدادات ربط مستودع GitHub API</div>
-                <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px; line-height: 1.5;">
-                    لكي يتمكن الموقع من كتابة وتحديث ملف الـ JSON تلقائياً، يرجى ملء بيانات المستودع والـ Token الخاص بك هنا. (تُحفظ محلياً في متصفحك فقط بصفة آمنة).
-                </p>
-                <label>GitHub Personal Access Token (PAT):</label>
+                <div class="title">⚙️ إعدادات ربط GitHub</div>
+                <label>Token (الرمز السري اللي جبناه):</label>
                 <input type="password" id="gh-token" placeholder="ghp_xxxxxxxxxxxxxxxxxxxxxxxx">
-                <label>اسم المستخدم على GitHub (Username):</label>
+                <label>اسم حسابك (Username):</label>
                 <input type="text" id="gh-owner" placeholder="مثال: FelopaterAmgad">
-                <label>اسم الـ Repository (المستودع):</label>
+                <label>اسم المستودع (Repository):</label>
                 <input type="text" id="gh-repo" placeholder="مثال: marmina-league">
-                <button class="btn-primary" onclick="saveConfig()">حفظ الإعدادات محلياً</button>
+                <button class="btn-primary" onclick="saveConfig()">حفظ محلياً</button>
             </div>
 
             <div id="section-attendance" class="glass-card hidden animated">
-                <div class="title">🗓️ تسجيل وتعديل كشوفات الحضور</div>
-                <label>اختر الشهر:</label>
-                <select id="attend-month-select" onchange="loadAttendanceForm()"></select>
-                <label>اختر الجمعة الحالية:</label>
-                <select id="attend-friday-select" onchange="loadAttendanceForm()"></select>
-                
+                <div class="title">🗓️ كشوفات الحضور</div>
+                <label>اختر الشهر:</label><select id="attend-month-select" onchange="loadAttendanceForm()"></select>
+                <label>اختر الجمعة:</label><select id="attend-friday-select" onchange="loadAttendanceForm()"></select>
                 <div style="margin-bottom: 15px; display: flex; gap: 10px;">
-                    <label style="display:flex; align-items:center; gap:5px; font-size:13px;">
-                        <input type="checkbox" id="friday-visible-check" onchange="updateFridayMeta()"> ظهور الجمعة للشباب
-                    </label>
-                    <label style="display:flex; align-items:center; gap:5px; font-size:13px;">
-                        <input type="checkbox" id="friday-active-check" onchange="updateFridayMeta()"> تفعيل زرار "عرض الكشف"
-                    </label>
+                    <label style="font-size:13px;"><input type="checkbox" id="friday-visible-check" onchange="updateFridayMeta()"> إظهار للشباب</label>
+                    <label style="font-size:13px;"><input type="checkbox" id="friday-active-check" onchange="updateFridayMeta()"> تفعيل الكشف</label>
                 </div>
-
-                <div id="attendance-players-list">
-                    </div>
+                <div id="attendance-players-list"></div>
             </div>
 
             <div id="section-matches" class="glass-card hidden animated">
-                <div class="title">⚽ إدارة الجولات وإضافة نتائج الماتشات</div>
-                
+                <div class="title">⚽ المباريات (تسجيل الأهداف يحسب تلقائياً)</div>
                 <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
-                    <div style="font-weight: bold; font-size: 13px; margin-bottom: 8px; color: var(--secondary);">➕ إنشاء جولة جديدة</div>
-                    <input type="text" id="new-round-name" placeholder="مثال: الجولة الثانية">
-                    <input type="text" id="new-round-date" placeholder="مثال: الجمعة 10 يوليو 2026">
-                    <button class="btn-secondary" style="padding: 6px;" onclick="addNewRound()">إنشاء الجولة</button>
+                    <div style="font-size: 13px; color: var(--secondary); margin-bottom: 8px;">➕ إضافة جولة</div>
+                    <input type="text" id="new-round-name" placeholder="اسم الجولة">
+                    <input type="text" id="new-round-date" placeholder="تاريخها">
+                    <button class="btn-secondary" onclick="addNewRound()">إنشاء الجولة</button>
                 </div>
-
-                <label>اختر الجولة للتعديل عليها أو إضافة مباريات فيها:</label>
-                <select id="round-matches-select" onchange="loadRoundMatches()"></select>
-
+                <label>الجولة المحددة للتعديل:</label><select id="round-matches-select" onchange="loadRoundMatches()"></select>
                 <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
-                    <div style="font-weight: bold; font-size: 13px; margin-bottom: 8px; color: var(--primary);">🎮 إضافة مباراة جديدة لهذه الجولة</div>
-                    <label>الفريق الأول (A):</label>
-                    <select id="match-team-a"></select>
-                    <label>الفريق الثاني (B):</label>
-                    <select id="match-team-b"></select>
+                    <div style="font-size: 13px; color: var(--primary); margin-bottom: 8px;">🎮 إضافة ماتش</div>
+                    <select id="match-team-a"></select><select id="match-team-b"></select>
                     <div style="display: flex; gap: 10px;">
-                        <input type="number" id="match-score-a" placeholder="أهداف A">
-                        <input type="number" id="match-score-b" placeholder="أهداف B">
+                        <input type="number" id="match-score-a" placeholder="أهداف A"><input type="number" id="match-score-b" placeholder="أهداف B">
                     </div>
-                    <button class="btn-primary" style="padding: 6px;" onclick="addNewMatch()">إدراج المباراة</button>
+                    <button class="btn-primary" onclick="addNewMatch()">إدراج المباراة</button>
                 </div>
-
-                <div id="current-round-matches-list">
-                    </div>
+                <div id="current-round-matches-list"></div>
             </div>
-
-            <div id="section-stats" class="glass-card hidden animated">
-                <div class="title">🏆 تحديث قائمة الهدافين والأسيستات</div>
-                
-                <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
-                    <div style="font-weight: bold; font-size: 13px; margin-bottom: 5px;">⚽ تحديث أهداف لاعب:</div>
-                    <select id="stat-scorer-name"></select>
-                    <input type="number" id="stat-scorer-count" placeholder="إجمالي الأهداف الجديد">
-                    <button class="btn-primary" style="padding: 6px;" onclick="updateScorerStat()">تعديل أهداف اللاعب</button>
-                </div>
-
-                <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
-                    <div style="font-weight: bold; font-size: 13px; margin-bottom: 5px;">🎯 تحديث أسيستات لاعب:</div>
-                    <select id="stat-assist-name"></select>
-                    <input type="number" id="stat-assist-count" placeholder="إجمالي الأسيستات الجديد">
-                    <button class="btn-secondary" style="padding: 6px;" onclick="updateAssistStat()">تعديل أسيستات اللاعب</button>
-                </div>
-            </div>
-
         </div>
     </div>
 
     <script>
-        let db = {}; // الكائن الشامل لقاعدة البيانات
-
+        let db = {}; 
         function handleLogin() {
             if(document.getElementById('admin-pass').value === "1234") {
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('main-panel').classList.remove('hidden');
-                loadConfigFromStorage();
-                fetchDatabaseFromServer();
-            } else {
-                alert("رمز المرور خاطئ!");
-            }
+                loadConfigFromStorage(); fetchDatabaseFromServer();
+            } else { alert("الباسورد غلط!"); }
         }
 
         function loadConfigFromStorage() {
@@ -179,260 +127,170 @@
             localStorage.setItem('gh_token', document.getElementById('gh-token').value.trim());
             localStorage.setItem('gh_owner', document.getElementById('gh-owner').value.trim());
             localStorage.setItem('gh_repo', document.getElementById('gh-repo').value.trim());
-            alert("تم حفظ إعدادات GitHub محلياً بنجاح! ⚙️");
+            alert("تم حفظ إعدادات GitHub!");
         }
 
         async function fetchDatabaseFromServer() {
-            try {
-                const response = await fetch('database.json?v=' + new Date().getTime());
-                db = await response.json();
-                document.getElementById('loader').style.display = 'none';
-                populateSelects();
-                loadAttendanceForm();
-                loadRoundMatches();
-            } catch (e) {
-                alert("فشل جلب ملف database.json. تأكد من وجوده في نفس المسار.");
-            }
+            const res = await fetch('database.json?v=' + new Date().getTime());
+            db = await res.json();
+            populateSelects(); loadAttendanceForm(); loadRoundMatches();
         }
 
         function populateSelects() {
-            // ملء قوائم الحضور
             const monthSel = document.getElementById('attend-month-select');
-            monthSel.innerHTML = db.attendanceData.map((m, idx) => `<option value="${idx}">شهر ${m.month}</option>`).join('');
-            
+            monthSel.innerHTML = db.attendanceData.map((m, i) => `<option value="${i}">شهر ${m.month}</option>`).join('');
             updateFridaysList();
-
-            // ملء الجولات
-            const roundSel = document.getElementById('round-matches-select');
-            roundSel.innerHTML = db.leagueData.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
-
-            // ملء قوائم الفرق واللاعبين
-            let teamOptions = Object.keys(db.logos).map(t => `<option value="${team}">${t}</option>`).join('');
-            document.getElementById('match-team-a').innerHTML = teamOptions;
-            document.getElementById('match-team-b').innerHTML = teamOptions;
-
-            let playerOptions = db.players.map(p => `<option value="${p}">${p}</option>`).join('');
-            document.getElementById('stat-scorer-name').innerHTML = playerOptions;
-            document.getElementById('stat-assist-name').innerHTML = playerOptions;
+            document.getElementById('round-matches-select').innerHTML = db.leagueData.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
+            let teamOptions = Object.keys(db.logos).map(t => `<option value="${t}">${t}</option>`).join('');
+            document.getElementById('match-team-a').innerHTML = teamOptions; document.getElementById('match-team-b').innerHTML = teamOptions;
         }
 
         function updateFridaysList() {
             const mIdx = document.getElementById('attend-month-select').value;
-            const friSel = document.getElementById('attend-friday-select');
             if(db.attendanceData[mIdx]) {
-                friSel.innerHTML = db.attendanceData[mIdx].fridays.map((f, idx) => `<option value="${idx}">${f.name} (${f.date})</option>`).join('');
+                document.getElementById('attend-friday-select').innerHTML = db.attendanceData[mIdx].fridays.map((f, i) => `<option value="${i}">${f.name}</option>`).join('');
             }
         }
 
         function loadAttendanceForm() {
-            const mIdx = document.getElementById('attend-month-select').value;
-            const fIdx = document.getElementById('attend-friday-select').value;
+            const mIdx = document.getElementById('attend-month-select').value; const fIdx = document.getElementById('attend-friday-select').value;
             if(!db.attendanceData[mIdx] || !db.attendanceData[mIdx].fridays[fIdx]) return;
-
             const fri = db.attendanceData[mIdx].fridays[fIdx];
-            document.getElementById('friday-visible-check').checked = fri.visible;
-            document.getElementById('friday-active-check').checked = fri.hasAttendance;
-
+            document.getElementById('friday-visible-check').checked = fri.visible; document.getElementById('friday-active-check').checked = fri.hasAttendance;
             if(!fri.records) fri.records = {};
-
-            const listContainer = document.getElementById('attendance-players-list');
-            listContainer.innerHTML = '';
-
+            const list = document.getElementById('attendance-players-list'); list.innerHTML = '';
             db.players.sort().forEach(p => {
                 if(!fri.records[p]) fri.records[p] = { friday: false, study: false, activity: false };
                 let r = fri.records[p];
-
-                listContainer.innerHTML += `
-                    <div class="attendance-row">
-                        <div style="font-size:13px; font-weight:bold;">${p}</div>
-                        <div class="checkbox-group">
-                            <label><input type="checkbox" ${r.friday ? 'checked' : ''} onchange="toggleAttend('${p}', 'friday', this.checked)"> عام</label>
-                            <label><input type="checkbox" ${r.study ? 'checked' : ''} onchange="toggleAttend('${p}', 'study', this.checked)"> دراسي</label>
-                            <label><input type="checkbox" ${r.activity ? 'checked' : ''} onchange="toggleAttend('${p}', 'activity', this.checked)"> نشاط</label>
-                        </div>
-                    </div>
-                `;
+                list.innerHTML += `<div class="attendance-row"><div>${p}</div><div class="checkbox-group">
+                    <label><input type="checkbox" ${r.friday ? 'checked' : ''} onchange="toggleAttend('${p}', 'friday', this.checked)"> عام</label>
+                    <label><input type="checkbox" ${r.study ? 'checked' : ''} onchange="toggleAttend('${p}', 'study', this.checked)"> دراسي</label>
+                    <label><input type="checkbox" ${r.activity ? 'checked' : ''} onchange="toggleAttend('${p}', 'activity', this.checked)"> نشاط</label>
+                </div></div>`;
             });
         }
 
-        function toggleAttend(player, type, val) {
-            const mIdx = document.getElementById('attend-month-select').value;
-            const fIdx = document.getElementById('attend-friday-select').value;
-            db.attendanceData[mIdx].fridays[fIdx].records[player][type] = val;
-        }
-
+        function toggleAttend(p, t, v) { db.attendanceData[document.getElementById('attend-month-select').value].fridays[document.getElementById('attend-friday-select').value].records[p][t] = v; }
         function updateFridayMeta() {
-            const mIdx = document.getElementById('attend-month-select').value;
-            const fIdx = document.getElementById('attend-friday-select').value;
-            db.attendanceData[mIdx].fridays[fIdx].visible = document.getElementById('friday-visible-check').checked;
-            db.attendanceData[mIdx].fridays[fIdx].hasAttendance = document.getElementById('friday-active-check').checked;
+            const f = db.attendanceData[document.getElementById('attend-month-select').value].fridays[document.getElementById('attend-friday-select').value];
+            f.visible = document.getElementById('friday-visible-check').checked; f.hasAttendance = document.getElementById('friday-active-check').checked;
         }
 
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.glass-card').forEach(c => { if(c.id !== 'login-section') c.classList.add('hidden'); });
-            
-            document.getElementById(`btn-tab-${tab}`).classList.add('active');
-            document.getElementById(`section-${tab}`).classList.remove('hidden');
+            document.getElementById(`btn-tab-${tab}`).classList.add('active'); document.getElementById(`section-${tab}`).classList.remove('hidden');
         }
 
-        // دالة إنشاء جولة جديدة
         function addNewRound() {
-            const name = document.getElementById('new-round-name').value.trim();
-            const date = document.getElementById('new-round-date').value.trim();
-            if(!name || !date) return alert("املا خانات الجولة الجديدة!");
-
+            const name = document.getElementById('new-round-name').value.trim(); const date = document.getElementById('new-round-date').value.trim();
+            if(!name) return;
             const newId = db.leagueData.length + 1;
             db.leagueData.push({ id: newId, name: name, date: date, matches: [] });
-            
-            alert(`تم إضافة ${name} بنجاح!`);
-            populateSelects();
-            document.getElementById('round-matches-select').value = newId;
-            loadRoundMatches();
+            populateSelects(); document.getElementById('round-matches-select').value = newId; loadRoundMatches();
         }
 
-        // دالة إضافة مباراة جديدة
         function addNewMatch() {
-            const rId = document.getElementById('round-matches-select').value;
-            const round = db.leagueData.find(r => r.id == rId);
-            if(!round) return;
-
-            const tA = document.getElementById('match-team-a').value;
-            const tB = document.getElementById('match-team-b').value;
-            const sA = parseInt(document.getElementById('match-score-a').value) || 0;
-            const sB = parseInt(document.getElementById('match-score-b').value) || 0;
-
+            const round = db.leagueData.find(r => r.id == document.getElementById('round-matches-select').value);
+            const tA = document.getElementById('match-team-a').value; const tB = document.getElementById('match-team-b').value;
             if(tA === tB) return alert("لا يمكن اختيار نفس الفريق!");
-
-            round.matches.push({
-                teamA: tA, teamB: tB, scoreA: sA, scoreB: sB,
-                eventsA: { goals: [], yellowCards: [], redCards: [] },
-                eventsB: { goals: [], yellowCards: [], redCards: [] }
-            });
-
-            alert("تم إدراج المباراة بنجاح!");
+            round.matches.push({ teamA: tA, teamB: tB, scoreA: parseInt(document.getElementById('match-score-a').value)||0, scoreB: parseInt(document.getElementById('match-score-b').value)||0, eventsA: { goals: [], yellowCards: [], redCards: [] }, eventsB: { goals: [], yellowCards: [], redCards: [] } });
             loadRoundMatches();
         }
 
-        // عرض مباريات الجولة وإضافة الأحداث (أهداف وإنذارات) جواها
         function loadRoundMatches() {
-            const rId = document.getElementById('round-matches-select').value;
-            const round = db.leagueData.find(r => r.id == rId);
-            const container = document.getElementById('current-round-matches-list');
-            container.innerHTML = '';
-            if(!round || round.matches.length === 0) { container.innerHTML = '<p style="font-size:12px;color:#aaa;text-align:center;">لا يوجد مباريات مسجلة في هذه الجولة بعد.</p>'; return; }
+            const round = db.leagueData.find(r => r.id == document.getElementById('round-matches-select').value);
+            const container = document.getElementById('current-round-matches-list'); container.innerHTML = '';
+            if(!round || round.matches.length === 0) return;
 
             round.matches.forEach((m, mIdx) => {
                 container.innerHTML += `
                     <div class="match-box">
-                        <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:13px; margin-bottom:10px;">
-                            <span>${m.teamA} (${m.scoreA})</span> <span>ضد</span> <span>${m.teamB} (${m.scoreB})</span>
+                        <div style="font-weight:bold; margin-bottom:10px;">${m.teamA} (${m.scoreA}) ضد ${m.teamB} (${m.scoreB})</div>
+                        <div style="display:flex; gap:5px; margin-bottom: 10px;">
+                            <input style="padding:4px; font-size:12px; margin:0; flex:2;" type="text" id="event-text-${mIdx}" placeholder="مثال: يوسف (أسيست مينا)">
+                            <select style="padding:4px; font-size:12px; margin:0; flex:1;" id="event-team-${mIdx}"><option value="A">${m.teamA}</option><option value="B">${m.teamB}</option></select>
+                            <button class="btn-primary" style="padding:4px; font-size:12px; margin:0;" onclick="addGoal(${mIdx})">⚽ إضافة جول</button>
                         </div>
-                        
-                        <div style="margin-top:8px; display:grid; grid-template-columns: 1fr 1fr; gap:5px;">
-                            <div>
-                                <select style="padding:4px; font-size:11px; margin:0;" id="event-type-a-${mIdx}"><option value="goals">⚽ جول</option><option value="yellowCards">🟨 إنذار</option><option value="redCards">🟥 طرد</option></select>
-                                <input style="padding:4px; font-size:11px; margin:4px 0;" type="text" id="event-text-a-${mIdx}" placeholder="اسم اللاعب وتفاصيله">
-                                <button class="btn-primary" style="padding:4px; font-size:11px;" onclick="addEvent(${mIdx}, 'A')">+ حدث لـ A</button>
-                            </div>
-                            <div>
-                                <select style="padding:4px; font-size:11px; margin:0;" id="event-type-b-${mIdx}"><option value="goals">⚽ جول</option><option value="yellowCards">🟨 إنذار</option><option value="redCards">🟥 طرد</option></select>
-                                <input style="padding:4px; font-size:11px; margin:4px 0;" type="text" id="event-text-b-${mIdx}" placeholder="اسم اللاعب وتفاصيله">
-                                <button class="btn-secondary" style="padding:4px; font-size:11px;" onclick="addEvent(${mIdx}, 'B')">+ حدث لـ B</button>
-                            </div>
-                        </div>
-
-                        <div style="font-size:11px; margin-top:5px; color:#aaa;">
-                            <strong>أحداث مسجلة:</strong><br>
-                            ${m.eventsA.goals.map(e => `<span class="event-badge">⚽ A: ${e}</span>`).join('')}
-                            ${m.eventsB.goals.map(e => `<span class="event-badge">⚽ B: ${e}</span>`).join('')}
-                            ${m.eventsA.yellowCards.map(e => `<span class="event-badge">🟨 A: ${e}</span>`).join('')}
-                            ${m.eventsB.yellowCards.map(e => `<span class="event-badge">🟨 B: ${e}</span>`).join('')}
+                        <div style="font-size:11px; color:#aaa;">الأهداف: 
+                            ${m.eventsA.goals.map(e => `<span class="event-badge">${m.teamA}: ${e}</span>`).join('')}
+                            ${m.eventsB.goals.map(e => `<span class="event-badge">${m.teamB}: ${e}</span>`).join('')}
                         </div>
                     </div>
                 `;
             });
         }
 
-        function addEvent(mIdx, teamLetter) {
+        function addGoal(mIdx) {
             const rId = document.getElementById('round-matches-select').value;
             const match = db.leagueData.find(r => r.id == rId).matches[mIdx];
-            const type = document.getElementById(`event-type-${teamLetter.toLowerCase()}-${mIdx}`).value;
-            const text = document.getElementById(`event-text-${teamLetter.toLowerCase()}-${mIdx}`).value.trim();
-
-            if(!text) return alert("اكتب اسم اللاعب والتفاصيل أولاً!");
-            match[`events${teamLetter}`][type].push(text);
-            alert("تم تسجيل الحدث بنجاح!");
+            const team = document.getElementById(`event-team-${mIdx}`).value;
+            const text = document.getElementById(`event-text-${mIdx}`).value.trim();
+            if(!text) return;
+            match[`events${team}`].goals.push(text);
             loadRoundMatches();
         }
 
-        function updateScorerStat() {
-            const name = document.getElementById('stat-scorer-name').value;
-            const count = parseInt(document.getElementById('stat-scorer-count').value) || 0;
-            let p = db.statsData.topScorers.find(x => x.name === name);
-            if(p) p.count = count;
-            else db.statsData.topScorers.push({ name: name, team: "غير محدد", count: count });
-            alert("تم تحديث أهداف الهداف بنجاح!");
-        }
-
-        function updateAssistStat() {
-            const name = document.getElementById('stat-assist-name').value;
-            const count = parseInt(document.getElementById('stat-assist-count').value) || 0;
-            let p = db.statsData.topAssists.find(x => x.name === name);
-            if(p) p.count = count;
-            else db.statsData.topAssists.push({ name: name, team: "غير محدد", count: count });
-            alert("تم تحديث أسيستات صانع اللعب بنجاح!");
-        }
-
-        // ================= دالة الحفظ والنشر التلقائي المباشر على GITHUB API =================
-        async function pushChangesToGitHub() {
-            const token = localStorage.getItem('gh_token');
-            const owner = localStorage.getItem('gh_owner');
-            const repo = localStorage.getItem('gh_repo');
-            const path = "database.json";
-
-            if(!token || !owner || !repo) {
-                return alert("⚠️ خطأ: برجاء ملء خانات إعدادات ربط GitHub أولاً وحفظها محلياً ليتم النشر بشكل صحيح!");
-            }
-
-            const url = `https://api.github.com/repos/${owner}/${repo}/contents/${path}`;
+        // السحر هنا: الدالة دي بتشتغل قبل الحفظ عشان تحلل الماتشات وتطلع ההداف والأسيست أوتوماتيك
+        function autoCalculateStats() {
+            let scorers = {}; let assists = {};
             
-            try {
-                // 1. جلب الـ SHA الحالي للملف عشان يقبل التحديث
-                const getRes = await fetch(url, { headers: { "Authorization": `token ${token}` } });
-                if(!getRes.ok) throw new Error("لم نتمكن من الوصول للمستودع، تأكد من الـ Token والصلاحيات.");
-                const getJson = await getRes.json();
-                const currentSha = getJson.sha;
+            db.leagueData.forEach(round => {
+                round.matches.forEach(match => {
+                    const processGoals = (goalsList, teamName) => {
+                        goalsList.forEach(goalStr => {
+                            if(goalStr.includes('own-goal') || goalStr.includes('هدف ذاتي')) return; // تجاهل الأهداف الذاتية
+                            
+                            // استخراج اسم الهداف (بياخد أول اسم قبل القوس)
+                            let scorerMatch = goalStr.split('(')[0].split('<')[0].trim();
+                            if(scorerMatch) {
+                                if(!scorers[scorerMatch]) scorers[scorerMatch] = {name: scorerMatch, team: teamName, count: 0};
+                                scorers[scorerMatch].count++;
+                            }
+                            // استخراج صانع اللعب (أي حاجة جوه قوسين كلمة أسيست)
+                            let assistMatch = goalStr.match(/\(أسيست\s+([^)]+)\)/);
+                            if(assistMatch && assistMatch[1]) {
+                                let assistName = assistMatch[1].trim();
+                                if(!assists[assistName]) assists[assistName] = {name: assistName, team: teamName, count: 0};
+                                assists[assistName].count++;
+                            }
+                        });
+                    };
+                    processGoals(match.eventsA.goals, match.teamA);
+                    processGoals(match.eventsB.goals, match.teamB);
+                });
+            });
+            // تحديث الإحصائيات في الداتا قبل الرفع
+            db.statsData.topScorers = Object.values(scorers).sort((a,b) => b.count - a.count);
+            db.statsData.topAssists = Object.values(assists).sort((a,b) => b.count - a.count);
+        }
 
-                // 2. معالجة وتشفير ملف قاعدة البيانات بصيغة Base64 مع الحفاظ على الحروف العربية
+        async function pushChangesToGitHub() {
+            const token = localStorage.getItem('gh_token'); const owner = localStorage.getItem('gh_owner'); const repo = localStorage.getItem('gh_repo');
+            if(!token || !owner || !repo) return alert("⚠️ املأ إعدادات GitHub أولاً!");
+
+            // استدعاء السحر: تجميع الجوان والأسيستات وحفظها في الداتا
+            autoCalculateStats();
+
+            const url = `https://api.github.com/repos/${owner}/${repo}/contents/database.json`;
+            try {
+                const getRes = await fetch(url, { headers: { "Authorization": `token ${token}` } });
+                const currentSha = (await getRes.json()).sha;
+                
+                // تحويل الداتا المعربة إلى Base64 بأمان
                 const jsonString = JSON.stringify(db, null, 2);
                 const utf8Bytes = new TextEncoder().encode(jsonString);
-                // تحويل البايتس إلى تشفير الـ base64
-                let base64Content = btoa(String.fromCharCode.apply(null, utf8Bytes));
+                const base64Content = btoa(String.fromCharCode.apply(null, utf8Bytes));
 
-                // 3. إرسال طلب PUT المباشر لرفع وتحديث قاعدة البيانات على السيرفر
                 const putRes = await fetch(url, {
                     method: "PUT",
-                    headers: {
-                        "Authorization": `token ${token}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                        message: "تحديث كشوفات الحضور والمباريات من لوحة الأدمن ⚡",
-                        content: base64Content,
-                        sha: currentSha
-                    })
+                    headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
+                    body: JSON.stringify({ message: "تحديث مباريات وإحصائيات وحضور أوتوماتيكي ⚡", content: base64Content, sha: currentSha })
                 });
 
-                if(putRes.ok) {
-                    alert("🎉 عظااام جداً! تم حفظ الداتا وعمل الـ Commit بنجاح على GitHub! الموقع لايف الآن بأحدث داتا.");
-                } else {
-                    alert("❌ فشل عملية الحفظ. تأكد أن الـ Token يمتلك صلاحيات 'repo' أو 'contents' كاملة.");
-                }
-
-            } catch (error) {
-                alert("❌ حدث خطأ غير متوقع: " + error.message);
-            }
+                if(putRes.ok) alert("🎉 تم الحفظ بنجاح! روح بص على الموقع للشباب هتلاقي الماتشات والترتيب والهدافين كلهم اتحدثوا لوحدهم!");
+                else alert("❌ فشل الحفظ. راجع الـ Token.");
+            } catch (error) { alert("❌ خطأ: " + error.message); }
         }
     </script>
 </body>
