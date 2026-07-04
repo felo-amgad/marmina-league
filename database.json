@@ -329,6 +329,11 @@
               "friday": false,
               "study": false,
               "activity": false
+            },
+            "كاراس امجد": {
+              "friday": true,
+              "study": false,
+              "activity": false
             }
           }
         },
