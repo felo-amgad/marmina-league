@@ -22,6 +22,7 @@
         .nav-tabs { display: flex; background: rgba(0, 0, 0, 0.5); margin: 15px; border-radius: 12px; overflow: hidden; border: 1px solid var(--card-border); }
         .nav-tab { flex: 1; padding: 10px 5px; text-align: center; font-weight: bold; font-size: 14px; color: var(--text-muted); cursor: pointer; transition: 0.3s; }
         .nav-tab.active { color: #fff; background: rgba(255, 255, 255, 0.1); border-bottom: 3px solid var(--primary-accent); }
+        
         .content { padding: 0 15px; }
         .glass-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--card-border); border-radius: 15px; padding: 15px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); transition: 0.3s; }
         
@@ -70,6 +71,18 @@
         .podium-name { font-weight: 900; font-size: 12px; color: #fff; text-align: center; margin-bottom: 2px; }
         .tier-1 .podium-name { font-size: 14px; color: var(--gold); }
         .podium-team { font-size: 10px; color: var(--text-muted); text-align: center; }
+
+        /* شبكة جميع اللاعبين والبروفايل */
+        .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 15px; justify-content: center; padding: 10px 5px; }
+        .player-card { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; }
+        .player-card:hover { transform: scale(1.05); }
+        .player-card img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); object-fit: cover; margin-bottom: 8px; background: #fff;}
+        .player-card-name { font-size: 11px; font-weight: bold; text-align: center; color: var(--text-main); line-height: 1.3; }
+        
+        .stat-box { background: rgba(0,0,0,0.3); border: 1px solid var(--card-border); padding: 15px 10px; border-radius: 12px; text-align: center; flex: 1; }
+        .stat-value { font-size: 26px; font-weight: 900; }
+        .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 5px; font-weight: bold; }
+        .stats-row { display: flex; gap: 10px; margin-bottom: 10px; width: 100%; }
         
         /* الحضور */
         .month-header { background: linear-gradient(90deg, rgba(0,229,255,0.1), rgba(255,0,127,0.1)); padding: 12px 15px; border-radius: 8px; font-weight: 900; color: #fff; margin-bottom: 5px; display: flex; align-items: center; justify-content: space-between; border-right: 4px solid var(--primary-accent); cursor: pointer; }
@@ -80,11 +93,11 @@
         .attendance-btn { background: var(--primary-accent); color: #000; border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; }
         .arrow-rotated { transform: rotate(180deg); transition: 0.3s; }
         
-        /* المودال */
+        /* المودال المشترك */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 20, 30, 0.9); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
-        .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); padding: 15px; border-radius: 20px; max-width: 460px; width: 95%; max-height: 85vh; overflow-y: auto; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 12px; margin-bottom: 10px; }
-        .modal-title { font-weight: 900; color: var(--primary-accent); font-size: 15px; }
+        .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 20px; max-width: 460px; width: 95%; max-height: 85vh; overflow-y: auto; display: flex; flex-direction: column; align-items: center;}
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 12px; margin-bottom: 15px; width: 100%; }
+        .modal-title { font-weight: 900; color: var(--primary-accent); font-size: 16px; }
         .close-btn { background: transparent; border: none; color: var(--secondary-accent); font-size: 24px; cursor: pointer; font-weight: bold; }
         .check-icon { color: #00ff88; font-size: 14px; }
         .cross-icon { color: #ff4b2b; font-size: 14px; opacity: 0.3; }
@@ -99,7 +112,7 @@
         
         <div class="nav-tabs">
             <div class="nav-tab active" id="tab-rounds" onclick="switchTab('rounds')">المباريات</div>
-            <div class="nav-tab" id="tab-stats" onclick="switchTab('stats')">الترتيب والإحصائيات</div>
+            <div class="nav-tab" id="tab-stats" onclick="switchTab('stats')">الإحصائيات</div>
             <div class="nav-tab" id="tab-attendance" onclick="switchTab('attendance')">الحضور</div>
         </div>
         
@@ -107,12 +120,14 @@
             <div id="loader" class="loader">جاري تحميل البيانات... ⏳</div>
             
             <div id="rounds-view" class="hidden"></div>
+            
             <div id="match-details-view" class="hidden">
                 <button class="back-btn" onclick="showRounds()">⬅ رجوع للجولات</button>
                 <h3 id="current-round-title" style="margin-bottom: 20px; text-align: center; color: var(--text-main); font-weight: 900;"></h3>
                 <div id="matches-container"></div>
             </div>
             
+            <!-- قسم الإحصائيات -->
             <div id="stats-view" class="hidden">
                 <div class="glass-card animated" style="animation-delay: 0.1s; padding: 15px 5px;">
                     <div class="stats-title">📊 جدول الترتيب</div>
@@ -128,13 +143,21 @@
                         <tbody id="league-standings-body"></tbody>
                     </table>
                 </div>
+                
                 <div class="glass-card animated" style="animation-delay: 0.2s;">
                     <div class="stats-title">⚽ أعلى الهدافين</div>
                     <div id="top-scorers-container"></div>
                 </div>
+                
                 <div class="glass-card animated" style="animation-delay: 0.3s;">
                     <div class="stats-title">🎯 صناع اللعب (الأسيست)</div>
                     <div id="top-assists-container"></div>
+                </div>
+
+                <!-- شبكة جميع اللاعبين الجديدة -->
+                <div class="glass-card animated" style="animation-delay: 0.4s; padding: 15px 5px;">
+                    <div class="stats-title" style="color: var(--secondary-accent);">👥 إحصائيات اللاعبين (اضغط للتفاصيل)</div>
+                    <div class="players-grid" id="all-players-container"></div>
                 </div>
             </div>
 
@@ -142,17 +165,41 @@
         </div>
     </div>
 
-    <!-- كارت منبثق للمودال الخاص بالحضور -->
-    <div id="attendance-modal" class="modal" onclick="closeModalOnOutsideClick(event)">
-        <div class="modal-content animated">
+    <!-- مودال الحضور -->
+    <div id="attendance-modal" class="modal" onclick="closeModalOnOutsideClick(event, 'attendance-modal')">
+        <div class="modal-content animated" style="align-items: stretch;">
             <div class="modal-header">
                 <span id="modal-title" class="modal-title"></span>
-                <button class="close-btn" onclick="closeModal()">✕</button>
+                <button class="close-btn" onclick="closeModal('attendance-modal')">✕</button>
             </div>
             <table class="league-table">
                 <thead><tr><th style="text-align: right; width: 45%;">الاسم</th><th style="width: 18.33%;">جمعة</th><th style="width: 18.33%;">دراسي</th><th style="width: 18.33%;">نشاط</th></tr></thead>
                 <tbody id="modal-table-body"></tbody>
             </table>
+        </div>
+    </div>
+
+    <!-- مودال بروفايل اللاعب (الجديد) -->
+    <div id="player-profile-modal" class="modal" onclick="closeModalOnOutsideClick(event, 'player-profile-modal')">
+        <div class="modal-content animated">
+            <div class="modal-header">
+                <span class="modal-title">📊 الملف الشخصي للاعب</span>
+                <button class="close-btn" onclick="closeModal('player-profile-modal')">✕</button>
+            </div>
+            
+            <div style="text-align: center; margin-bottom: 25px;">
+                <img id="profile-avatar" src="" style="width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--primary-accent); background:#fff; object-fit: cover;">
+                <h3 id="profile-name" style="margin-top: 15px; color: var(--primary-accent); font-weight: 900; font-size: 18px;"></h3>
+            </div>
+            
+            <div class="stats-row">
+                <div class="stat-box"><div class="stat-value" id="profile-goals" style="color: var(--gold);">0</div><div class="stat-label">⚽ أهداف</div></div>
+                <div class="stat-box"><div class="stat-value" id="profile-assists" style="color: var(--primary-accent);">0</div><div class="stat-label">🎯 أسيست</div></div>
+            </div>
+            <div class="stats-row">
+                <div class="stat-box"><div class="stat-value" id="profile-yellow" style="color:#ffd700;">0</div><div class="stat-label">🟨 إنذارات</div></div>
+                <div class="stat-box"><div class="stat-value" id="profile-red" style="color:#ff4b2b;">0</div><div class="stat-label">🟥 كروت حمراء</div></div>
+            </div>
         </div>
     </div>
 
@@ -177,32 +224,20 @@
             }
         }
 
-        // ================= التعديل السحري هنا =================
+        // دالة الصور بالاسم الثنائي
         function getPlayerAvatarSrc(text) {
             if (!text) return defaultAvatar;
-            
-            // بننضف النص من الأقواس (عشان الأسيست) ومن أي أكواد HTML
             let cleanText = text.split('(')[0].replace(/<[^>]*>/g, '').trim();
-            
-            // 1. التطابق المباشر والصريح (الاسم الثنائي)
-            if (playerImages[cleanText]) {
-                return playerImages[cleanText];
-            }
-            
-            // 2. تطابق الاحتواء (لو انت كاتب الاسم ثلاثي وهو متسجل ثنائي)
+            if (playerImages[cleanText]) return playerImages[cleanText];
             for (let name in playerImages) {
                 if (cleanText.includes(name)) return playerImages[name];
             }
-            
-            // لو ملقاش تطابق دقيق، يرجع الصورة الافتراضية بدل ما يضرب صورة غلط
             return defaultAvatar;
         }
 
         function calculateStandings() {
             const standings = {};
-            Object.keys(logos).forEach(team => {
-                standings[team] = { name: team, logo: logos[team], played: 0, won: 0, drawn: 0, lost: 0, points: 0, goalsFor: 0, goalsAgainst: 0, goalDiff: 0 };
-            });
+            Object.keys(logos).forEach(team => { standings[team] = { name: team, logo: logos[team], played: 0, won: 0, drawn: 0, lost: 0, points: 0, goalsFor: 0, goalsAgainst: 0, goalDiff: 0 }; });
             leagueData.forEach(round => {
                 round.matches.forEach(match => {
                     standings[match.teamA].played++; standings[match.teamB].played++;
@@ -251,10 +286,7 @@
             const round = leagueData.find(r => r.id === roundId); if (!round) return;
             document.getElementById('current-round-title').innerText = round.name;
             const matchesContainer = document.getElementById('matches-container'); matchesContainer.innerHTML = '';
-            
-            if (round.matches.length === 0) {
-                matchesContainer.innerHTML = `<div style="text-align:center; color:#aaa; padding:20px;">لم يتم تسجيل مباريات لهذه الجولة بعد.</div>`;
-            }
+            if (round.matches.length === 0) { matchesContainer.innerHTML = `<div style="text-align:center; color:#aaa; padding:20px;">لم يتم تسجيل مباريات لهذه الجولة بعد.</div>`; }
 
             round.matches.forEach((match, index) => {
                 const generateList = (items) => items.length > 0 ? items.map(i => `<li class="event-item"><img src="${getPlayerAvatarSrc(i)}" class="player-avatar" alt=""> <span>${i}</span></li>`).join('') : '<li style="text-align:center; padding:5px; color:#aaa;">-</li>';
@@ -275,16 +307,13 @@
                         </div>
                     </div>`;
             });
-            document.getElementById('rounds-view').classList.add('hidden');
-            document.getElementById('match-details-view').classList.remove('hidden');
+            document.getElementById('rounds-view').classList.add('hidden'); document.getElementById('match-details-view').classList.remove('hidden');
         }
 
-        function showRounds() { 
-            document.getElementById('match-details-view').classList.add('hidden'); 
-            document.getElementById('rounds-view').classList.remove('hidden'); 
-        }
+        function showRounds() { document.getElementById('match-details-view').classList.add('hidden'); document.getElementById('rounds-view').classList.remove('hidden'); }
 
         function renderStats() {
+            // الترتيب
             const standings = calculateStandings();
             const standingsBody = document.getElementById('league-standings-body'); standingsBody.innerHTML = '';
             standings.forEach(team => {
@@ -293,37 +322,86 @@
                 standingsBody.innerHTML += `<tr><td class="team-name"><img src="${team.logo}" alt="${team.name}">${team.name}</td><td>${team.played}</td><td>${team.won}</td><td>${team.drawn}</td><td>${team.lost}</td><td>${team.goalsFor}</td><td>${team.goalsAgainst}</td><td class="${gdClass}" dir="ltr">${gdText}</td><td class="pts">${team.points}</td></tr>`;
             });
 
-            const rankClasses = ['tier-1', 'tier-2', 'tier-3']; 
-            const rankTitles = ['🥇 المركز الأول', '🥈 المركز الثاني', '🥉 المركز الثالث'];
+            const rankClasses = ['tier-1', 'tier-2', 'tier-3']; const rankTitles = ['🥇 المركز الأول', '🥈 المركز الثاني', '🥉 المركز الثالث'];
 
+            // الهدافين
             const scorersContainer = document.getElementById('top-scorers-container');
             let uniqueGoalCounts = [...new Set(statsData.topScorers.map(p => p.count))].sort((a, b) => b - a).filter(c => c > 0);
             let top3GoalCounts = uniqueGoalCounts.slice(0, 3); let scorersHtml = '';
-            
             if (top3GoalCounts.length === 0) { scorersHtml = '<div style="text-align:center; color:#aaa;">لم يتم تسجيل أهداف بعد.</div>'; }
             top3GoalCounts.forEach((goalCount, index) => {
                 let tiedPlayers = statsData.topScorers.filter(p => p.count === goalCount);
-                let playersHtml = tiedPlayers.map(player => `<div class="player-podium-item"><img src="${getPlayerAvatarSrc(player.name)}" class="podium-avatar" alt="${player.name}"><div class="podium-name">${player.name}</div><div class="podium-team">${player.team}</div></div>`).join('');
+                let playersHtml = tiedPlayers.map(player => `<div class="player-podium-item" onclick="showPlayerProfile('${player.name}')" style="cursor:pointer;"><img src="${getPlayerAvatarSrc(player.name)}" class="podium-avatar"><div class="podium-name">${player.name}</div></div>`).join('');
                 scorersHtml += `<div class="tier-card ${rankClasses[index]}"><div class="tier-header"><div class="tier-title">${rankTitles[index]}</div><div class="tier-badge">${goalCount} ⚽</div></div><div class="tied-players-container">${playersHtml}</div></div>`;
             });
             scorersContainer.innerHTML = scorersHtml;
 
+            // الأسيست
             const assistsContainer = document.getElementById('top-assists-container');
             let uniqueAssistCounts = [...new Set(statsData.topAssists.map(p => p.count))].sort((a, b) => b - a).filter(c => c > 0);
             let top3AssistCounts = uniqueAssistCounts.slice(0, 3); let assistsHtml = '';
-            
             if (top3AssistCounts.length === 0) { assistsHtml = '<div style="text-align:center; color:#aaa;">لم يتم تسجيل صناعة أهداف بعد.</div>'; }
             top3AssistCounts.forEach((assistCount, index) => {
                 let tiedPlayers = statsData.topAssists.filter(p => p.count === assistCount);
-                let playersHtml = tiedPlayers.map(player => `<div class="player-podium-item"><img src="${getPlayerAvatarSrc(player.name)}" class="podium-avatar" alt="${player.name}"><div class="podium-name">${player.name}</div><div class="podium-team">${player.team}</div></div>`).join('');
+                let playersHtml = tiedPlayers.map(player => `<div class="player-podium-item" onclick="showPlayerProfile('${player.name}')" style="cursor:pointer;"><img src="${getPlayerAvatarSrc(player.name)}" class="podium-avatar"><div class="podium-name">${player.name}</div></div>`).join('');
                 assistsHtml += `<div class="tier-card ${rankClasses[index]}"><div class="tier-header"><div class="tier-title">${rankTitles[index]}</div><div class="tier-badge">${assistCount} 🎯</div></div><div class="tied-players-container">${playersHtml}</div></div>`;
             });
             assistsContainer.innerHTML = assistsHtml;
+
+            // شبكة جميع اللاعبين
+            const allPlayersContainer = document.getElementById('all-players-container');
+            let playersGridHtml = '';
+            playersList.sort().forEach(playerName => {
+                playersGridHtml += `
+                    <div class="player-card" onclick="showPlayerProfile('${playerName}')">
+                        <img src="${getPlayerAvatarSrc(playerName)}" alt="${playerName}">
+                        <div class="player-card-name">${playerName}</div>
+                    </div>`;
+            });
+            allPlayersContainer.innerHTML = playersGridHtml;
         }
 
+        // ================= بروفايل اللاعب (سحب الداتا وحساب الكروت) =================
+        function showPlayerProfile(playerName) {
+            let goals = 0; let assists = 0; let yellowCards = 0; let redCards = 0;
+            
+            // سحب الأهداف
+            let scorerRecord = statsData.topScorers.find(p => p.name === playerName);
+            if (scorerRecord) goals = scorerRecord.count;
+            
+            // سحب الأسيست
+            let assistRecord = statsData.topAssists.find(p => p.name === playerName);
+            if (assistRecord) assists = assistRecord.count;
+            
+            // حساب الكروت من المباريات
+            leagueData.forEach(round => {
+                round.matches.forEach(match => {
+                    ['eventsA', 'eventsB'].forEach(teamEvents => {
+                        match[teamEvents].yellowCards.forEach(eventStr => {
+                            let cleanName = eventStr.split('(')[0].replace(/<[^>]*>/g, '').trim();
+                            if (cleanName.includes(playerName) || playerName.includes(cleanName)) yellowCards++;
+                        });
+                        match[teamEvents].redCards.forEach(eventStr => {
+                            let cleanName = eventStr.split('(')[0].replace(/<[^>]*>/g, '').trim();
+                            if (cleanName.includes(playerName) || playerName.includes(cleanName)) redCards++;
+                        });
+                    });
+                });
+            });
+
+            document.getElementById('profile-avatar').src = getPlayerAvatarSrc(playerName);
+            document.getElementById('profile-name').innerText = playerName;
+            document.getElementById('profile-goals').innerText = goals;
+            document.getElementById('profile-assists').innerText = assists;
+            document.getElementById('profile-yellow').innerText = yellowCards;
+            document.getElementById('profile-red').innerText = redCards;
+            
+            document.getElementById('player-profile-modal').style.display = 'flex';
+        }
+
+        // ================= الحضور =================
         function renderAttendance() {
-            const container = document.getElementById('attendance-view'); 
-            container.innerHTML = '';
+            const container = document.getElementById('attendance-view'); container.innerHTML = '';
             let hasAnyVisible = false;
 
             attendanceData.forEach((monthData, monthIdx) => {
@@ -332,45 +410,21 @@
                 
                 hasAnyVisible = true;
                 let fridaysHtml = '';
-                
                 monthData.fridays.forEach((fri, friIdx) => {
                     if (!fri.visible) return;
                     let buttonHtml = fri.hasAttendance ? `<button class="attendance-btn" onclick="showAttendanceDetails(${monthIdx}, ${friIdx})">عرض الكشف</button>` : '';
-                    fridaysHtml += `
-                        <div class="friday-card">
-                            <div>
-                                <div class="friday-name">${fri.name}</div>
-                                <div class="friday-date">${fri.date}</div>
-                            </div>
-                            ${buttonHtml}
-                        </div>`;
+                    fridaysHtml += `<div class="friday-card"><div><div class="friday-name">${fri.name}</div><div class="friday-date">${fri.date}</div></div>${buttonHtml}</div>`;
                 });
-
-                container.innerHTML += `
-                    <div class="glass-card animated" style="padding: 10px; margin-bottom:15px;">
-                        <div class="month-header" onclick="toggleMonth(${monthIdx})">
-                            <span>شهر ${monthData.month} 📅</span>
-                            <span class="arrow-icon" id="month-arrow-${monthIdx}">▼</span>
-                        </div>
-                        <div class="month-body" id="month-body-${monthIdx}">${fridaysHtml}</div>
-                    </div>`;
+                container.innerHTML += `<div class="glass-card animated" style="padding: 10px; margin-bottom:15px;"><div class="month-header" onclick="toggleMonth(${monthIdx})"><span>شهر ${monthData.month} 📅</span><span class="arrow-icon" id="month-arrow-${monthIdx}">▼</span></div><div class="month-body" id="month-body-${monthIdx}">${fridaysHtml}</div></div>`;
             });
-
-            if (!hasAnyVisible) {
-                container.innerHTML = '<div style="text-align:center; color:#aaa; margin-top:30px;">لا يوجد كشوفات حضور متاحة حالياً.</div>';
-            }
+            if (!hasAnyVisible) { container.innerHTML = '<div style="text-align:center; color:#aaa; margin-top:30px;">لا يوجد كشوفات حضور متاحة حالياً.</div>'; }
         }
 
         function toggleMonth(monthIdx) {
             const body = document.getElementById(`month-body-${monthIdx}`);
             const arrow = document.getElementById(`month-arrow-${monthIdx}`);
-            if (body.style.display === "block") { 
-                body.style.display = "none"; 
-                arrow.classList.remove("arrow-rotated"); 
-            } else { 
-                body.style.display = "block"; 
-                arrow.classList.add("arrow-rotated"); 
-            }
+            if (body.style.display === "block") { body.style.display = "none"; arrow.classList.remove("arrow-rotated"); } 
+            else { body.style.display = "block"; arrow.classList.add("arrow-rotated"); }
         }
 
         function showAttendanceDetails(monthIdx, friIdx) {
@@ -378,31 +432,20 @@
             const modal = document.getElementById('attendance-modal');
             document.getElementById('modal-title').innerText = `كشف تفصيلي - ${fri.name} (${fri.date})`;
             
-            const tbody = document.getElementById('modal-table-body'); 
-            tbody.innerHTML = '';
-            
+            const tbody = document.getElementById('modal-table-body'); tbody.innerHTML = '';
             playersList.sort().forEach(playerName => {
                 let record = fri.records[playerName] || { friday: false, study: false, activity: false };
                 let friIcon = record.friday ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">&mdash;</span>';
                 let studyIcon = record.study ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">&mdash;</span>';
                 let actIcon = record.activity ? '<span class="check-icon">✔️</span>' : '<span class="cross-icon">&mdash;</span>';
-                
-                tbody.innerHTML += `
-                    <tr>
-                        <td style="text-align: right; display: flex; align-items: center; gap: 8px; font-weight: bold;">
-                            <img src="${getPlayerAvatarSrc(playerName)}" style="width:25px; height:25px; border-radius:50%; object-fit:cover;">
-                            ${playerName}
-                        </td>
-                        <td>${friIcon}</td>
-                        <td>${studyIcon}</td>
-                        <td>${actIcon}</td>
-                    </tr>`;
+                tbody.innerHTML += `<tr><td style="text-align: right; display: flex; align-items: center; gap: 8px; font-weight: bold;"><img src="${getPlayerAvatarSrc(playerName)}" style="width:25px; height:25px; border-radius:50%; object-fit:cover;">${playerName}</td><td>${friIcon}</td><td>${studyIcon}</td><td>${actIcon}</td></tr>`;
             });
             modal.style.display = 'flex';
         }
 
-        function closeModal() { document.getElementById('attendance-modal').style.display = 'none'; }
-        function closeModalOnOutsideClick(e) { if (e.target.id === 'attendance-modal') closeModal(); }
+        // ================= وظائف المودال العامة =================
+        function closeModal(modalId) { document.getElementById(modalId).style.display = 'none'; }
+        function closeModalOnOutsideClick(e, modalId) { if (e.target.id === modalId) closeModal(modalId); }
 
         fetchDatabase();
     </script>
