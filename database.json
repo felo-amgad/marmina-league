@@ -217,12 +217,12 @@
           "records": {
             "أبانوب ماهر": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "أبانوب ناصر": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "بيتر عماد": {
@@ -237,37 +237,37 @@
             },
             "ماركو أمير": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "موسى سميح": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "يوحنا أسامة": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "كاراس عادل": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "مينا خالد": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "بولا عريان": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "كيرلس مجدي": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "جون رامز": {
@@ -282,7 +282,7 @@
             },
             "كيفين": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "فادي عادل": {
@@ -297,7 +297,7 @@
             },
             "كاراس ميلاد": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "كاراس أمجد": {
@@ -307,7 +307,7 @@
             },
             "كيرلس عماد": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "يوسف رامي": {
@@ -322,17 +322,17 @@
             },
             "فيلو": {
               "friday": false,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "يوساب": {
               "friday": false,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "كاراس امجد": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             }
           }
