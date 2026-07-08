@@ -317,7 +317,7 @@
             },
             "بافلي": {
               "friday": false,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "فيلو": {
