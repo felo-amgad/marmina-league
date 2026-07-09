@@ -144,6 +144,22 @@
             "yellowCards": [],
             "redCards": []
           }
+        },
+        {
+          "teamA": "ليفربول",
+          "teamB": "بايرن ميونخ",
+          "scoreA": 0,
+          "scoreB": 0,
+          "eventsA": {
+            "goals": [],
+            "yellowCards": [],
+            "redCards": []
+          },
+          "eventsB": {
+            "goals": [],
+            "yellowCards": [],
+            "redCards": []
+          }
         }
       ]
     },
@@ -151,29 +167,96 @@
       "id": 2,
       "name": "الجولة الثانية",
       "date": "الخميس 9 يوليو 2026",
-      "matches": []
+      "matches": [
+        {
+          "teamA": "ليفربول",
+          "teamB": "بايرن ميونخ",
+          "scoreA": 0,
+          "scoreB": 2,
+          "eventsA": {
+            "goals": [],
+            "yellowCards": [],
+            "redCards": []
+          },
+          "eventsB": {
+            "goals": [
+              "كيرلس عماد",
+              "كيرلس عماد (أسيست بافلي)"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          }
+        },
+        {
+          "teamA": "تشيلسي",
+          "teamB": "برشلونة",
+          "scoreA": 1,
+          "scoreB": 2,
+          "eventsA": {
+            "goals": [
+              "كاراس ميلاد"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          },
+          "eventsB": {
+            "goals": [
+              "جون رامز",
+              "جون رامز"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          }
+        },
+        {
+          "teamA": "بايرن ميونخ",
+          "teamB": "برشلونة",
+          "scoreA": 2,
+          "scoreB": 1,
+          "eventsA": {
+            "goals": [
+              "كيرلس عماد",
+              "بافلي"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          },
+          "eventsB": {
+            "goals": [
+              "جون رامز"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          }
+        }
+      ]
     }
   ],
   "statsData": {
     "topScorers": [
+      {
+        "name": "جون رامز",
+        "team": "برشلونة",
+        "count": 5
+      },
       {
         "name": "أبانوب ناصر",
         "team": "تشيلسي",
         "count": 4
       },
       {
-        "name": "جون رامز",
-        "team": "برشلونة",
-        "count": 2
+        "name": "كاراس ميلاد",
+        "team": "تشيلسي",
+        "count": 3
+      },
+      {
+        "name": "كيرلس عماد",
+        "team": "بايرن ميونخ",
+        "count": 3
       },
       {
         "name": "فيلو",
         "team": "ليفربول",
-        "count": 2
-      },
-      {
-        "name": "كاراس ميلاد",
-        "team": "تشيلسي",
         "count": 2
       },
       {
@@ -183,6 +266,11 @@
       },
       {
         "name": "أستاذ هاني",
+        "team": "بايرن ميونخ",
+        "count": 1
+      },
+      {
+        "name": "بافلي",
         "team": "بايرن ميونخ",
         "count": 1
       }
@@ -202,6 +290,11 @@
         "name": "مينا خالد",
         "team": "برشلونة",
         "count": 2
+      },
+      {
+        "name": "بافلي",
+        "team": "بايرن ميونخ",
+        "count": 1
       }
     ]
   },
