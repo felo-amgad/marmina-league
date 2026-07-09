@@ -144,22 +144,6 @@
             "yellowCards": [],
             "redCards": []
           }
-        },
-        {
-          "teamA": "ليفربول",
-          "teamB": "بايرن ميونخ",
-          "scoreA": 0,
-          "scoreB": 0,
-          "eventsA": {
-            "goals": [],
-            "yellowCards": [],
-            "redCards": []
-          },
-          "eventsB": {
-            "goals": [],
-            "yellowCards": [],
-            "redCards": []
-          }
         }
       ]
     },
@@ -228,6 +212,28 @@
             "yellowCards": [],
             "redCards": []
           }
+        },
+        {
+          "teamA": "تشيلسي",
+          "teamB": "ليفربول",
+          "scoreA": 3,
+          "scoreB": 1,
+          "eventsA": {
+            "goals": [
+              "أبانوب ناصر (أسيست كاراس عادل)",
+              "شنودة سمير (أسيست أبانوب ناصر)",
+              "أبانوب ناصر"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          },
+          "eventsB": {
+            "goals": [
+              "ماركو أمير"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          }
         }
       ]
     }
@@ -235,14 +241,14 @@
   "statsData": {
     "topScorers": [
       {
+        "name": "أبانوب ناصر",
+        "team": "تشيلسي",
+        "count": 6
+      },
+      {
         "name": "جون رامز",
         "team": "برشلونة",
         "count": 5
-      },
-      {
-        "name": "أبانوب ناصر",
-        "team": "تشيلسي",
-        "count": 4
       },
       {
         "name": "كاراس ميلاد",
@@ -273,16 +279,26 @@
         "name": "بافلي",
         "team": "بايرن ميونخ",
         "count": 1
+      },
+      {
+        "name": "شنودة سمير",
+        "team": "تشيلسي",
+        "count": 1
+      },
+      {
+        "name": "ماركو أمير",
+        "team": "ليفربول",
+        "count": 1
       }
     ],
     "topAssists": [
       {
-        "name": "كاراس ميلاد",
+        "name": "أبانوب ناصر",
         "team": "تشيلسي",
-        "count": 2
+        "count": 3
       },
       {
-        "name": "أبانوب ناصر",
+        "name": "كاراس ميلاد",
         "team": "تشيلسي",
         "count": 2
       },
@@ -294,6 +310,11 @@
       {
         "name": "بافلي",
         "team": "بايرن ميونخ",
+        "count": 1
+      },
+      {
+        "name": "كاراس عادل",
+        "team": "تشيلسي",
         "count": 1
       }
     ]
