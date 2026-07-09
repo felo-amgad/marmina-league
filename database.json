@@ -478,9 +478,23 @@
   "goalkeepers": [
     {
       "name": "موسى سميح",
+      "cleanSheets": 1,
+      "saves": 16,
+      "goalsConceded": 1,
+      "penaltiesSaved": 0
+    },
+    {
+      "name": "كاراس امجد",
       "cleanSheets": 0,
-      "saves": 0,
-      "goalsConceded": 0,
+      "saves": 9,
+      "goalsConceded": 3,
+      "penaltiesSaved": 0
+    },
+    {
+      "name": "كيفين",
+      "cleanSheets": 0,
+      "saves": 8,
+      "goalsConceded": 4,
       "penaltiesSaved": 0
     }
   ]
