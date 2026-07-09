@@ -360,5 +360,14 @@
         }
       ]
     }
+  ],
+  "goalkeepers": [
+    {
+      "name": "موسى سميح",
+      "cleanSheets": 0,
+      "saves": 0,
+      "goalsConceded": 0,
+      "penaltiesSaved": 0
+    }
   ]
 }
