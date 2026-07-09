@@ -509,7 +509,6 @@
                     headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
                     body: JSON.stringify({ message: "تحديث النتائج والحضور وبطولة الحراس ⚡", content: base64Content, sha: currentSha })
                 });
-
                 if(putRes.ok) alert("🎉 تم الحفظ بنجاح! الموقع اتحدث بالكامل والاسكور وبطولة الحراس بقت لايف.");
                 else alert("❌ فشل الحفظ. راجع صلاحيات الـ Token.");
             } catch (error) { alert("❌ خطأ: " + error.message); }
