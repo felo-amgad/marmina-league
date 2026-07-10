@@ -526,6 +526,31 @@
               "friday": true,
               "study": false,
               "activity": false
+            },
+            "مارسلينو": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "مينا خالد": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "كيرلس مجدي": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "فادي عادل": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "بافلي": {
+              "friday": false,
+              "study": false,
+              "activity": false
             }
           }
         },
