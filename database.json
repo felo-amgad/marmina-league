@@ -551,6 +551,11 @@
               "friday": false,
               "study": false,
               "activity": false
+            },
+            "امير طارق": {
+              "friday": true,
+              "study": false,
+              "activity": false
             }
           }
         },
