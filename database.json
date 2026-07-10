@@ -474,9 +474,60 @@
         {
           "name": "الجمعة الثانية",
           "date": "10 يوليو 2026",
-          "visible": false,
-          "hasAttendance": false,
-          "records": {}
+          "visible": true,
+          "hasAttendance": true,
+          "records": {
+            "أبانوب ماهر": {
+              "friday": false,
+              "study": false,
+              "activity": false
+            },
+            "بولا عريان": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "بيشوي هشام": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "جون رامز": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "كاراس امجد": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "كيفين": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "موسى سميح": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "يوحنا أسامة": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "يوساب": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "يوسف رامي": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            }
+          }
         },
         {
           "name": "الجمعة الثالثة",
