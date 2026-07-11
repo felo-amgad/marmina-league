@@ -53,8 +53,8 @@
     "كيرلس مجدي",
     "كيفين",
     "مارسلينو",
-    "ماركو امير",
     "مارك عاطف",
+    "ماركو امير",
     "موسى سميح",
     "مينا خالد",
     "مينا رزق",
@@ -556,6 +556,16 @@
               "activity": false
             },
             "امير طارق": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "عبدالمسيح سعيد": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "مارك عاطف": {
               "friday": true,
               "study": false,
               "activity": false
