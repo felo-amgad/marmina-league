@@ -482,12 +482,12 @@
           "records": {
             "أبانوب ماهر": {
               "friday": false,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "بولا عريان": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "بيشوي هشام": {
@@ -502,27 +502,27 @@
             },
             "كاراس امجد": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "كيفين": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "موسى سميح": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "يوحنا أسامة": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "يوساب": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "يوسف رامي": {
@@ -537,12 +537,12 @@
             },
             "مينا خالد": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "كيرلس مجدي": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "فادي عادل": {
@@ -557,7 +557,7 @@
             },
             "امير طارق": {
               "friday": true,
-              "study": false,
+              "study": true,
               "activity": false
             },
             "عبدالمسيح سعيد": {
@@ -568,6 +568,21 @@
             "مارك عاطف": {
               "friday": true,
               "study": false,
+              "activity": false
+            },
+            "أبانوب ناصر": {
+              "friday": false,
+              "study": false,
+              "activity": false
+            },
+            "كيرلس عماد": {
+              "friday": false,
+              "study": true,
+              "activity": false
+            },
+            "ماركو امير": {
+              "friday": false,
+              "study": true,
               "activity": false
             }
           }
