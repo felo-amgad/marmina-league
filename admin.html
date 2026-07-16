@@ -29,8 +29,8 @@
         .btn-delete-match { background: transparent; color: #ff4b2b; border: 1px solid #ff4b2b; margin-top: 15px; }
         .btn-delete-match:hover { background: #ff4b2b; color: white; }
         
-        .admin-tabs { display: flex; gap: 5px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 10px 2px; background: rgba(255,255,255,0.05); color: #aaa; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-weight: bold; text-align: center; font-size: 12px;}
+        .admin-tabs { display: flex; gap: 4px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn { flex: 1; min-width: 90px; padding: 10px 2px; background: rgba(255,255,255,0.05); color: #aaa; border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-weight: bold; text-align: center; font-size: 11px;}
         .tab-btn.active { background: var(--primary); color: black; border-color: var(--primary); }
         
         .save-bar { position: sticky; bottom: 10px; z-index: 1000; }
@@ -44,12 +44,11 @@
         .event-badge { background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 12px; font-size: 13px; margin: 8px 0; display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--border);}
         .score-display { text-align: center; font-size: 24px; font-weight: 900; background: rgba(0,0,0,0.4); padding: 10px; border-radius: 8px; margin-bottom: 15px; letter-spacing: 2px;}
         
-        /* ستايل كروت الحراس */
-        .gk-card { background: rgba(0,0,0,0.2); border: 1px solid var(--border); padding: 15px; border-radius: 10px; margin-bottom: 15px; }
-        .gk-grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .gk-grid-inputs div { display: flex; flex-direction: column; }
-        .gk-grid-inputs label { font-size: 11px; color: var(--primary); margin-bottom: 4px; font-weight: bold;}
-        .gk-grid-inputs input { padding: 8px; margin: 0; }
+        .team-box { background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 12px; border-radius: 10px; margin-bottom: 15px; }
+        .team-header { font-size: 15px; font-weight: 900; color: var(--gold); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 10px; display:flex; justify-content:space-between; }
+        .player-team-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed rgba(255,255,255,0.05); font-size: 13px;}
+        .card-counter { display:flex; gap:8px; align-items:center; }
+        .card-btn { background: #333; border: 1px solid #555; color: white; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight:bold; }
     </style>
 </head>
 <body>
@@ -68,6 +67,7 @@
                 <div class="tab-btn active" id="btn-tab-config" onclick="switchTab('config')">الربط</div>
                 <div class="tab-btn" id="btn-tab-attendance" onclick="switchTab('attendance')">الحضور</div>
                 <div class="tab-btn" id="btn-tab-matches" onclick="switchTab('matches')">المباريات</div>
+                <div class="tab-btn" id="btn-tab-teams" onclick="switchTab('teams')">👥 الفرق والكروت</div>
                 <div class="tab-btn" id="btn-tab-gk" onclick="switchTab('gk')">حراس المرمى</div>
             </div>
 
@@ -75,6 +75,7 @@
                 <button class="btn-success" onclick="pushChangesToGitHub()">💾 حفظ وحساب الإحصائيات أوتوماتيكياً</button>
             </div>
 
+            <!-- إعدادات GitHub -->
             <div id="section-config" class="glass-card animated">
                 <div class="title">⚙️ إعدادات ربط GitHub</div>
                 <label>Token السري:</label><input type="password" id="gh-token" placeholder="ghp_...">
@@ -83,6 +84,7 @@
                 <button class="btn-primary" onclick="saveConfig()">حفظ محلياً</button>
             </div>
 
+            <!-- الحضور -->
             <div id="section-attendance" class="glass-card hidden animated">
                 <div class="title">🗓️ تسجيل الحضور الفردي</div>
                 <label>اختر الشهر:</label><select id="attend-month-select" onchange="updateFridaysList()"></select>
@@ -105,6 +107,22 @@
                 </div>
             </div>
 
+            <!-- إدارة الفرق والكروت الإدارية الجديدة -->
+            <div id="section-teams" class="glass-card hidden animated">
+                <div class="title">👥 إدارة الفرق والكروت (أسود = -0.5 | رمادي = -0.25)</div>
+                
+                <!-- نقل لاعب لفريق -->
+                <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 20px;">
+                    <div style="font-size: 13px; color: var(--primary); margin-bottom: 8px; font-weight:bold;">🔄 نقل أو تحديد فريق لاعب</div>
+                    <select id="move-player-select"></select>
+                    <select id="move-team-select"></select>
+                    <button class="btn-primary" style="padding: 8px;" onclick="movePlayerToTeam()">حفظ فريق اللاعب</button>
+                </div>
+
+                <div id="teams-list-container"></div>
+            </div>
+
+            <!-- المباريات وإدارة الأحداث -->
             <div id="section-matches" class="glass-card hidden animated">
                 <div class="title">⚽ إدارة المباريات والجولات</div>
                 
@@ -138,11 +156,14 @@
                         </select>
                         
                         <label>لصالح فريق:</label>
-                        <select id="event-team"></select>
-                        <label>اللاعب الأساسي:</label><select id="event-player"></select>
+                        <select id="event-team" onchange="filterPlayersBySelectedTeam()"></select>
+                        
+                        <label>اللاعب الأساسي (متفلتر حسب الفريق):</label>
+                        <select id="event-player"></select>
 
                         <div id="assist-container">
-                            <label>صانع اللعب (أسيست):</label><select id="event-assist"></select>
+                            <label>صانع اللعب (أسيست):</label>
+                            <select id="event-assist"></select>
                             <label style="display:flex; align-items:center; gap:5px; margin-top:10px; color:var(--secondary); font-size:13px; font-weight:bold;">
                                 <input type="checkbox" id="event-owngoal"> هذا الهدف (هدف ذاتي بالخطأ)
                             </label>
@@ -156,17 +177,15 @@
                 </div>
             </div>
 
+            <!-- قسم حراس المرمى -->
             <div id="section-gk" class="glass-card hidden animated">
                 <div class="title">🧤 إدارة إحصائيات حراس المرمى</div>
-                
                 <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 20px;">
                     <div style="font-size: 13px; color: var(--primary); margin-bottom: 8px;">➕ تعيين لاعب كحارس مرمى للبطولة</div>
                     <select id="gk-player-select"></select>
                     <button class="btn-primary" style="padding: 8px;" onclick="addGoalkeeper()">تعيين كحارس مرمى</button>
                 </div>
-
-                <div id="goalkeepers-list-container">
-                    </div>
+                <div id="goalkeepers-list-container"></div>
             </div>
         </div>
     </div>
@@ -174,15 +193,13 @@
     <script>
         let db = {}; 
 
-        function getPlayerAvatarSrc(text) {
-            if (!text) return "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-            let cleanText = text.split('(')[0].replace(/<[^>]*>/g, '').trim();
-            if (db.playerImages && db.playerImages[cleanText]) return db.playerImages[cleanText];
-            if (db.playerImages) {
-                for (let name in db.playerImages) { if (cleanText.includes(name)) return db.playerImages[name]; }
-            }
-            return "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
-        }
+        // القوائم المبدئية للفرق اللي طلبتها
+        const initialTeams = {
+            "برشلونة": ["جون رامز", "مينا خالد", "يوساب", "كاراس عادل", "مارسلينو", "كاراس امجد"],
+            "تشيلسي": ["ابانوب ناصر", "كيفين", "كاراس ميلاد", "شنودة سمير", "بولا عريان", "فادي عادل"],
+            "بايرن ميونخ": ["يوحنا أسامة", "بافلي", "كيرلس عماد", "موسى سميح", "بيشوي هشام", "كيرلس مجدي", "ابراهيم لوكاس"],
+            "ليفربول": ["امير طارق", "ماركو", "أبانوب ماهر", "كاراس عماد", "يوسف رامي", "فيلو"]
+        };
 
         function handleLogin() {
             if(document.getElementById('admin-pass').value === "1234") {
@@ -208,7 +225,19 @@
         async function fetchDatabaseFromServer() {
             const res = await fetch('database.json?v=' + new Date().getTime());
             db = await res.json();
-            if (!db.goalkeepers) db.goalkeepers = []; // تهيئة مصفوفة الحراس لو مش موجودة
+            if (!db.goalkeepers) db.goalkeepers = [];
+            
+            // تهيئة وتجهيز اللعيبه بالكروت والفرق
+            if (!db.playersData) db.playersData = {};
+            db.players.forEach(p => {
+                if(!db.playersData[p]) {
+                    // البحث عن فريقه المبدئي
+                    let assignedTeam = "بدون فريق";
+                    for(let t in initialTeams) { if(initialTeams[t].includes(p)) assignedTeam = t; }
+                    db.playersData[p] = { team: assignedTeam, blackCards: 0, greyCards: 0 };
+                }
+            });
+
             populateSelects();
         }
 
@@ -216,10 +245,10 @@
             const monthSel = document.getElementById('attend-month-select');
             monthSel.innerHTML = db.attendanceData.map((m, i) => `<option value="${i}">شهر ${m.month}</option>`).join('');
             
-            const playerSel = document.getElementById('attend-player-select');
             let sortedPlayers = db.players.sort();
-            playerSel.innerHTML = sortedPlayers.map(p => `<option value="${p}">${p}</option>`).join('');
+            document.getElementById('attend-player-select').innerHTML = sortedPlayers.map(p => `<option value="${p}">${p}</option>`).join('');
             document.getElementById('gk-player-select').innerHTML = sortedPlayers.map(p => `<option value="${p}">${p}</option>`).join('');
+            document.getElementById('move-player-select').innerHTML = sortedPlayers.map(p => `<option value="${p}">${p} (${db.playersData[p]?.team || ''})</option>`).join('');
             
             updateFridaysList();
 
@@ -228,13 +257,89 @@
             let teamOptions = Object.keys(db.logos).map(t => `<option value="${t}">${t}</option>`).join('');
             document.getElementById('match-team-a').innerHTML = teamOptions; 
             document.getElementById('match-team-b').innerHTML = teamOptions;
-
-            let playersOptions = sortedPlayers.map(p => `<option value="${p}">${p}</option>`).join('');
-            document.getElementById('event-player').innerHTML = playersOptions;
-            document.getElementById('event-assist').innerHTML = `<option value="">-- بدون أسيست --</option>` + playersOptions;
+            document.getElementById('move-team-select').innerHTML = teamOptions;
 
             loadRoundMatchesList();
             renderGoalkeepersManager();
+            renderTeamsManager();
+        }
+
+        /* ====== نظام الفرق والكروت الإدارية ====== */
+        function renderTeamsManager() {
+            const container = document.getElementById('teams-list-container');
+            container.innerHTML = '';
+            
+            Object.keys(db.logos).forEach(teamName => {
+                let teamPlayers = db.players.filter(p => db.playersData[p]?.team === teamName);
+                let totalBlack = 0; let totalGrey = 0;
+                teamPlayers.forEach(p => {
+                    totalBlack += (db.playersData[p].blackCards || 0);
+                    totalGrey += (db.playersData[p].greyCards || 0);
+                });
+                let totalDeduction = (totalBlack * 0.5) + (totalGrey * 0.25);
+
+                let rowsHtml = teamPlayers.map(p => `
+                    <div class="player-team-row">
+                        <span>👤 ${p}</span>
+                        <div class="card-counter">
+                            <span style="color:#aaa; font-size:11px;">⬛ أسود:</span>
+                            <button class="card-btn" onclick="updateAdminCard('${p}', 'black', -1)">-</button>
+                            <span style="font-weight:bold; color:#ff4b2b;">${db.playersData[p].blackCards || 0}</span>
+                            <button class="card-btn" style="background:#ff4b2b;" onclick="updateAdminCard('${p}', 'black', 1)">+</button>
+                            
+                            <span style="color:#aaa; font-size:11px; margin-right:5px;">⬜ رمادي:</span>
+                            <button class="card-btn" onclick="updateAdminCard('${p}', 'grey', -1)">-</button>
+                            <span style="font-weight:bold; color:#ddd;">${db.playersData[p].greyCards || 0}</span>
+                            <button class="card-btn" style="background:#888;" onclick="updateAdminCard('${p}', 'grey', 1)">+</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                container.innerHTML += `
+                    <div class="team-box">
+                        <div class="team-header">
+                            <span>🛡️ ${teamName} (${teamPlayers.length} لاعبين)</span>
+                            <span style="color:#ff4b2b; font-size:12px;">إجمالي الخصم: -${totalDeduction} نقطة</span>
+                        </div>
+                        ${rowsHtml || '<div style="font-size:12px;color:#aaa;text-align:center;">لا يوجد لاعبين في هذا الفريق</div>'}
+                    </div>
+                `;
+            });
+        }
+
+        function updateAdminCard(player, type, delta) {
+            let field = type === 'black' ? 'blackCards' : 'greyCards';
+            db.playersData[player][field] = Math.max(0, (db.playersData[player][field] || 0) + delta);
+            renderTeamsManager();
+        }
+
+        function movePlayerToTeam() {
+            const p = document.getElementById('move-player-select').value;
+            const t = document.getElementById('move-team-select').value;
+            db.playersData[p].team = t;
+            alert(`تم نقل ${p} إلى فريق ${t} بنجاح!`);
+            populateSelects();
+        }
+
+        /* ====== فلترة اللعيبه جوه الماتش ====== */
+        function filterPlayersBySelectedTeam() {
+            const rId = document.getElementById('round-matches-select').value;
+            const mIdx = document.getElementById('match-edit-select').value;
+            if(mIdx === "") return;
+            
+            const match = db.leagueData.find(r => r.id == rId).matches[mIdx];
+            const selectedSide = document.getElementById('event-team').value; // 'A' or 'B'
+            const teamName = selectedSide === 'A' ? match.teamA : match.teamB;
+            
+            // فلترة اللعيبه اللي في الفريق ده بس
+            let teamPlayers = db.players.filter(p => db.playersData[p]?.team === teamName);
+            
+            // إضافة خيار بدون اسم في الأول (عشان أهداف الخدام أو الأهداف الاعتبارية)
+            let options = `<option value="بدون اسم (هدف خادم / اعتباري)">👤 بدون اسم (هدف خادم / اعتباري)</option>`;
+            options += teamPlayers.map(p => `<option value="${p}">${p}</option>`).join('');
+            
+            document.getElementById('event-player').innerHTML = options;
+            document.getElementById('event-assist').innerHTML = `<option value="">-- بدون أسيست --</option>` + teamPlayers.map(p => `<option value="${p}">${p}</option>`).join('');
         }
 
         /* ====== نظام الحضور ====== */
@@ -243,45 +348,31 @@
             const fSelect = document.getElementById('attend-friday-select');
             if(db.attendanceData[mIdx] && db.attendanceData[mIdx].fridays.length > 0) {
                 fSelect.innerHTML = db.attendanceData[mIdx].fridays.map((f, i) => `<option value="${i}">${f.name} (${f.date})</option>`).join('');
-                document.getElementById('player-attendance-area').classList.remove('hidden');
-                loadAttendanceForm();
-            } else {
-                fSelect.innerHTML = '';
-                document.getElementById('player-attendance-area').classList.add('hidden');
-            }
+                document.getElementById('player-attendance-area').classList.remove('hidden'); loadAttendanceForm();
+            } else { fSelect.innerHTML = ''; document.getElementById('player-attendance-area').classList.add('hidden'); }
         }
 
         function loadAttendanceForm() {
-            const mIdx = document.getElementById('attend-month-select').value; 
-            const fIdx = document.getElementById('attend-friday-select').value;
+            const mIdx = document.getElementById('attend-month-select').value; const fIdx = document.getElementById('attend-friday-select').value;
             if(!db.attendanceData[mIdx] || !db.attendanceData[mIdx].fridays[fIdx]) return;
-            
             const fri = db.attendanceData[mIdx].fridays[fIdx];
-            document.getElementById('friday-visible-check').checked = fri.visible; 
-            document.getElementById('friday-active-check').checked = fri.hasAttendance;
-            if(!fri.records) fri.records = {};
-            
-            loadPlayerRecord();
+            document.getElementById('friday-visible-check').checked = fri.visible; document.getElementById('friday-active-check').checked = fri.hasAttendance;
+            if(!fri.records) fri.records = {}; loadPlayerRecord();
         }
 
         function loadPlayerRecord() {
-            const mIdx = document.getElementById('attend-month-select').value; 
-            const fIdx = document.getElementById('attend-friday-select').value;
+            const mIdx = document.getElementById('attend-month-select').value; const fIdx = document.getElementById('attend-friday-select').value;
             const player = document.getElementById('attend-player-select').value;
-            
             let records = db.attendanceData[mIdx].fridays[fIdx].records;
             if(!records[player]) records[player] = { friday: false, study: false, activity: false };
-            
             document.getElementById('chk-friday').checked = records[player].friday;
             document.getElementById('chk-study').checked = records[player].study;
             document.getElementById('chk-activity').checked = records[player].activity;
         }
 
         function savePlayerRecord() {
-            const mIdx = document.getElementById('attend-month-select').value; 
-            const fIdx = document.getElementById('attend-friday-select').value;
+            const mIdx = document.getElementById('attend-month-select').value; const fIdx = document.getElementById('attend-friday-select').value;
             const player = document.getElementById('attend-player-select').value;
-            
             db.attendanceData[mIdx].fridays[fIdx].records[player] = {
                 friday: document.getElementById('chk-friday').checked,
                 study: document.getElementById('chk-study').checked,
@@ -291,16 +382,14 @@
 
         function updateFridayMeta() {
             const f = db.attendanceData[document.getElementById('attend-month-select').value].fridays[document.getElementById('attend-friday-select').value];
-            f.visible = document.getElementById('friday-visible-check').checked; 
-            f.hasAttendance = document.getElementById('friday-active-check').checked;
+            f.visible = document.getElementById('friday-visible-check').checked; f.hasAttendance = document.getElementById('friday-active-check').checked;
         }
 
         /* ====== نظام المباريات ====== */
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.glass-card').forEach(c => { if(c.id !== 'login-section') c.classList.add('hidden'); });
-            document.getElementById(`btn-tab-${tab}`).classList.add('active'); 
-            document.getElementById(`section-${tab}`).classList.remove('hidden');
+            document.getElementById(`btn-tab-${tab}`).classList.add('active'); document.getElementById(`section-${tab}`).classList.remove('hidden');
         }
 
         function addNewRound() {
@@ -324,23 +413,22 @@
             const matchSelect = document.getElementById('match-edit-select');
             if(!round || round.matches.length === 0) {
                 matchSelect.innerHTML = `<option value="">-- لا يوجد مباريات --</option>`;
-                document.getElementById('match-editor-area').classList.add('hidden');
-                return;
+                document.getElementById('match-editor-area').classList.add('hidden'); return;
             }
-            
             matchSelect.innerHTML = round.matches.map((m, i) => `<option value="${i}">${m.teamA} ضد ${m.teamB}</option>`).join('');
             document.getElementById('match-editor-area').classList.remove('hidden');
             loadMatchDetails();
         }
 
         function loadMatchDetails() {
-            const rId = document.getElementById('round-matches-select').value;
-            const mIdx = document.getElementById('match-edit-select').value;
+            const rId = document.getElementById('round-matches-select').value; const mIdx = document.getElementById('match-edit-select').value;
             if (mIdx === "") return;
             const match = db.leagueData.find(r => r.id == rId).matches[mIdx];
             document.getElementById('live-score-display').innerText = `${match.teamA} (${match.scoreA}) - (${match.scoreB}) ${match.teamB}`;
             document.getElementById('event-team').innerHTML = `<option value="A">${match.teamA}</option><option value="B">${match.teamB}</option>`;
-            toggleEventFields(); renderMatchEvents(match, mIdx);
+            toggleEventFields(); 
+            filterPlayersBySelectedTeam(); // تشغيل الفلترة التلقائية
+            renderMatchEvents(match, mIdx);
         }
 
         function toggleEventFields() {
@@ -350,10 +438,8 @@
         }
 
         function addMatchEvent() {
-            const rId = document.getElementById('round-matches-select').value;
-            const mIdx = document.getElementById('match-edit-select').value;
+            const rId = document.getElementById('round-matches-select').value; const mIdx = document.getElementById('match-edit-select').value;
             const match = db.leagueData.find(r => r.id == rId).matches[mIdx];
-            
             const type = document.getElementById('event-type').value;
             const team = document.getElementById('event-team').value;
             const player = document.getElementById('event-player').value;
@@ -367,14 +453,12 @@
                 if (team === 'A') match.scoreA++; else match.scoreB++;
             }
             match[`events${team}`][type].push(eventText);
-            document.getElementById('event-owngoal').checked = false;
-            document.getElementById('event-assist').value = "";
+            document.getElementById('event-owngoal').checked = false; document.getElementById('event-assist').value = "";
             loadMatchDetails(); 
         }
 
         function removeEvent(team, type, eventIndex) {
-            const rId = document.getElementById('round-matches-select').value;
-            const mIdx = document.getElementById('match-edit-select').value;
+            const rId = document.getElementById('round-matches-select').value; const mIdx = document.getElementById('match-edit-select').value;
             const match = db.leagueData.find(r => r.id == rId).matches[mIdx];
             if (type === 'goals') {
                 if (team === 'A' && match.scoreA > 0) match.scoreA--;
@@ -395,10 +479,7 @@
                 ['goals', 'yellowCards', 'redCards'].forEach(type => {
                     match[`events${team}`][type].forEach((ev, idx) => {
                         hasEvents = true;
-                        html += `<div class="event-badge">
-                                    <span><strong>${eventTypes[type]} لـ ${teamName}:</strong> ${ev}</span>
-                                    <button class="btn-danger" onclick="removeEvent('${team}', '${type}', ${idx})">حذف</button>
-                                 </div>`;
+                        html += `<div class="event-badge"><span><strong>${eventTypes[type]} لـ ${teamName}:</strong> ${ev}</span><button class="btn-danger" onclick="removeEvent('${team}', '${type}', ${idx})">حذف</button></div>`;
                     });
                 });
             });
@@ -407,8 +488,7 @@
         }
 
         function deleteMatch() {
-            const rId = document.getElementById('round-matches-select').value;
-            const mIdx = document.getElementById('match-edit-select').value;
+            const rId = document.getElementById('round-matches-select').value; const mIdx = document.getElementById('match-edit-select').value;
             if (mIdx === "") return;
             if (confirm("⚠️ هل أنت متأكد أنك تريد حذف هذه المباراة بالكامل؟")) {
                 db.leagueData.find(r => r.id == rId).matches.splice(mIdx, 1);
@@ -416,20 +496,17 @@
             }
         }
 
-        /* ====== نظام حراس المرمى البطل ====== */
+        /* ====== نظام حراس المرمى ====== */
         function addGoalkeeper() {
             const name = document.getElementById('gk-player-select').value;
             if (db.goalkeepers.some(g => g.name === name)) return alert("هذا اللاعب مضاف بالفعل كحارس مرمى!");
-            
             db.goalkeepers.push({ name: name, cleanSheets: 0, saves: 0, goalsConceded: 0, penaltiesSaved: 0 });
-            alert(`تم تعيين ${name} كحارس مرمى!`);
-            renderGoalkeepersManager();
+            alert(`تم تعيين ${name} كحارس مرمى!`); renderGoalkeepersManager();
         }
 
         function removeGoalkeeper(name) {
             if (confirm(`هل تريد إلغاء تعيين ${name} كحارس مرمى؟`)) {
-                db.goalkeepers = db.goalkeepers.filter(g => g.name !== name);
-                renderGoalkeepersManager();
+                db.goalkeepers = db.goalkeepers.filter(g => g.name !== name); renderGoalkeepersManager();
             }
         }
 
@@ -439,25 +516,22 @@
         }
 
         function renderGoalkeepersManager() {
-            const container = document.getElementById('goalkeepers-list-container');
-            container.innerHTML = '';
+            const container = document.getElementById('goalkeepers-list-container'); container.innerHTML = '';
             if (db.goalkeepers.length === 0) { container.innerHTML = '<div style="text-align:center;font-size:12px;color:#aaa;">لم يتم إضافة حراس مرمى بعد.</div>'; return; }
-
             db.goalkeepers.forEach(gk => {
                 container.innerHTML += `
-                    <div class="gk-card">
+                    <div class="team-box">
                         <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.1); padding-bottom:8px;">
                             <span style="font-weight:bold; color:var(--primary);">🧤 ${gk.name}</span>
                             <button class="btn-danger" style="padding:4px 8px; font-size:11px;" onclick="removeGoalkeeper('${gk.name}')">إلغاء الحارس</button>
                         </div>
-                        <div class="gk-grid-inputs">
-                            <div><label>🛡️ الكلين شيت (+5)</label><input type="number" value="${gk.cleanSheets || 0}" oninput="updateGKStat('${gk.name}', 'cleanSheets', this.value)"></div>
-                            <div><label>🧤 التصديات (+0.5)</label><input type="number" step="1" value="${gk.saves || 0}" oninput="updateGKStat('${gk.name}', 'saves', this.value)"></div>
-                            <div><label>⚽ أهداف مسجلة فيه (-1)</label><input type="number" value="${gk.goalsConceded || 0}" oninput="updateGKStat('${gk.name}', 'goalsConceded', this.value)"></div>
-                            <div><label>🎯 صد ركلات جزاء (+4)</label><input type="number" value="${gk.penaltiesSaved || 0}" oninput="updateGKStat('${gk.name}', 'penaltiesSaved', this.value)"></div>
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+                            <div><label style="font-size:11px;color:var(--primary);">🛡️ كلين شيت (+5)</label><input type="number" value="${gk.cleanSheets || 0}" oninput="updateGKStat('${gk.name}', 'cleanSheets', this.value)"></div>
+                            <div><label style="font-size:11px;color:var(--primary);">🧤 تصديات (+0.5)</label><input type="number" step="1" value="${gk.saves || 0}" oninput="updateGKStat('${gk.name}', 'saves', this.value)"></div>
+                            <div><label style="font-size:11px;color:var(--primary);">⚽ استقبل (-1)</label><input type="number" value="${gk.goalsConceded || 0}" oninput="updateGKStat('${gk.name}', 'goalsConceded', this.value)"></div>
+                            <div><label style="font-size:11px;color:var(--primary);">🎯 صد جزاء (+4)</label><input type="number" value="${gk.penaltiesSaved || 0}" oninput="updateGKStat('${gk.name}', 'penaltiesSaved', this.value)"></div>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
         }
 
@@ -468,7 +542,7 @@
                 round.matches.forEach(match => {
                     const processGoals = (goalsList, teamName) => {
                         goalsList.forEach(goalStr => {
-                            if(goalStr.includes('own-goal') || goalStr.includes('هدف ذاتي')) return; 
+                            if(goalStr.includes('own-goal') || goalStr.includes('هدف ذاتي') || goalStr.includes('بدون اسم')) return; 
                             let scorerMatch = goalStr.split('(')[0].split('<')[0].trim();
                             if(scorerMatch) {
                                 if(!scorers[scorerMatch]) scorers[scorerMatch] = {name: scorerMatch, team: teamName, count: 0};
@@ -507,9 +581,10 @@
                 const putRes = await fetch(url, {
                     method: "PUT",
                     headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: "تحديث النتائج والحضور وبطولة الحراس ⚡", content: base64Content, sha: currentSha })
+                    body: JSON.stringify({ message: "تحديث الفرق والكروت والخصومات ⚡", content: base64Content, sha: currentSha })
                 });
-                if(putRes.ok) alert("🎉 تم الحفظ بنجاح! الموقع اتحدث بالكامل والاسكور وبطولة الحراس بقت لايف.");
+
+                if(putRes.ok) alert("🎉 تم الحفظ بنجاح! الموقع اتحدث بالكامل والخصومات اتطبقت على جدول الدوري.");
                 else alert("❌ فشل الحفظ. راجع صلاحيات الـ Token.");
             } catch (error) { alert("❌ خطأ: " + error.message); }
         }
