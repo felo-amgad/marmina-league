@@ -254,19 +254,104 @@
           }
         }
       ]
+    },
+    {
+      "id": 3,
+      "name": "الجولة الثالثة",
+      "date": "الخميس 16 يوليو",
+      "matches": [
+        {
+          "teamA": "بايرن ميونخ",
+          "teamB": "برشلونة",
+          "scoreA": 1,
+          "scoreB": 1,
+          "eventsA": {
+            "goals": [
+              "بافلي (أسيست كيرلس عماد)"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          },
+          "eventsB": {
+            "goals": [
+              "جون رامز"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          }
+        },
+        {
+          "teamA": "ليفربول",
+          "teamB": "تشيلسي",
+          "scoreA": 2,
+          "scoreB": 0,
+          "eventsA": {
+            "goals": [
+              "بدون اسم (هدف خادم / اعتباري)",
+              "بدون اسم (هدف خادم / اعتباري)"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          },
+          "eventsB": {
+            "goals": [],
+            "yellowCards": [],
+            "redCards": []
+          }
+        },
+        {
+          "teamA": "ليفربول",
+          "teamB": "برشلونة",
+          "scoreA": 1,
+          "scoreB": 1,
+          "eventsA": {
+            "goals": [
+              "بدون اسم (هدف خادم / اعتباري)"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          },
+          "eventsB": {
+            "goals": [
+              "جون رامز"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          }
+        },
+        {
+          "teamA": "بايرن ميونخ",
+          "teamB": "تشيلسي",
+          "scoreA": 2,
+          "scoreB": 0,
+          "eventsA": {
+            "goals": [
+              "بدون اسم (هدف خادم / اعتباري)",
+              "بدون اسم (هدف خادم / اعتباري)"
+            ],
+            "yellowCards": [],
+            "redCards": []
+          },
+          "eventsB": {
+            "goals": [],
+            "yellowCards": [],
+            "redCards": []
+          }
+        }
+      ]
     }
   ],
   "statsData": {
     "topScorers": [
       {
+        "name": "جون رامز",
+        "team": "برشلونة",
+        "count": 7
+      },
+      {
         "name": "أبانوب ناصر",
         "team": "تشيلسي",
         "count": 6
-      },
-      {
-        "name": "جون رامز",
-        "team": "برشلونة",
-        "count": 5
       },
       {
         "name": "كاراس ميلاد",
@@ -289,12 +374,12 @@
         "count": 2
       },
       {
-        "name": "أستاذ هاني",
+        "name": "بافلي",
         "team": "بايرن ميونخ",
-        "count": 1
+        "count": 2
       },
       {
-        "name": "بافلي",
+        "name": "أستاذ هاني",
         "team": "بايرن ميونخ",
         "count": 1
       },
@@ -339,6 +424,11 @@
         "name": "امير طارق",
         "team": "ليفربول",
         "count": 1
+      },
+      {
+        "name": "كيرلس عماد",
+        "team": "بايرن ميونخ",
+        "count": 1
       }
     ]
   },
@@ -354,6 +444,7 @@
           "records": {
             "أبانوب ماهر": {
               "friday": true,
+              "excused": false,
               "study": true,
               "activity": false
             },
@@ -368,7 +459,8 @@
               "activity": false
             },
             "أمير ملاك": {
-              "friday": true,
+              "friday": false,
+              "excused": true,
               "study": false,
               "activity": false
             },
@@ -454,22 +546,73 @@
             },
             "بافلي": {
               "friday": false,
+              "excused": true,
               "study": true,
               "activity": false
             },
             "فيلو": {
               "friday": false,
+              "excused": true,
               "study": true,
               "activity": false
             },
             "يوساب": {
               "friday": false,
+              "excused": true,
               "study": true,
               "activity": false
             },
             "كاراس امجد": {
               "friday": true,
               "study": true,
+              "activity": false
+            },
+            "أبراهيم لوكاس": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "امير طارق": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "عبدالمسيح سعيد": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "كاراس عماد": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "مارسلينو": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "مارك عاطف": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "ماركو امير": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "مينا رزق": {
+              "friday": false,
+              "excused": true,
+              "study": false,
               "activity": false
             }
           }
@@ -482,6 +625,7 @@
           "records": {
             "أبانوب ماهر": {
               "friday": false,
+              "excused": true,
               "study": true,
               "activity": false
             },
@@ -552,6 +696,7 @@
             },
             "بافلي": {
               "friday": false,
+              "excused": true,
               "study": false,
               "activity": false
             },
@@ -572,17 +717,74 @@
             },
             "أبانوب ناصر": {
               "friday": false,
+              "excused": true,
               "study": false,
               "activity": false
             },
             "كيرلس عماد": {
               "friday": false,
+              "excused": true,
               "study": true,
               "activity": false
             },
             "ماركو امير": {
               "friday": false,
+              "excused": true,
               "study": true,
+              "activity": false
+            },
+            "مينا رزق": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "كاراس ميلاد": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "كاراس عماد": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "كاراس عادل": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "فيلو": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "شنودة سمير": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "بيتر عماد": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "أمير ملاك": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "أبراهيم لوكاس": {
+              "friday": false,
+              "excused": true,
+              "study": false,
               "activity": false
             }
           }
@@ -590,8 +792,8 @@
         {
           "name": "الجمعة الثالثة",
           "date": "17 يوليو 2026",
-          "visible": false,
-          "hasAttendance": false,
+          "visible": true,
+          "hasAttendance": true,
           "records": {
             "أبانوب ماهر": {
               "friday": true,
@@ -685,6 +887,72 @@
             },
             "يوسف رامي": {
               "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "أبانوب ناصر": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "أمير ملاك": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "امير طارق": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "بيتر عماد": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "فادي عادل": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "كاراس امجد": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "كاراس عماد": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "كاراس ميلاد": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "مارسلينو": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "مارك عاطف": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "مينا رزق": {
+              "friday": false,
+              "excused": false,
               "study": false,
               "activity": false
             }
