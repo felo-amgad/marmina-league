@@ -70,11 +70,15 @@
         .tier-1 .podium-avatar { width: 70px; height: 70px; border: 3px solid var(--gold); } .tier-2 .podium-avatar { border: 2px solid var(--silver); } .tier-3 .podium-avatar { border: 2px solid var(--bronze); }
         .podium-name { font-weight: 900; font-size: 12px; color: #fff; text-align: center; margin-bottom: 2px; }
         
-        .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(75px, 1fr)); gap: 15px; justify-content: center; padding: 10px 5px; }
+        .players-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 12px; justify-content: center; padding: 10px 5px; }
         .player-card { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: transform 0.2s; }
         .player-card:hover { transform: scale(1.05); }
-        .player-card img { width: 60px; height: 60px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); object-fit: cover; margin-bottom: 8px; background: #fff;}
+        .player-card img { width: 55px; height: 55px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.2); object-fit: cover; margin-bottom: 6px; background: #fff;}
         .player-card-name { font-size: 11px; font-weight: bold; text-align: center; color: var(--text-main); line-height: 1.3; }
+        
+        .team-squad-card { background: rgba(0,0,0,0.3); border: 1px solid var(--card-border); border-radius: 12px; padding: 12px; margin-bottom: 15px; }
+        .team-squad-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 10px; font-size: 15px; font-weight: 900; color: var(--gold); }
+        .team-squad-header img { width: 25px; height: 25px; margin-left: 8px; vertical-align: middle; }
         
         .stat-box { background: rgba(0,0,0,0.3); border: 1px solid var(--card-border); padding: 15px 10px; border-radius: 12px; text-align: center; flex: 1; }
         .stat-value { font-size: 22px; font-weight: 900; }
@@ -90,7 +94,7 @@
         .attendance-btn { background: var(--primary-accent); color: #000; border: none; padding: 6px 12px; border-radius: 20px; font-weight: bold; font-size: 12px; cursor: pointer; }
         .arrow-rotated { transform: rotate(180deg); transition: 0.3s; }
         
-        /* المودال المشترك */
+        /* المودال */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(10, 20, 30, 0.9); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(10px); }
         .modal-content { background: var(--card-bg); border: 1px solid var(--card-border); padding: 20px; border-radius: 20px; max-width: 460px; width: 95%; max-height: 85vh; overflow-y: auto; display: flex; flex-direction: column; align-items: center;}
         .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed rgba(255,255,255,0.2); padding-bottom: 12px; margin-bottom: 15px; width: 100%; }
@@ -109,7 +113,7 @@
         
         <div class="nav-tabs">
             <div class="nav-tab active" id="tab-rounds" onclick="switchTab('rounds')">المباريات</div>
-            <div class="nav-tab" id="tab-stats" onclick="switchTab('stats')">الإحصائيات</div>
+            <div class="nav-tab" id="tab-stats" onclick="switchTab('stats')">الإحصائيات والفرق</div>
             <div class="nav-tab" id="tab-attendance" onclick="switchTab('attendance')">الحضور</div>
         </div>
         
@@ -125,7 +129,7 @@
             
             <div id="stats-view" class="hidden">
                 <div class="glass-card animated" style="animation-delay: 0.1s; padding: 15px 5px;">
-                    <div class="stats-title">📊 جدول الترتيب (بالخصومات الإدارية)</div>
+                    <div class="stats-title">📊 جدول الترتيب (بالخصومات الإدارية والغياب)</div>
                     <table class="league-table"><tbody id="league-standings-body"></tbody></table>
                 </div>
                 
@@ -147,9 +151,10 @@
                     </table>
                 </div>
 
+                <!-- قوائم الفرق الرسمية للشباب -->
                 <div class="glass-card animated" style="animation-delay: 0.5s; padding: 15px 5px;">
-                    <div class="stats-title" style="color: var(--secondary-accent);">👥 جميع اللاعبين (اضغط للتفاصيل والكروت)</div>
-                    <div class="players-grid" id="all-players-container"></div>
+                    <div class="stats-title" style="color: var(--gold);">🛡️ قوائم الفرق الرسمية (اضغط لبروفايل اللاعب)</div>
+                    <div id="teams-squads-container"></div>
                 </div>
             </div>
 
@@ -184,25 +189,20 @@
                 <div id="profile-team-badge" style="background:rgba(255,255,255,0.1); padding:4px 12px; border-radius:15px; font-size:12px; display:inline-block; margin-top:5px; color:var(--gold); font-weight:bold;"></div>
             </div>
             
-            <!-- أهداف وأسيست -->
             <div class="stats-row">
                 <div class="stat-box"><div class="stat-value" id="profile-goals" style="color: var(--gold);">0</div><div class="stat-label">⚽ أهداف</div></div>
                 <div class="stat-box"><div class="stat-value" id="profile-assists" style="color: var(--primary-accent);">0</div><div class="stat-label">🎯 أسيست</div></div>
             </div>
-            
-            <!-- إنذارات وطرد الماتشات -->
             <div class="stats-row">
-                <div class="stat-box"><div class="stat-value" id="profile-yellow" style="color:#ffd700;">0</div><div class="stat-label">🟨 إنذارات (ماتش)</div></div>
+                <div class="stat-box"><div class="stat-value" id="profile-yellow" style="color:#ffd700;">0</div><div class="stat-label">🟨 إنذار (ماتش)</div></div>
                 <div class="stat-box"><div class="stat-value" id="profile-red" style="color:#ff4b2b;">0</div><div class="stat-label">🟥 طرد (ماتش)</div></div>
             </div>
 
-            <!-- الكروت الإدارية والخصومات (الجديد) -->
             <div class="stats-row" style="margin-bottom: 15px;">
-                <div class="stat-box" style="border-color:#ff4b2b;"><div class="stat-value" id="profile-black" style="color:#ff4b2b;">0</div><div class="stat-label">⬛ كروت سوداء (-0.5)</div></div>
-                <div class="stat-box" style="border-color:#aaa;"><div class="stat-value" id="profile-grey" style="color:#ddd;">0</div><div class="stat-label">⬜ كروت رمادية (-0.25)</div></div>
+                <div class="stat-box" style="border-color:#ff4b2b;"><div class="stat-value" id="profile-black" style="color:#ff4b2b;">0</div><div class="stat-label">⬛ كروت سوداء + غياب (-0.5)</div></div>
+                <div class="stat-box" style="border-color:#aaa;"><div class="stat-value" id="profile-grey" style="color:#ddd;">0</div><div class="stat-label">⬜ كروت رمادية (-0.5/زوجين)</div></div>
             </div>
 
-            <!-- إحصائيات حراسة المرمى -->
             <div id="profile-gk-section" class="hidden" style="width:100%; border-top:1px dashed rgba(255,255,255,0.2); padding-top:15px;">
                 <div class="stats-title" style="font-size:13px; color:#00ff88; margin-bottom:10px;">🧤 إحصائيات حراسة المرمى</div>
                 <div class="stats-row">
@@ -222,6 +222,13 @@
         let logos = {}; let playerImages = {}; let leagueData = []; let statsData = {}; let attendanceData = []; let playersList = []; let goalkeepers = []; let playersData = {};
         const defaultAvatar = "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
 
+        const initialTeams = {
+            "برشلونة": ["جون رامز", "مينا خالد", "يوساب", "كاراس عادل", "مارسلينو", "كاراس امجد"],
+            "تشيلسي": ["ابانوب ناصر", "كيفين", "كاراس ميلاد", "شنودة سمير", "بولا عريان", "فادي عادل"],
+            "بايرن ميونخ": ["يوحنا أسامة", "بافلي", "كيرلس عماد", "موسى سميح", "بيشوي هشام", "كيرلس مجدي", "ابراهيم لوكاس"],
+            "ليفربول": ["امير طارق", "ماركو", "أبانوب ماهر", "كاراس عماد", "يوسف رامي", "فيلو"]
+        };
+
         async function fetchDatabase() {
             try {
                 const response = await fetch('database.json?v=' + new Date().getTime());
@@ -231,6 +238,15 @@
                 attendanceData = data.attendanceData; playersList = data.players;
                 goalkeepers = data.goalkeepers || [];
                 playersData = data.playersData || {};
+
+                // تهيئة الفرق للشباب لو لسه متسجلتش
+                playersList.forEach(p => {
+                    if(!playersData[p]) {
+                        let assignedTeam = "بدون فريق";
+                        for(let t in initialTeams) { if(initialTeams[t].includes(p)) assignedTeam = t; }
+                        playersData[p] = { team: assignedTeam, blackCards: 0, greyCards: 0 };
+                    }
+                });
                 
                 document.getElementById('loader').style.display = 'none';
                 document.getElementById('rounds-view').classList.remove('hidden');
@@ -246,11 +262,23 @@
             return defaultAvatar;
         }
 
+        function getPlayerAbsences(playerName) {
+            let absences = 0;
+            if(!attendanceData) return 0;
+            attendanceData.forEach(month => {
+                month.fridays.forEach(fri => {
+                    if (fri.hasAttendance && fri.records) {
+                        if (!fri.records[playerName] || !fri.records[playerName].friday) { absences++; }
+                    }
+                });
+            });
+            return absences;
+        }
+
         function calculateStandings() {
             const standings = {};
             Object.keys(logos).forEach(team => { standings[team] = { name: team, logo: logos[team], played: 0, won: 0, drawn: 0, lost: 0, matchPoints: 0, deduction: 0, totalPoints: 0, goalsFor: 0, goalsAgainst: 0, goalDiff: 0 }; });
             
-            // حساب نقاط الماتشات
             leagueData.forEach(round => {
                 round.matches.forEach(match => {
                     standings[match.teamA].played++; standings[match.teamB].played++;
@@ -262,11 +290,11 @@
                 });
             });
 
-            // حساب خصومات اللعيبه من القوائم الإدارية
             Object.keys(playersData).forEach(p => {
                 let pInfo = playersData[p];
                 if(pInfo.team && standings[pInfo.team]) {
-                    let pDeduct = ((pInfo.blackCards || 0) * 0.5) + ((pInfo.greyCards || 0) * 0.25);
+                    let absences = getPlayerAbsences(p);
+                    let pDeduct = ((absences + (pInfo.blackCards || 0)) * 0.5) + (Math.floor((pInfo.greyCards || 0) / 2) * 0.5);
                     standings[pInfo.team].deduction += pDeduct;
                 }
             });
@@ -356,9 +384,26 @@
                 });
             }
 
-            let gridHtml = '';
-            playersList.sort().forEach(p => { gridHtml += `<div class="player-card" onclick="showPlayerProfile('${p}')"><img src="${getPlayerAvatarSrc(p)}"><div class="player-card-name">${p}</div></div>`; });
-            document.getElementById('all-players-container').innerHTML = gridHtml;
+            // عرض قوائم الفرق الرسمية
+            const squadsContainer = document.getElementById('teams-squads-container');
+            squadsContainer.innerHTML = '';
+            Object.keys(logos).forEach(teamName => {
+                let teamPlayers = playersList.filter(p => playersData[p]?.team === teamName);
+                let gridItems = teamPlayers.map(p => `
+                    <div class="player-card" onclick="showPlayerProfile('${p}')">
+                        <img src="${getPlayerAvatarSrc(p)}">
+                        <div class="player-card-name">${p}</div>
+                    </div>`).join('');
+                
+                squadsContainer.innerHTML += `
+                    <div class="team-squad-card">
+                        <div class="team-squad-header">
+                            <span><img src="${logos[teamName]}">${teamName}</span>
+                            <span style="font-size:12px; color:#aaa;">(${teamPlayers.length} لاعبين)</span>
+                        </div>
+                        <div class="players-grid">${gridItems}</div>
+                    </div>`;
+            });
         }
 
         function showPlayerProfile(playerName) {
@@ -383,8 +428,9 @@
             document.getElementById('profile-yellow').innerText = yellow;
             document.getElementById('profile-red').innerText = red;
             
-            // الكروت الإدارية
-            document.getElementById('profile-black').innerText = playersData[playerName]?.blackCards || 0;
+            let absences = getPlayerAbsences(playerName);
+            let manualBlack = playersData[playerName]?.blackCards || 0;
+            document.getElementById('profile-black').innerText = `${absences + manualBlack} (غياب:${absences})`;
             document.getElementById('profile-grey').innerText = playersData[playerName]?.greyCards || 0;
             
             let gkRecord = goalkeepers.find(g => g.name === playerName);

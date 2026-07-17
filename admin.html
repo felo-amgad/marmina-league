@@ -46,9 +46,9 @@
         
         .team-box { background: rgba(0,0,0,0.3); border: 1px solid var(--border); padding: 12px; border-radius: 10px; margin-bottom: 15px; }
         .team-header { font-size: 15px; font-weight: 900; color: var(--gold); border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 8px; margin-bottom: 10px; display:flex; justify-content:space-between; }
-        .player-team-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed rgba(255,255,255,0.05); font-size: 13px;}
-        .card-counter { display:flex; gap:8px; align-items:center; }
-        .card-btn { background: #333; border: 1px solid #555; color: white; padding: 2px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight:bold; }
+        .player-team-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed rgba(255,255,255,0.05); font-size: 12px;}
+        .card-counter { display:flex; gap:6px; align-items:center; }
+        .card-btn { background: #333; border: 1px solid #555; color: white; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight:bold; }
     </style>
 </head>
 <body>
@@ -75,7 +75,6 @@
                 <button class="btn-success" onclick="pushChangesToGitHub()">💾 حفظ وحساب الإحصائيات أوتوماتيكياً</button>
             </div>
 
-            <!-- إعدادات GitHub -->
             <div id="section-config" class="glass-card animated">
                 <div class="title">⚙️ إعدادات ربط GitHub</div>
                 <label>Token السري:</label><input type="password" id="gh-token" placeholder="ghp_...">
@@ -84,7 +83,6 @@
                 <button class="btn-primary" onclick="saveConfig()">حفظ محلياً</button>
             </div>
 
-            <!-- الحضور -->
             <div id="section-attendance" class="glass-card hidden animated">
                 <div class="title">🗓️ تسجيل الحضور الفردي</div>
                 <label>اختر الشهر:</label><select id="attend-month-select" onchange="updateFridaysList()"></select>
@@ -98,7 +96,6 @@
                 <div id="player-attendance-area" class="hidden">
                     <label style="color: var(--primary); font-weight:bold;">اختر الولد لتسجيل حضوره:</label>
                     <select id="attend-player-select" onchange="loadPlayerRecord()"></select>
-                    
                     <div class="checkbox-group">
                         <label><input type="checkbox" id="chk-friday" onchange="savePlayerRecord()"> جمعة</label>
                         <label><input type="checkbox" id="chk-study" onchange="savePlayerRecord()"> دراسي</label>
@@ -107,29 +104,25 @@
                 </div>
             </div>
 
-            <!-- إدارة الفرق والكروت الإدارية الجديدة -->
+            <!-- الفرق والكروت المطور -->
             <div id="section-teams" class="glass-card hidden animated">
-                <div class="title">👥 إدارة الفرق والكروت (أسود = -0.5 | رمادي = -0.25)</div>
+                <div class="title">👥 الفرق والكروت (أسود = -0.5 | كل كارتين رمادي = -0.5)</div>
+                <p style="font-size:11px; color:#00ff88; margin-bottom:15px;">💡 الغياب عن أي جمعة مفعّلة يضيف "كارت أسود تلقائي" ويخصم نص درجة أوتوماتيكياً!</p>
                 
-                <!-- نقل لاعب لفريق -->
                 <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 20px;">
                     <div style="font-size: 13px; color: var(--primary); margin-bottom: 8px; font-weight:bold;">🔄 نقل أو تحديد فريق لاعب</div>
-                    <select id="move-player-select"></select>
-                    <select id="move-team-select"></select>
+                    <select id="move-player-select"></select><select id="move-team-select"></select>
                     <button class="btn-primary" style="padding: 8px;" onclick="movePlayerToTeam()">حفظ فريق اللاعب</button>
                 </div>
 
                 <div id="teams-list-container"></div>
             </div>
 
-            <!-- المباريات وإدارة الأحداث -->
             <div id="section-matches" class="glass-card hidden animated">
                 <div class="title">⚽ إدارة المباريات والجولات</div>
-                
                 <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
                     <div style="font-size: 13px; color: var(--secondary); margin-bottom: 8px;">➕ إضافة جولة جديدة</div>
-                    <input type="text" id="new-round-name" placeholder="اسم الجولة">
-                    <input type="text" id="new-round-date" placeholder="التاريخ">
+                    <input type="text" id="new-round-name" placeholder="اسم الجولة"><input type="text" id="new-round-date" placeholder="التاريخ">
                     <button class="btn-secondary" onclick="addNewRound()">إنشاء الجولة</button>
                 </div>
 
@@ -146,29 +139,20 @@
 
                 <div id="match-editor-area" class="edit-box hidden">
                     <div class="score-display" id="live-score-display">0 - 0</div>
-                    
                     <div style="margin-bottom: 10px; border-bottom: 1px dashed var(--border); padding-bottom: 10px;">
                         <label>الحدث:</label>
                         <select id="event-type" onchange="toggleEventFields()">
-                            <option value="goals">⚽ تسجيل هدف</option>
-                            <option value="yellowCards">🟨 إنذار أصفر</option>
-                            <option value="redCards">🟥 طرد</option>
+                            <option value="goals">⚽ تسجيل هدف</option><option value="yellowCards">🟨 إنذار أصفر</option><option value="redCards">🟥 طرد</option>
                         </select>
-                        
-                        <label>لصالح فريق:</label>
-                        <select id="event-team" onchange="filterPlayersBySelectedTeam()"></select>
-                        
-                        <label>اللاعب الأساسي (متفلتر حسب الفريق):</label>
-                        <select id="event-player"></select>
+                        <label>لصالح فريق:</label><select id="event-team" onchange="filterPlayersBySelectedTeam()"></select>
+                        <label>اللاعب الأساسي (متفلتر حسب الفريق):</label><select id="event-player"></select>
 
                         <div id="assist-container">
-                            <label>صانع اللعب (أسيست):</label>
-                            <select id="event-assist"></select>
+                            <label>صانع اللعب (أسيست):</label><select id="event-assist"></select>
                             <label style="display:flex; align-items:center; gap:5px; margin-top:10px; color:var(--secondary); font-size:13px; font-weight:bold;">
                                 <input type="checkbox" id="event-owngoal"> هذا الهدف (هدف ذاتي بالخطأ)
                             </label>
                         </div>
-
                         <button class="btn-primary" style="margin-top: 15px;" onclick="addMatchEvent()">إضافة الحدث للمباراة</button>
                     </div>
 
@@ -177,7 +161,6 @@
                 </div>
             </div>
 
-            <!-- قسم حراس المرمى -->
             <div id="section-gk" class="glass-card hidden animated">
                 <div class="title">🧤 إدارة إحصائيات حراس المرمى</div>
                 <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 20px;">
@@ -193,13 +176,38 @@
     <script>
         let db = {}; 
 
-        // القوائم المبدئية للفرق اللي طلبتها
         const initialTeams = {
             "برشلونة": ["جون رامز", "مينا خالد", "يوساب", "كاراس عادل", "مارسلينو", "كاراس امجد"],
             "تشيلسي": ["ابانوب ناصر", "كيفين", "كاراس ميلاد", "شنودة سمير", "بولا عريان", "فادي عادل"],
             "بايرن ميونخ": ["يوحنا أسامة", "بافلي", "كيرلس عماد", "موسى سميح", "بيشوي هشام", "كيرلس مجدي", "ابراهيم لوكاس"],
             "ليفربول": ["امير طارق", "ماركو", "أبانوب ماهر", "كاراس عماد", "يوسف رامي", "فيلو"]
         };
+
+        function getPlayerAvatarSrc(text) {
+            if (!text || text.includes('بدون اسم')) return "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+            let cleanText = text.split('(')[0].replace(/<[^>]*>/g, '').trim();
+            if (db.playerImages && db.playerImages[cleanText]) return db.playerImages[cleanText];
+            if (db.playerImages) {
+                for (let name in db.playerImages) { if (cleanText.includes(name)) return db.playerImages[name]; }
+            }
+            return "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
+        }
+
+        // دالة حساب غياب الجمعة التلقائي
+        function getPlayerAbsences(playerName) {
+            let absences = 0;
+            if(!db.attendanceData) return 0;
+            db.attendanceData.forEach(month => {
+                month.fridays.forEach(fri => {
+                    if (fri.hasAttendance && fri.records) {
+                        if (!fri.records[playerName] || !fri.records[playerName].friday) {
+                            absences++;
+                        }
+                    }
+                });
+            });
+            return absences;
+        }
 
         function handleLogin() {
             if(document.getElementById('admin-pass').value === "1234") {
@@ -227,11 +235,9 @@
             db = await res.json();
             if (!db.goalkeepers) db.goalkeepers = [];
             
-            // تهيئة وتجهيز اللعيبه بالكروت والفرق
             if (!db.playersData) db.playersData = {};
             db.players.forEach(p => {
                 if(!db.playersData[p]) {
-                    // البحث عن فريقه المبدئي
                     let assignedTeam = "بدون فريق";
                     for(let t in initialTeams) { if(initialTeams[t].includes(p)) assignedTeam = t; }
                     db.playersData[p] = { team: assignedTeam, blackCards: 0, greyCards: 0 };
@@ -259,51 +265,56 @@
             document.getElementById('match-team-b').innerHTML = teamOptions;
             document.getElementById('move-team-select').innerHTML = teamOptions;
 
-            loadRoundMatchesList();
-            renderGoalkeepersManager();
-            renderTeamsManager();
+            loadRoundMatchesList(); renderGoalkeepersManager(); renderTeamsManager();
         }
 
-        /* ====== نظام الفرق والكروت الإدارية ====== */
+        /* ====== نظام الفرق والكروت (معادلة كل كارتين رمادي بنص) ====== */
         function renderTeamsManager() {
-            const container = document.getElementById('teams-list-container');
-            container.innerHTML = '';
+            const container = document.getElementById('teams-list-container'); container.innerHTML = '';
             
             Object.keys(db.logos).forEach(teamName => {
                 let teamPlayers = db.players.filter(p => db.playersData[p]?.team === teamName);
-                let totalBlack = 0; let totalGrey = 0;
-                teamPlayers.forEach(p => {
-                    totalBlack += (db.playersData[p].blackCards || 0);
-                    totalGrey += (db.playersData[p].greyCards || 0);
-                });
-                let totalDeduction = (totalBlack * 0.5) + (totalGrey * 0.25);
+                let totalBlackDeduct = 0; let totalGreyDeduct = 0;
+                
+                let rowsHtml = teamPlayers.map(p => {
+                    let absences = getPlayerAbsences(p);
+                    let manualBlack = db.playersData[p].blackCards || 0;
+                    let grey = db.playersData[p].greyCards || 0;
+                    
+                    let pBlackDeduct = (absences + manualBlack) * 0.5;
+                    let pGreyDeduct = Math.floor(grey / 2) * 0.5; // كل كارتين رمادي بنص درجة
+                    
+                    totalBlackDeduct += pBlackDeduct;
+                    totalGreyDeduct += pGreyDeduct;
 
-                let rowsHtml = teamPlayers.map(p => `
+                    return `
                     <div class="player-team-row">
                         <span>👤 ${p}</span>
                         <div class="card-counter">
-                            <span style="color:#aaa; font-size:11px;">⬛ أسود:</span>
+                            <span style="color:#00ff88; font-size:10px;" title="غياب جمعة تلقائي">غياب:${absences}</span>|
+                            <span style="color:#aaa; font-size:11px;">⬛ إداري:</span>
                             <button class="card-btn" onclick="updateAdminCard('${p}', 'black', -1)">-</button>
-                            <span style="font-weight:bold; color:#ff4b2b;">${db.playersData[p].blackCards || 0}</span>
+                            <span style="font-weight:bold; color:#ff4b2b;">${manualBlack}</span>
                             <button class="card-btn" style="background:#ff4b2b;" onclick="updateAdminCard('${p}', 'black', 1)">+</button>
                             
-                            <span style="color:#aaa; font-size:11px; margin-right:5px;">⬜ رمادي:</span>
+                            <span style="color:#aaa; font-size:11px; margin-right:4px;">⬜ رمادي:</span>
                             <button class="card-btn" onclick="updateAdminCard('${p}', 'grey', -1)">-</button>
-                            <span style="font-weight:bold; color:#ddd;">${db.playersData[p].greyCards || 0}</span>
+                            <span style="font-weight:bold; color:#ddd;">${grey}</span>
                             <button class="card-btn" style="background:#888;" onclick="updateAdminCard('${p}', 'grey', 1)">+</button>
                         </div>
-                    </div>
-                `).join('');
+                    </div>`;
+                }).join('');
+
+                let totalTeamDeduction = totalBlackDeduct + totalGreyDeduct;
 
                 container.innerHTML += `
                     <div class="team-box">
                         <div class="team-header">
                             <span>🛡️ ${teamName} (${teamPlayers.length} لاعبين)</span>
-                            <span style="color:#ff4b2b; font-size:12px;">إجمالي الخصم: -${totalDeduction} نقطة</span>
+                            <span style="color:#ff4b2b; font-size:12px;">إجمالي الخصم: -${totalTeamDeduction} نقطة</span>
                         </div>
                         ${rowsHtml || '<div style="font-size:12px;color:#aaa;text-align:center;">لا يوجد لاعبين في هذا الفريق</div>'}
-                    </div>
-                `;
+                    </div>`;
             });
         }
 
@@ -314,27 +325,18 @@
         }
 
         function movePlayerToTeam() {
-            const p = document.getElementById('move-player-select').value;
-            const t = document.getElementById('move-team-select').value;
-            db.playersData[p].team = t;
-            alert(`تم نقل ${p} إلى فريق ${t} بنجاح!`);
-            populateSelects();
+            const p = document.getElementById('move-player-select').value; const t = document.getElementById('move-team-select').value;
+            db.playersData[p].team = t; alert(`تم نقل ${p} إلى فريق ${t} بنجاح!`); populateSelects();
         }
 
-        /* ====== فلترة اللعيبه جوه الماتش ====== */
         function filterPlayersBySelectedTeam() {
-            const rId = document.getElementById('round-matches-select').value;
-            const mIdx = document.getElementById('match-edit-select').value;
+            const rId = document.getElementById('round-matches-select').value; const mIdx = document.getElementById('match-edit-select').value;
             if(mIdx === "") return;
-            
             const match = db.leagueData.find(r => r.id == rId).matches[mIdx];
-            const selectedSide = document.getElementById('event-team').value; // 'A' or 'B'
+            const selectedSide = document.getElementById('event-team').value;
             const teamName = selectedSide === 'A' ? match.teamA : match.teamB;
             
-            // فلترة اللعيبه اللي في الفريق ده بس
             let teamPlayers = db.players.filter(p => db.playersData[p]?.team === teamName);
-            
-            // إضافة خيار بدون اسم في الأول (عشان أهداف الخدام أو الأهداف الاعتبارية)
             let options = `<option value="بدون اسم (هدف خادم / اعتباري)">👤 بدون اسم (هدف خادم / اعتباري)</option>`;
             options += teamPlayers.map(p => `<option value="${p}">${p}</option>`).join('');
             
@@ -342,10 +344,8 @@
             document.getElementById('event-assist').innerHTML = `<option value="">-- بدون أسيست --</option>` + teamPlayers.map(p => `<option value="${p}">${p}</option>`).join('');
         }
 
-        /* ====== نظام الحضور ====== */
         function updateFridaysList() {
-            const mIdx = document.getElementById('attend-month-select').value;
-            const fSelect = document.getElementById('attend-friday-select');
+            const mIdx = document.getElementById('attend-month-select').value; const fSelect = document.getElementById('attend-friday-select');
             if(db.attendanceData[mIdx] && db.attendanceData[mIdx].fridays.length > 0) {
                 fSelect.innerHTML = db.attendanceData[mIdx].fridays.map((f, i) => `<option value="${i}">${f.name} (${f.date})</option>`).join('');
                 document.getElementById('player-attendance-area').classList.remove('hidden'); loadAttendanceForm();
@@ -378,18 +378,20 @@
                 study: document.getElementById('chk-study').checked,
                 activity: document.getElementById('chk-activity').checked
             };
+            renderTeamsManager(); // تحديث الغياب التلقائي في قائمة الكروت
         }
 
         function updateFridayMeta() {
             const f = db.attendanceData[document.getElementById('attend-month-select').value].fridays[document.getElementById('attend-friday-select').value];
             f.visible = document.getElementById('friday-visible-check').checked; f.hasAttendance = document.getElementById('friday-active-check').checked;
+            renderTeamsManager();
         }
 
-        /* ====== نظام المباريات ====== */
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.glass-card').forEach(c => { if(c.id !== 'login-section') c.classList.add('hidden'); });
             document.getElementById(`btn-tab-${tab}`).classList.add('active'); document.getElementById(`section-${tab}`).classList.remove('hidden');
+            if(tab === 'teams') renderTeamsManager();
         }
 
         function addNewRound() {
@@ -426,14 +428,11 @@
             const match = db.leagueData.find(r => r.id == rId).matches[mIdx];
             document.getElementById('live-score-display').innerText = `${match.teamA} (${match.scoreA}) - (${match.scoreB}) ${match.teamB}`;
             document.getElementById('event-team').innerHTML = `<option value="A">${match.teamA}</option><option value="B">${match.teamB}</option>`;
-            toggleEventFields(); 
-            filterPlayersBySelectedTeam(); // تشغيل الفلترة التلقائية
-            renderMatchEvents(match, mIdx);
+            toggleEventFields(); filterPlayersBySelectedTeam(); renderMatchEvents(match, mIdx);
         }
 
         function toggleEventFields() {
-            const type = document.getElementById('event-type').value;
-            const assistContainer = document.getElementById('assist-container');
+            const type = document.getElementById('event-type').value; const assistContainer = document.getElementById('assist-container');
             if(type === 'goals') { assistContainer.classList.remove('hidden'); } else { assistContainer.classList.add('hidden'); }
         }
 
@@ -449,7 +448,7 @@
             let eventText = player;
             if (type === 'goals') {
                 if (isOwnGoal) { eventText += " <span class='own-goal'>(هدف ذاتي)</span>"; } 
-                else if (assist) { eventText += ` (أسيست ${assist})`; }
+                else if (assist && !player.includes('بدون اسم')) { eventText += ` (أسيست ${assist})`; }
                 if (team === 'A') match.scoreA++; else match.scoreB++;
             }
             match[`events${team}`][type].push(eventText);
@@ -496,7 +495,6 @@
             }
         }
 
-        /* ====== نظام حراس المرمى ====== */
         function addGoalkeeper() {
             const name = document.getElementById('gk-player-select').value;
             if (db.goalkeepers.some(g => g.name === name)) return alert("هذا اللاعب مضاف بالفعل كحارس مرمى!");
@@ -511,8 +509,7 @@
         }
 
         function updateGKStat(name, field, value) {
-            let gk = db.goalkeepers.find(g => g.name === name);
-            if (gk) { gk[field] = parseFloat(value) || 0; }
+            let gk = db.goalkeepers.find(g => g.name === name); if (gk) { gk[field] = parseFloat(value) || 0; }
         }
 
         function renderGoalkeepersManager() {
@@ -535,7 +532,6 @@
             });
         }
 
-        /* ====== الحساب التلقائي والرفع لـ GitHub ====== */
         function autoCalculateStats() {
             let scorers = {}; let assists = {};
             db.leagueData.forEach(round => {
@@ -581,7 +577,7 @@
                 const putRes = await fetch(url, {
                     method: "PUT",
                     headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: "تحديث الفرق والكروت والخصومات ⚡", content: base64Content, sha: currentSha })
+                    body: JSON.stringify({ message: "تحديث الفرق والكروت وقوائم اللعيبه ⚡", content: base64Content, sha: currentSha })
                 });
 
                 if(putRes.ok) alert("🎉 تم الحفظ بنجاح! الموقع اتحدث بالكامل والخصومات اتطبقت على جدول الدوري.");
