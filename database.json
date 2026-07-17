@@ -592,7 +592,103 @@
           "date": "17 يوليو 2026",
           "visible": false,
           "hasAttendance": false,
-          "records": {}
+          "records": {
+            "أبانوب ماهر": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "أبراهيم لوكاس": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "بافلي": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "بولا عريان": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "بيشوي هشام": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "جون رامز": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "شنودة سمير": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "عبدالمسيح سعيد": {
+              "friday": false,
+              "study": false,
+              "activity": false
+            },
+            "فيلو": {
+              "friday": false,
+              "study": false,
+              "activity": false
+            },
+            "كاراس عادل": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "كيرلس عماد": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "كيرلس مجدي": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "كيفين": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "ماركو امير": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "موسى سميح": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "مينا خالد": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "يوحنا أسامة": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "يوساب": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            },
+            "يوسف رامي": {
+              "friday": true,
+              "study": false,
+              "activity": false
+            }
+          }
         },
         {
           "name": "الجمعة الرابعة",
@@ -626,5 +722,157 @@
       "goalsConceded": 4,
       "penaltiesSaved": 0
     }
-  ]
+  ],
+  "playersData": {
+    "أبانوب ماهر": {
+      "team": "ليفربول",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "أبانوب ناصر": {
+      "team": "بدون فريق",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "أبراهيم لوكاس": {
+      "team": "بدون فريق",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "أمير ملاك": {
+      "team": "بدون فريق",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "امير طارق": {
+      "team": "ليفربول",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "بافلي": {
+      "team": "بايرن ميونخ",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "بولا عريان": {
+      "team": "تشيلسي",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "بيتر عماد": {
+      "team": "بدون فريق",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "بيشوي هشام": {
+      "team": "بايرن ميونخ",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "جون رامز": {
+      "team": "برشلونة",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "شنودة سمير": {
+      "team": "تشيلسي",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "عبدالمسيح سعيد": {
+      "team": "بدون فريق",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "فادي عادل": {
+      "team": "تشيلسي",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "فيلو": {
+      "team": "ليفربول",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "كاراس امجد": {
+      "team": "برشلونة",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "كاراس عادل": {
+      "team": "برشلونة",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "كاراس عماد": {
+      "team": "ليفربول",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "كاراس ميلاد": {
+      "team": "تشيلسي",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "كيرلس عماد": {
+      "team": "بايرن ميونخ",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "كيرلس مجدي": {
+      "team": "بايرن ميونخ",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "كيفين": {
+      "team": "تشيلسي",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "مارسلينو": {
+      "team": "برشلونة",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "مارك عاطف": {
+      "team": "بدون فريق",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "ماركو امير": {
+      "team": "بدون فريق",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "موسى سميح": {
+      "team": "بايرن ميونخ",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "مينا خالد": {
+      "team": "برشلونة",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "مينا رزق": {
+      "team": "بدون فريق",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "يوحنا أسامة": {
+      "team": "بايرن ميونخ",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "يوساب": {
+      "team": "برشلونة",
+      "blackCards": 0,
+      "greyCards": 0
+    },
+    "يوسف رامي": {
+      "team": "ليفربول",
+      "blackCards": 0,
+      "greyCards": 0
+    }
+  }
 }
