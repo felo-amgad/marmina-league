@@ -26,7 +26,6 @@
         .content { padding: 0 15px; }
         .glass-card { background: var(--card-bg); backdrop-filter: blur(10px); border: 1px solid var(--card-border); border-radius: 15px; padding: 15px; margin-bottom: 20px; box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); transition: 0.3s; }
         
-        /* المباريات */
         .round-item { display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
         .round-name { font-size: 18px; font-weight: 900; color: var(--primary-accent); }
         .round-date { color: var(--text-muted); font-size: 13px; margin-top: 5px;}
@@ -47,7 +46,6 @@
         .event-item span { color: #fff; font-weight: 700; font-size: 13px; text-align: right; line-height: 1.4; }
         .own-goal { color: var(--secondary-accent) !important; font-size: 10px !important; }
         
-        /* الترتيب والإحصائيات */
         .league-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; }
         .league-table th { color: var(--primary-accent); padding: 8px 2px; border-bottom: 1px solid rgba(255,255,255,0.2); font-size: 11px; }
         .league-table td { padding: 10px 2px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; font-weight: bold; }
@@ -268,7 +266,8 @@
             attendanceData.forEach(month => {
                 month.fridays.forEach(fri => {
                     if (fri.hasAttendance && fri.records) {
-                        if (!fri.records[playerName] || !fri.records[playerName].friday) { absences++; }
+                        let rec = fri.records[playerName];
+                        if (!rec || (!rec.friday && !rec.excused)) { absences++; }
                     }
                 });
             });
@@ -447,14 +446,38 @@
             document.getElementById('player-profile-modal').style.display = 'flex';
         }
 
+        // ================= التقرير الشهري والاعتذار للشباب =================
         function renderAttendance() {
             const container = document.getElementById('attendance-view'); container.innerHTML = '';
             let visible = false;
             attendanceData.forEach((m, mIdx) => {
                 if(!m.fridays.some(f=>f.visible)) return;
                 visible = true;
-                let fridays = m.fridays.map((f, fIdx) => f.visible ? `<div class="friday-card"><div><div class="friday-name">${f.name}</div><div class="friday-date">${f.date}</div></div>${f.hasAttendance ? `<button class="attendance-btn" onclick="showAttendanceDetails(${mIdx}, ${fIdx})">عرض الكشف</button>` : ''}</div>` : '').join('');
-                container.innerHTML += `<div class="glass-card animated"><div class="month-header" onclick="toggleMonth(${mIdx})"><span>شهر ${m.month} 📅</span><span class="arrow-icon" id="month-arrow-${mIdx}">▼</span></div><div class="month-body" id="month-body-${mIdx}">${fridays}</div></div>`;
+                
+                let fridaysHtml = m.fridays.map((f, fIdx) => f.visible ? `<div class="friday-card"><div><div class="friday-name">${f.name}</div><div class="friday-date">${f.date}</div></div>${f.hasAttendance ? `<button class="attendance-btn" onclick="showAttendanceDetails(${mIdx}, ${fIdx})">عرض الكشف</button>` : ''}</div>` : '').join('');
+                
+                // إضافة التقرير الإجمالي في آخر الشهر
+                let summaryHtml = `<div onclick="toggleSummary(${mIdx})" style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-top: 15px; text-align: center; cursor: pointer; color: var(--gold); font-size: 13px; font-weight: bold; border: 1px dashed var(--gold);">📊 التقرير الإجمالي لـ شهر ${m.month} ▼</div>`;
+                summaryHtml += `<div id="month-summary-${mIdx}" style="display:none; margin-top: 10px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                    <table class="league-table">
+                        <thead><tr><th style="text-align: right;">الاسم</th><th>جمعة</th><th style="color:#ffd700;">اعتذار</th><th>دراسي</th><th>نشاط</th></tr></thead>
+                        <tbody>`;
+                
+                playersList.sort().forEach(p => {
+                    let f=0, e=0, s=0, a=0;
+                    m.fridays.forEach(fri => {
+                        if(fri.visible && fri.hasAttendance && fri.records && fri.records[p]) {
+                            if(fri.records[p].friday) f++;
+                            if(fri.records[p].excused) e++;
+                            if(fri.records[p].study) s++;
+                            if(fri.records[p].activity) a++;
+                        }
+                    });
+                    summaryHtml += `<tr style="border-bottom: 1px solid rgba(255,255,255,0.05);"><td style="text-align:right;">${p}</td><td>${f}</td><td style="color:#ffd700;">${e}</td><td>${s}</td><td>${a}</td></tr>`;
+                });
+                summaryHtml += `</tbody></table></div>`;
+
+                container.innerHTML += `<div class="glass-card animated"><div class="month-header" onclick="toggleMonth(${mIdx})"><span>شهر ${m.month} 📅</span><span class="arrow-icon" id="month-arrow-${mIdx}">▼</span></div><div class="month-body" id="month-body-${mIdx}">${fridaysHtml}${summaryHtml}</div></div>`;
             });
             if(!visible) container.innerHTML = '<div style="text-align:center;color:#aaa;">لا يوجد كشوفات حضور حالياً.</div>';
         }
@@ -464,13 +487,19 @@
             if (b.style.display === "block") { b.style.display = "none"; a.classList.remove("arrow-rotated"); } else { b.style.display = "block"; a.classList.add("arrow-rotated"); }
         }
 
+        function toggleSummary(idx) {
+            const s = document.getElementById(`month-summary-${idx}`);
+            s.style.display = s.style.display === 'block' ? 'none' : 'block';
+        }
+
         function showAttendanceDetails(mIdx, fIdx) {
             const fri = attendanceData[mIdx].fridays[fIdx]; const modal = document.getElementById('attendance-modal');
             document.getElementById('modal-title').innerText = `كشف تفصيلي - ${fri.name}`;
             const tbody = document.getElementById('modal-table-body'); tbody.innerHTML = '';
             playersList.sort().forEach(p => {
-                let r = fri.records[p] || { friday: false, study: false, activity: false };
-                tbody.innerHTML += `<tr><td style="text-align: right; display: flex; align-items: center; gap: 8px; font-weight: bold;"><img src="${getPlayerAvatarSrc(p)}" style="width:25px; height:25px; border-radius:50%; object-fit:cover;">${p}</td><td>${r.friday?'✔️':'&mdash;'}</td><td>${r.study?'✔️':'&mdash;'}</td><td>${r.activity?'✔️':'&mdash;'}</td></tr>`;
+                let r = fri.records[p] || { friday: false, excused: false, study: false, activity: false };
+                let friStatus = r.friday ? '✔️' : (r.excused ? '<span style="color:#ffd700; font-size:11px;">معتذر🤝</span>' : '&mdash;');
+                tbody.innerHTML += `<tr><td style="text-align: right; display: flex; align-items: center; gap: 8px; font-weight: bold;"><img src="${getPlayerAvatarSrc(p)}" style="width:25px; height:25px; border-radius:50%; object-fit:cover;">${p}</td><td>${friStatus}</td><td>${r.study?'✔️':'&mdash;'}</td><td>${r.activity?'✔️':'&mdash;'}</td></tr>`;
             });
             modal.style.display = 'flex';
         }
