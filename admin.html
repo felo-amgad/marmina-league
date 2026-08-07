@@ -47,7 +47,9 @@
         .player-team-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed rgba(255,255,255,0.05); font-size: 12px;}
         .card-counter { display:flex; gap:6px; align-items:center; }
         .card-btn { background: #333; border: 1px solid #555; color: white; padding: 2px 6px; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight:bold; }
-
+        .btn-delete-match { background: transparent; color: #ff4b2b; border: 1px solid #ff4b2b; margin-top: 15px; width:100%;}
+        .btn-delete-match:hover { background: #ff4b2b; color: white; }
+        
         .league-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; color: #fff;}
         .league-table th { color: var(--primary); padding: 8px 2px; border-bottom: 1px solid rgba(255,255,255,0.2); font-size: 11px; }
         .league-table td { padding: 10px 2px; border-bottom: 1px solid rgba(255,255,255,0.1); text-align: center; font-weight: bold; }
@@ -85,10 +87,24 @@
                 <button class="btn-primary" onclick="saveConfig()">حفظ محلياً</button>
             </div>
 
-            <!-- الحضور والتقرير الشهري -->
+            <!-- الحضور -->
             <div id="section-attendance" class="glass-card hidden animated">
                 <div class="title">🗓️ تسجيل الحضور الفردي والاعتذارات</div>
-                <label>اختر الشهر:</label><select id="attend-month-select" onchange="updateFridaysList()"></select>
+                
+                <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 20px;">
+                    <div style="font-size: 13px; color: var(--primary); margin-bottom: 10px; font-weight:bold;">➕ إدارة الشهور وتواريخ الجمعات</div>
+                    <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+                        <input type="text" id="new-month-name" placeholder="اسم الشهر (مثال: أغسطس)" style="margin:0;">
+                        <button class="btn-secondary" style="margin:0; padding:8px 15px; width:auto;" onclick="addNewMonth()">+ شهر</button>
+                    </div>
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="new-friday-name" placeholder="اسم الجمعة" style="margin:0; flex:1;">
+                        <input type="text" id="new-friday-date" placeholder="التاريخ" style="margin:0; flex:1;">
+                        <button class="btn-primary" style="margin:0; padding:8px; width:auto;" onclick="addNewFriday()">+ جمعة</button>
+                    </div>
+                </div>
+
+                <label>اختر الشهر:</label><select id="attend-month-select" onchange="updateFridaysListAndLoad()"></select>
                 <label>اختر الجمعة:</label><select id="attend-friday-select" onchange="loadAttendanceForm()"></select>
                 
                 <div style="margin-bottom: 15px; display: flex; gap: 10px; border-bottom: 1px solid var(--border); padding-bottom: 15px;">
@@ -114,7 +130,6 @@
             <!-- الفرق والكروت -->
             <div id="section-teams" class="glass-card hidden animated">
                 <div class="title">👥 الفرق والكروت (أسود = -0.5 | رمادي = -0.5/زوج)</div>
-                <p style="font-size:11px; color:#00ff88; margin-bottom:15px;">💡 الغياب بدون عذر يضيف "كارت أسود تلقائي" ويخصم نص درجة أوتوماتيكياً!</p>
                 <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 20px;">
                     <div style="font-size: 13px; color: var(--primary); margin-bottom: 8px; font-weight:bold;">🔄 نقل أو تحديد فريق لاعب</div>
                     <select id="move-player-select"></select><select id="move-team-select"></select>
@@ -188,7 +203,6 @@
             return "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
         }
 
-        // دالة حساب غياب الجمعة (بتتجاهل الأعذار)
         function getPlayerAbsences(playerName) {
             let absences = 0;
             if(!db.attendanceData) return 0;
@@ -196,7 +210,6 @@
                 month.fridays.forEach(fri => {
                     if (fri.hasAttendance && fri.records) {
                         let rec = fri.records[playerName];
-                        // لو مسجلناهوش خالص، أو مش حاضر ومش معتذر = غياب بدون عذر
                         if (!rec || (!rec.friday && !rec.excused)) { absences++; }
                     }
                 });
@@ -229,7 +242,6 @@
             const res = await fetch('database.json?v=' + new Date().getTime());
             db = await res.json();
             if (!db.goalkeepers) db.goalkeepers = [];
-            
             if (!db.playersData) db.playersData = {};
             db.players.forEach(p => {
                 if(!db.playersData[p]) {
@@ -250,7 +262,6 @@
             document.getElementById('gk-player-select').innerHTML = sortedPlayers.map(p => `<option value="${p}">${p}</option>`).join('');
             document.getElementById('move-player-select').innerHTML = sortedPlayers.map(p => `<option value="${p}">${p} (${db.playersData[p]?.team || ''})</option>`).join('');
             
-            updateFridaysList();
             document.getElementById('round-matches-select').innerHTML = db.leagueData.map(r => `<option value="${r.id}">${r.name}</option>`).join('');
             
             let teamOptions = Object.keys(db.logos).map(t => `<option value="${t}">${t}</option>`).join('');
@@ -258,12 +269,82 @@
             document.getElementById('match-team-b').innerHTML = teamOptions;
             document.getElementById('move-team-select').innerHTML = teamOptions;
 
-            loadRoundMatchesList(); renderGoalkeepersManager(); renderTeamsManager();
+            loadRoundMatchesList(); 
+            renderGoalkeepersManager(); 
+            renderTeamsManager();
+            
+            autoSelectCurrentFriday(); // الدالة السحرية للاختيار التلقائي للتاريخ الحالي
+        }
+
+        // ================= الاختيار التلقائي للجمعة الحالية =================
+        function autoSelectCurrentFriday() {
+            if (!db.attendanceData || db.attendanceData.length === 0) return;
+            
+            const arabicMonths = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+            let d = new Date();
+            let day = d.getDay(); 
+            // حساب الجمعة بتاعت الأسبوع الحالي
+            let diff = (day === 6) ? -1 : (5 - day); 
+            d.setDate(d.getDate() + diff);
+            
+            let monthName = arabicMonths[d.getMonth()];
+            let dayNum = d.getDate();
+            
+            let mIdx = db.attendanceData.findIndex(m => m.month.trim() === monthName || m.month.includes(monthName));
+            
+            if (mIdx !== -1) {
+                document.getElementById('attend-month-select').value = mIdx;
+                updateFridaysList(); 
+                
+                let fIdx = db.attendanceData[mIdx].fridays.findIndex(f => {
+                    let match = f.date.match(/\d+/);
+                    return match && parseInt(match[0]) === dayNum;
+                });
+                
+                if (fIdx !== -1) {
+                    document.getElementById('attend-friday-select').value = fIdx;
+                } else {
+                    document.getElementById('attend-friday-select').value = db.attendanceData[mIdx].fridays.length - 1;
+                }
+            } else {
+                document.getElementById('attend-month-select').value = db.attendanceData.length - 1;
+                updateFridaysList();
+                let lastFridays = db.attendanceData[db.attendanceData.length - 1].fridays;
+                if (lastFridays.length > 0) { document.getElementById('attend-friday-select').value = lastFridays.length - 1; }
+            }
+            loadAttendanceForm();
+        }
+
+        function addNewMonth() {
+            const name = document.getElementById('new-month-name').value.trim();
+            if(!name) return alert("اكتب اسم الشهر أولاً!");
+            db.attendanceData.push({ month: name, fridays: [] });
+            document.getElementById('new-month-name').value = '';
+            populateSelects();
+            document.getElementById('attend-month-select').value = db.attendanceData.length - 1;
+            updateFridaysListAndLoad();
+            alert(`تم إضافة شهر ${name} بنجاح!`);
+        }
+
+        function addNewFriday() {
+            const mIdx = document.getElementById('attend-month-select').value;
+            if(mIdx === "" || !db.attendanceData[mIdx]) return alert("اختر أو أضف شهراً أولاً!");
+            const name = document.getElementById('new-friday-name').value.trim();
+            const date = document.getElementById('new-friday-date').value.trim();
+            if(!name || !date) return alert("اكتب اسم الجمعة وتاريخها!");
+            
+            db.attendanceData[mIdx].fridays.push({ name: name, date: date, visible: false, hasAttendance: false, records: {} });
+            document.getElementById('new-friday-name').value = '';
+            document.getElementById('new-friday-date').value = '';
+            
+            updateFridaysList();
+            document.getElementById('attend-friday-select').value = db.attendanceData[mIdx].fridays.length - 1;
+            loadAttendanceForm();
+            alert("تم إضافة الجمعة بنجاح!");
         }
 
         function renderTeamsManager() {
             const container = document.getElementById('teams-list-container'); container.innerHTML = '';
-            
             Object.keys(db.logos).forEach(teamName => {
                 let teamPlayers = db.players.filter(p => db.playersData[p]?.team === teamName);
                 let totalBlackDeduct = 0; let totalGreyDeduct = 0;
@@ -272,18 +353,16 @@
                     let absences = getPlayerAbsences(p);
                     let manualBlack = db.playersData[p].blackCards || 0;
                     let grey = db.playersData[p].greyCards || 0;
-                    
                     let pBlackDeduct = (absences + manualBlack) * 0.5;
-                    let pGreyDeduct = Math.floor(grey / 2) * 0.5; // كل 2 رمادي بنص
+                    let pGreyDeduct = Math.floor(grey / 2) * 0.5; 
                     
-                    totalBlackDeduct += pBlackDeduct;
-                    totalGreyDeduct += pGreyDeduct;
+                    totalBlackDeduct += pBlackDeduct; totalGreyDeduct += pGreyDeduct;
 
                     return `
                     <div class="player-team-row">
                         <span>👤 ${p}</span>
                         <div class="card-counter">
-                            <span style="color:#00ff88; font-size:10px;" title="غياب جمعة بدون عذر">غياب بدون عذر:${absences}</span>|
+                            <span style="color:#00ff88; font-size:10px;">غياب:${absences}</span>|
                             <span style="color:#aaa; font-size:11px;">⬛ إداري:</span>
                             <button class="card-btn" onclick="updateAdminCard('${p}', 'black', -1)">-</button>
                             <span style="font-weight:bold; color:#ff4b2b;">${manualBlack}</span>
@@ -297,13 +376,11 @@
                     </div>`;
                 }).join('');
 
-                let totalTeamDeduction = totalBlackDeduct + totalGreyDeduct;
-
                 container.innerHTML += `
                     <div class="team-box">
                         <div class="team-header">
                             <span>🛡️ ${teamName} (${teamPlayers.length} لاعبين)</span>
-                            <span style="color:#ff4b2b; font-size:12px;">إجمالي الخصم: -${totalTeamDeduction} نقطة</span>
+                            <span style="color:#ff4b2b; font-size:12px;">إجمالي الخصم: -${totalBlackDeduct + totalGreyDeduct} نقطة</span>
                         </div>
                         ${rowsHtml || '<div style="font-size:12px;color:#aaa;text-align:center;">لا يوجد لاعبين في هذا الفريق</div>'}
                     </div>`;
@@ -336,19 +413,28 @@
             document.getElementById('event-assist').innerHTML = `<option value="">-- بدون أسيست --</option>` + teamPlayers.map(p => `<option value="${p}">${p}</option>`).join('');
         }
 
-        /* ====== نظام الحضور المطور بالاعتذار والتقرير ====== */
+        function updateFridaysListAndLoad() {
+            updateFridaysList();
+            loadAttendanceForm();
+        }
+
         function updateFridaysList() {
-            const mIdx = document.getElementById('attend-month-select').value; const fSelect = document.getElementById('attend-friday-select');
-            document.getElementById('monthly-summary-container').innerHTML = ''; // تفريغ التقرير القديم
-            if(db.attendanceData[mIdx] && db.attendanceData[mIdx].fridays.length > 0) {
+            const mIdx = document.getElementById('attend-month-select').value; 
+            const fSelect = document.getElementById('attend-friday-select');
+            document.getElementById('monthly-summary-container').innerHTML = ''; 
+            
+            if(mIdx !== "" && db.attendanceData[mIdx] && db.attendanceData[mIdx].fridays.length > 0) {
                 fSelect.innerHTML = db.attendanceData[mIdx].fridays.map((f, i) => `<option value="${i}">${f.name} (${f.date})</option>`).join('');
-                document.getElementById('player-attendance-area').classList.remove('hidden'); loadAttendanceForm();
-            } else { fSelect.innerHTML = ''; document.getElementById('player-attendance-area').classList.add('hidden'); }
+                document.getElementById('player-attendance-area').classList.remove('hidden'); 
+            } else { 
+                fSelect.innerHTML = '<option value="">لا يوجد جمعات مسجلة</option>'; 
+                document.getElementById('player-attendance-area').classList.add('hidden'); 
+            }
         }
 
         function loadAttendanceForm() {
             const mIdx = document.getElementById('attend-month-select').value; const fIdx = document.getElementById('attend-friday-select').value;
-            if(!db.attendanceData[mIdx] || !db.attendanceData[mIdx].fridays[fIdx]) return;
+            if(mIdx === "" || fIdx === "" || !db.attendanceData[mIdx] || !db.attendanceData[mIdx].fridays[fIdx]) return;
             const fri = db.attendanceData[mIdx].fridays[fIdx];
             document.getElementById('friday-visible-check').checked = fri.visible; document.getElementById('friday-active-check').checked = fri.hasAttendance;
             if(!fri.records) fri.records = {}; loadPlayerRecord();
@@ -366,12 +452,10 @@
             document.getElementById('chk-activity').checked = records[player].activity;
         }
 
-        // لو داس انه حضر، نشيل علامة الاعتذار
         function handleFridayChange() {
             if(document.getElementById('chk-friday').checked) document.getElementById('chk-excused').checked = false;
             savePlayerRecord();
         }
-        // لو داس اعتذار، نشيل علامة الحضور
         function handleExcusedChange() {
             if(document.getElementById('chk-excused').checked) document.getElementById('chk-friday').checked = false;
             savePlayerRecord();
@@ -386,7 +470,7 @@
                 study: document.getElementById('chk-study').checked,
                 activity: document.getElementById('chk-activity').checked
             };
-            renderTeamsManager(); // عشان يحسب الغياب الجديد فوراً في الكروت
+            renderTeamsManager();
         }
 
         function updateFridayMeta() {
@@ -399,16 +483,7 @@
             const mIdx = document.getElementById('attend-month-select').value;
             if(mIdx === "") return;
             const monthData = db.attendanceData[mIdx];
-            
-            let html = `
-                <table class="league-table">
-                    <thead>
-                        <tr style="background:rgba(0,0,0,0.5);">
-                            <th style="text-align:right;">الاسم</th><th>جمعة</th><th style="color:#ffd700;">اعتذار</th><th>دراسي</th><th>نشاط</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
+            let html = `<table class="league-table"><thead><tr style="background:rgba(0,0,0,0.5);"><th style="text-align:right;">الاسم</th><th>جمعة</th><th style="color:#ffd700;">اعتذار</th><th>دراسي</th><th>نشاط</th></tr></thead><tbody>`;
             db.players.sort().forEach(p => {
                 let f=0, e=0, s=0, a=0;
                 monthData.fridays.forEach(fri => {
@@ -425,7 +500,6 @@
             document.getElementById('monthly-summary-container').innerHTML = html;
         }
 
-        /* ====== نظام المباريات ====== */
         function switchTab(tab) {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.glass-card').forEach(c => { if(c.id !== 'login-section') c.classList.add('hidden'); });
@@ -616,10 +690,10 @@
                 const putRes = await fetch(url, {
                     method: "PUT",
                     headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: "تحديث النتائج والفرق والغيابات التلقائية ⚡", content: base64Content, sha: currentSha })
+                    body: JSON.stringify({ message: "تحديث الشهور، والجمعات التلقائية والاعتذارات ⚡", content: base64Content, sha: currentSha })
                 });
 
-                if(putRes.ok) alert("🎉 تم الحفظ بنجاح! الموقع اتحدث بالكامل والخصومات والاعتذارات اتطبقت.");
+                if(putRes.ok) alert("🎉 تم الحفظ بنجاح!");
                 else alert("❌ فشل الحفظ. راجع صلاحيات الـ Token.");
             } catch (error) { alert("❌ خطأ: " + error.message); }
         }

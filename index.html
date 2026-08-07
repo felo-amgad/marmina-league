@@ -237,7 +237,6 @@
                 goalkeepers = data.goalkeepers || [];
                 playersData = data.playersData || {};
 
-                // تهيئة الفرق للشباب لو لسه متسجلتش
                 playersList.forEach(p => {
                     if(!playersData[p]) {
                         let assignedTeam = "بدون فريق";
@@ -383,7 +382,6 @@
                 });
             }
 
-            // عرض قوائم الفرق الرسمية
             const squadsContainer = document.getElementById('teams-squads-container');
             squadsContainer.innerHTML = '';
             Object.keys(logos).forEach(teamName => {
@@ -446,19 +444,28 @@
             document.getElementById('player-profile-modal').style.display = 'flex';
         }
 
-        // ================= التقرير الشهري والاعتذار للشباب =================
+        // ================= فتح الشهر الحالي أوتوماتيكياً للشباب =================
         function renderAttendance() {
             const container = document.getElementById('attendance-view'); container.innerHTML = '';
             let visible = false;
+            
+            // معرفة الشهر الحالي باللغة العربية
+            const arabicMonths = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+            let currentMonthName = arabicMonths[new Date().getMonth()];
+
             attendanceData.forEach((m, mIdx) => {
                 if(!m.fridays.some(f=>f.visible)) return;
                 visible = true;
                 
+                // هل هذا هو الشهر الحالي؟
+                let isCurrentMonth = m.month.includes(currentMonthName);
+                let displayStyle = isCurrentMonth ? 'block' : 'none';
+                let arrowClass = isCurrentMonth ? 'arrow-rotated' : '';
+
                 let fridaysHtml = m.fridays.map((f, fIdx) => f.visible ? `<div class="friday-card"><div><div class="friday-name">${f.name}</div><div class="friday-date">${f.date}</div></div>${f.hasAttendance ? `<button class="attendance-btn" onclick="showAttendanceDetails(${mIdx}, ${fIdx})">عرض الكشف</button>` : ''}</div>` : '').join('');
                 
-                // إضافة التقرير الإجمالي في آخر الشهر
                 let summaryHtml = `<div onclick="toggleSummary(${mIdx})" style="background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-top: 15px; text-align: center; cursor: pointer; color: var(--gold); font-size: 13px; font-weight: bold; border: 1px dashed var(--gold);">📊 التقرير الإجمالي لـ شهر ${m.month} ▼</div>`;
-                summaryHtml += `<div id="month-summary-${mIdx}" style="display:none; margin-top: 10px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                summaryHtml += `<div id="month-summary-${mIdx}" style="display:none; margin-top: 10px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; overflow-x:auto;">
                     <table class="league-table">
                         <thead><tr><th style="text-align: right;">الاسم</th><th>جمعة</th><th style="color:#ffd700;">اعتذار</th><th>دراسي</th><th>نشاط</th></tr></thead>
                         <tbody>`;
@@ -477,7 +484,7 @@
                 });
                 summaryHtml += `</tbody></table></div>`;
 
-                container.innerHTML += `<div class="glass-card animated"><div class="month-header" onclick="toggleMonth(${mIdx})"><span>شهر ${m.month} 📅</span><span class="arrow-icon" id="month-arrow-${mIdx}">▼</span></div><div class="month-body" id="month-body-${mIdx}">${fridaysHtml}${summaryHtml}</div></div>`;
+                container.innerHTML += `<div class="glass-card animated"><div class="month-header" onclick="toggleMonth(${mIdx})"><span>شهر ${m.month} 📅</span><span class="arrow-icon ${arrowClass}" id="month-arrow-${mIdx}">▼</span></div><div class="month-body" id="month-body-${mIdx}" style="display:${displayStyle};">${fridaysHtml}${summaryHtml}</div></div>`;
             });
             if(!visible) container.innerHTML = '<div style="text-align:center;color:#aaa;">لا يوجد كشوفات حضور حالياً.</div>';
         }
