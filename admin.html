@@ -87,10 +87,11 @@
                 <button class="btn-primary" onclick="saveConfig()">حفظ محلياً</button>
             </div>
 
-            <!-- الحضور -->
+            <!-- الحضور والتقرير الشهري -->
             <div id="section-attendance" class="glass-card hidden animated">
                 <div class="title">🗓️ تسجيل الحضور الفردي والاعتذارات</div>
                 
+                <!-- إضافة الشهور والجمعات الجديدة ديناميكياً -->
                 <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 20px;">
                     <div style="font-size: 13px; color: var(--primary); margin-bottom: 10px; font-weight:bold;">➕ إدارة الشهور وتواريخ الجمعات</div>
                     <div style="display: flex; gap: 5px; margin-bottom: 10px;">
@@ -130,6 +131,7 @@
             <!-- الفرق والكروت -->
             <div id="section-teams" class="glass-card hidden animated">
                 <div class="title">👥 الفرق والكروت (أسود = -0.5 | رمادي = -0.5/زوج)</div>
+                <p style="font-size:11px; color:#00ff88; margin-bottom:15px;">💡 الغياب بدون عذر يضيف "كارت أسود تلقائي" ويخصم نص درجة أوتوماتيكياً!</p>
                 <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 20px;">
                     <div style="font-size: 13px; color: var(--primary); margin-bottom: 8px; font-weight:bold;">🔄 نقل أو تحديد فريق لاعب</div>
                     <select id="move-player-select"></select><select id="move-team-select"></select>
@@ -203,6 +205,7 @@
             return "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
         }
 
+        // دالة حساب غياب الجمعة (بتتجاهل الأعذار)
         function getPlayerAbsences(playerName) {
             let absences = 0;
             if(!db.attendanceData) return 0;
@@ -242,6 +245,7 @@
             const res = await fetch('database.json?v=' + new Date().getTime());
             db = await res.json();
             if (!db.goalkeepers) db.goalkeepers = [];
+            
             if (!db.playersData) db.playersData = {};
             db.players.forEach(p => {
                 if(!db.playersData[p]) {
@@ -250,6 +254,7 @@
                     db.playersData[p] = { team: assignedTeam, blackCards: 0, greyCards: 0 };
                 }
             });
+
             populateSelects();
         }
 
@@ -273,17 +278,15 @@
             renderGoalkeepersManager(); 
             renderTeamsManager();
             
-            autoSelectCurrentFriday(); // الدالة السحرية للاختيار التلقائي للتاريخ الحالي
+            autoSelectCurrentFriday();
         }
 
-        // ================= الاختيار التلقائي للجمعة الحالية =================
         function autoSelectCurrentFriday() {
             if (!db.attendanceData || db.attendanceData.length === 0) return;
             
             const arabicMonths = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
             let d = new Date();
             let day = d.getDay(); 
-            // حساب الجمعة بتاعت الأسبوع الحالي
             let diff = (day === 6) ? -1 : (5 - day); 
             d.setDate(d.getDate() + diff);
             
@@ -345,6 +348,7 @@
 
         function renderTeamsManager() {
             const container = document.getElementById('teams-list-container'); container.innerHTML = '';
+            
             Object.keys(db.logos).forEach(teamName => {
                 let teamPlayers = db.players.filter(p => db.playersData[p]?.team === teamName);
                 let totalBlackDeduct = 0; let totalGreyDeduct = 0;
@@ -362,7 +366,7 @@
                     <div class="player-team-row">
                         <span>👤 ${p}</span>
                         <div class="card-counter">
-                            <span style="color:#00ff88; font-size:10px;">غياب:${absences}</span>|
+                            <span style="color:#00ff88; font-size:10px;" title="غياب بدون عذر">غياب:${absences}</span>|
                             <span style="color:#aaa; font-size:11px;">⬛ إداري:</span>
                             <button class="card-btn" onclick="updateAdminCard('${p}', 'black', -1)">-</button>
                             <span style="font-weight:bold; color:#ff4b2b;">${manualBlack}</span>
@@ -376,11 +380,13 @@
                     </div>`;
                 }).join('');
 
+                let totalTeamDeduction = totalBlackDeduct + totalGreyDeduct;
+
                 container.innerHTML += `
                     <div class="team-box">
                         <div class="team-header">
                             <span>🛡️ ${teamName} (${teamPlayers.length} لاعبين)</span>
-                            <span style="color:#ff4b2b; font-size:12px;">إجمالي الخصم: -${totalBlackDeduct + totalGreyDeduct} نقطة</span>
+                            <span style="color:#ff4b2b; font-size:12px;">إجمالي الخصم: -${totalTeamDeduction} نقطة</span>
                         </div>
                         ${rowsHtml || '<div style="font-size:12px;color:#aaa;text-align:center;">لا يوجد لاعبين في هذا الفريق</div>'}
                     </div>`;
@@ -549,9 +555,14 @@
             if(type === 'goals') { assistContainer.classList.remove('hidden'); } else { assistContainer.classList.add('hidden'); }
         }
 
+        // ===============================================================
+        // التعديل السحري للهدف الذاتي (عكس الفريق المستفيد)
+        // ===============================================================
         function addMatchEvent() {
-            const rId = document.getElementById('round-matches-select').value; const mIdx = document.getElementById('match-edit-select').value;
+            const rId = document.getElementById('round-matches-select').value; 
+            const mIdx = document.getElementById('match-edit-select').value;
             const match = db.leagueData.find(r => r.id == rId).matches[mIdx];
+            
             const type = document.getElementById('event-type').value;
             const team = document.getElementById('event-team').value;
             const player = document.getElementById('event-player').value;
@@ -559,13 +570,27 @@
             const isOwnGoal = document.getElementById('event-owngoal').checked;
 
             let eventText = player;
+            let targetTeam = team; // الديفولت هو نفس الفريق اللي اخترته
+
             if (type === 'goals') {
-                if (isOwnGoal) { eventText += " <span class='own-goal'>(هدف ذاتي)</span>"; } 
-                else if (assist && !player.includes('بدون اسم')) { eventText += ` (أسيست ${assist})`; }
-                if (team === 'A') match.scoreA++; else match.scoreB++;
+                if (isOwnGoal) { 
+                    eventText += " <span class='own-goal'>(هدف ذاتي)</span>"; 
+                    // لو هدف ذاتي، النقطة والحدث بيروحوا للفريق التاني!
+                    targetTeam = (team === 'A') ? 'B' : 'A';
+                } 
+                else if (assist && !player.includes('بدون اسم')) { 
+                    eventText += ` (أسيست ${assist})`; 
+                }
+                
+                // نزود السكور للفريق المستفيد
+                if (targetTeam === 'A') match.scoreA++; else match.scoreB++;
             }
-            match[`events${team}`][type].push(eventText);
-            document.getElementById('event-owngoal').checked = false; document.getElementById('event-assist').value = "";
+            
+            // نحط الحدث في قايمة الفريق المستفيد
+            match[`events${targetTeam}`][type].push(eventText);
+            
+            document.getElementById('event-owngoal').checked = false; 
+            document.getElementById('event-assist').value = "";
             loadMatchDetails(); 
         }
 
@@ -690,10 +715,10 @@
                 const putRes = await fetch(url, {
                     method: "PUT",
                     headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: "تحديث الشهور، والجمعات التلقائية والاعتذارات ⚡", content: base64Content, sha: currentSha })
+                    body: JSON.stringify({ message: "تحديث النتائج والفرق والغيابات التلقائية ⚡", content: base64Content, sha: currentSha })
                 });
 
-                if(putRes.ok) alert("🎉 تم الحفظ بنجاح!");
+                if(putRes.ok) alert("🎉 تم الحفظ بنجاح! الموقع اتحدث بالكامل والخصومات والاعتذارات اتطبقت.");
                 else alert("❌ فشل الحفظ. راجع صلاحيات الـ Token.");
             } catch (error) { alert("❌ خطأ: " + error.message); }
         }
