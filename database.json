@@ -1394,6 +1394,12 @@
               "excused": false,
               "study": false,
               "activity": false
+            },
+            "يوسف رامي": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
             }
           }
         },
@@ -1581,6 +1587,251 @@
           "records": {
             "أبانوب ماهر": {
               "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "يوسف رامي": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "مارسلينو": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "كاراس عادل": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "فيلو": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "شنودة سمير": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "جون رامز": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "بولا عريان": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "month": "أغسطس",
+      "fridays": [
+        {
+          "name": "الجمعة الأولى",
+          "date": "7 أغسطس",
+          "visible": false,
+          "hasAttendance": false,
+          "records": {
+            "جون رامز": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            }
+          }
+        },
+        {
+          "name": "الجمعة الثانية",
+          "date": "14 أغسطس",
+          "visible": false,
+          "hasAttendance": false,
+          "records": {}
+        },
+        {
+          "name": "الجمعة الثالثة",
+          "date": "21 أغسطس",
+          "visible": false,
+          "hasAttendance": false,
+          "records": {}
+        },
+        {
+          "name": "الجمعة الرابعة",
+          "date": "28 أغسطس",
+          "visible": true,
+          "hasAttendance": false,
+          "records": {
+            "أبانوب ماهر": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "أبانوب ناصر": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "أبراهيم لوكاس": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "أمير ملاك": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "امير طارق": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "بافلي": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "بولا عريان": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "بيتر عماد": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "بيشوي هشام": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "جون رامز": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "شنودة سمير": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "عبدالمسيح سعيد": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "فيلو": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "كاراس امجد": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "كاراس عماد": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "كاراس ميلاد": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "كيرلس عماد": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "كيرلس مجدي": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "كيفين": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "مارسلينو": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "مارك عاطف": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "ماركو امير": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "موسى سميح": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "مينا خالد": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "يوحنا أسامة": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "يوساب": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "يوسف رامي": {
+              "friday": true,
               "excused": false,
               "study": false,
               "activity": false
