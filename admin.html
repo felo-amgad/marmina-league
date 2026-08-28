@@ -87,23 +87,10 @@
                 <button class="btn-primary" onclick="saveConfig()">حفظ محلياً</button>
             </div>
 
-            <!-- الحضور والتقرير الشهري -->
+            <!-- الحضور والتوليد التلقائي -->
             <div id="section-attendance" class="glass-card hidden animated">
                 <div class="title">🗓️ تسجيل الحضور الفردي والاعتذارات</div>
-                
-                <!-- إضافة الشهور والجمعات الجديدة ديناميكياً -->
-                <div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 20px;">
-                    <div style="font-size: 13px; color: var(--primary); margin-bottom: 10px; font-weight:bold;">➕ إدارة الشهور وتواريخ الجمعات</div>
-                    <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-                        <input type="text" id="new-month-name" placeholder="اسم الشهر (مثال: أغسطس)" style="margin:0;">
-                        <button class="btn-secondary" style="margin:0; padding:8px 15px; width:auto;" onclick="addNewMonth()">+ شهر</button>
-                    </div>
-                    <div style="display: flex; gap: 5px;">
-                        <input type="text" id="new-friday-name" placeholder="اسم الجمعة" style="margin:0; flex:1;">
-                        <input type="text" id="new-friday-date" placeholder="التاريخ" style="margin:0; flex:1;">
-                        <button class="btn-primary" style="margin:0; padding:8px; width:auto;" onclick="addNewFriday()">+ جمعة</button>
-                    </div>
-                </div>
+                <p style="font-size:11px; color:#00ff88; margin-bottom:15px;">🤖 السيتسم يضيف الشهور والجمعات تلقائياً بمجرد قدوم يوم الجمعة.</p>
 
                 <label>اختر الشهر:</label><select id="attend-month-select" onchange="updateFridaysListAndLoad()"></select>
                 <label>اختر الجمعة:</label><select id="attend-friday-select" onchange="loadAttendanceForm()"></select>
@@ -205,7 +192,6 @@
             return "https://cdn-icons-png.flaticon.com/512/3135/3135715.png";
         }
 
-        // دالة حساب غياب الجمعة (بتتجاهل الأعذار)
         function getPlayerAbsences(playerName) {
             let absences = 0;
             if(!db.attendanceData) return 0;
@@ -255,7 +241,59 @@
                 }
             });
 
+            // السحر: إضافة الشهور والجمعات تلقائياً
+            autoAddCurrentFridays();
+            
             populateSelects();
+        }
+
+        // ================= التوليد التلقائي للشهور والجمعات =================
+        function autoAddCurrentFridays() {
+            if(!db.attendanceData) db.attendanceData = [];
+            let today = new Date();
+            let year = today.getFullYear();
+            let monthIdx = today.getMonth();
+            let currentDate = today.getDate();
+            
+            const arabicMonths = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
+            const arabicOrdinals = ["الأولى", "الثانية", "الثالثة", "الرابعة", "الخامسة"];
+            
+            let monthName = arabicMonths[monthIdx];
+            
+            // البحث عن الشهر الحالي
+            let dbMonthIndex = db.attendanceData.findIndex(m => m.month.trim() === monthName || m.month.includes(monthName));
+            
+            let fridayCount = 0;
+            
+            // اللف على كل الأيام من 1 لحد تاريخ النهاردة
+            for (let day = 1; day <= currentDate; day++) {
+                let tempD = new Date(year, monthIdx, day);
+                
+                if (tempD.getDay() === 5) { // لو اليوم ده جمعة
+                    if (dbMonthIndex === -1) {
+                        // لو الشهر مش موجود، انشئه
+                        db.attendanceData.push({ month: monthName, fridays: [] });
+                        dbMonthIndex = db.attendanceData.length - 1;
+                    }
+                    
+                    let fName = "الجمعة " + arabicOrdinals[fridayCount];
+                    let fDate = day + " " + monthName;
+                    
+                    // نتأكد إن الجمعة دي متسجلتش قبل كده
+                    let fExists = db.attendanceData[dbMonthIndex].fridays.some(f => f.date === fDate || f.date.includes(day.toString()));
+                    
+                    if (!fExists) {
+                        db.attendanceData[dbMonthIndex].fridays.push({
+                            name: fName,
+                            date: fDate,
+                            visible: false, // الأدمن هو اللي يفعلها
+                            hasAttendance: false,
+                            records: {}
+                        });
+                    }
+                    fridayCount++;
+                }
+            }
         }
 
         function populateSelects() {
@@ -278,72 +316,23 @@
             renderGoalkeepersManager(); 
             renderTeamsManager();
             
-            autoSelectCurrentFriday();
+            // اختيار أحدث جمعة تلقائياً
+            autoSelectCurrentFriday(); 
         }
 
         function autoSelectCurrentFriday() {
             if (!db.attendanceData || db.attendanceData.length === 0) return;
+            // نجيب آخر شهر اتضاف (اللي هو الشهر الحالي)
+            let lastMonthIdx = db.attendanceData.length - 1;
+            document.getElementById('attend-month-select').value = lastMonthIdx;
             
-            const arabicMonths = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو", "يوليو", "أغسطس", "سبتمبر", "أكتوبر", "نوفمبر", "ديسمبر"];
-            let d = new Date();
-            let day = d.getDay(); 
-            let diff = (day === 6) ? -1 : (5 - day); 
-            d.setDate(d.getDate() + diff);
+            updateFridaysList(); 
             
-            let monthName = arabicMonths[d.getMonth()];
-            let dayNum = d.getDate();
-            
-            let mIdx = db.attendanceData.findIndex(m => m.month.trim() === monthName || m.month.includes(monthName));
-            
-            if (mIdx !== -1) {
-                document.getElementById('attend-month-select').value = mIdx;
-                updateFridaysList(); 
-                
-                let fIdx = db.attendanceData[mIdx].fridays.findIndex(f => {
-                    let match = f.date.match(/\d+/);
-                    return match && parseInt(match[0]) === dayNum;
-                });
-                
-                if (fIdx !== -1) {
-                    document.getElementById('attend-friday-select').value = fIdx;
-                } else {
-                    document.getElementById('attend-friday-select').value = db.attendanceData[mIdx].fridays.length - 1;
-                }
-            } else {
-                document.getElementById('attend-month-select').value = db.attendanceData.length - 1;
-                updateFridaysList();
-                let lastFridays = db.attendanceData[db.attendanceData.length - 1].fridays;
-                if (lastFridays.length > 0) { document.getElementById('attend-friday-select').value = lastFridays.length - 1; }
+            let lastFridays = db.attendanceData[lastMonthIdx].fridays;
+            if (lastFridays.length > 0) { 
+                document.getElementById('attend-friday-select').value = lastFridays.length - 1; 
             }
             loadAttendanceForm();
-        }
-
-        function addNewMonth() {
-            const name = document.getElementById('new-month-name').value.trim();
-            if(!name) return alert("اكتب اسم الشهر أولاً!");
-            db.attendanceData.push({ month: name, fridays: [] });
-            document.getElementById('new-month-name').value = '';
-            populateSelects();
-            document.getElementById('attend-month-select').value = db.attendanceData.length - 1;
-            updateFridaysListAndLoad();
-            alert(`تم إضافة شهر ${name} بنجاح!`);
-        }
-
-        function addNewFriday() {
-            const mIdx = document.getElementById('attend-month-select').value;
-            if(mIdx === "" || !db.attendanceData[mIdx]) return alert("اختر أو أضف شهراً أولاً!");
-            const name = document.getElementById('new-friday-name').value.trim();
-            const date = document.getElementById('new-friday-date').value.trim();
-            if(!name || !date) return alert("اكتب اسم الجمعة وتاريخها!");
-            
-            db.attendanceData[mIdx].fridays.push({ name: name, date: date, visible: false, hasAttendance: false, records: {} });
-            document.getElementById('new-friday-name').value = '';
-            document.getElementById('new-friday-date').value = '';
-            
-            updateFridaysList();
-            document.getElementById('attend-friday-select').value = db.attendanceData[mIdx].fridays.length - 1;
-            loadAttendanceForm();
-            alert("تم إضافة الجمعة بنجاح!");
         }
 
         function renderTeamsManager() {
@@ -555,14 +544,9 @@
             if(type === 'goals') { assistContainer.classList.remove('hidden'); } else { assistContainer.classList.add('hidden'); }
         }
 
-        // ===============================================================
-        // التعديل السحري للهدف الذاتي (عكس الفريق المستفيد)
-        // ===============================================================
         function addMatchEvent() {
-            const rId = document.getElementById('round-matches-select').value; 
-            const mIdx = document.getElementById('match-edit-select').value;
+            const rId = document.getElementById('round-matches-select').value; const mIdx = document.getElementById('match-edit-select').value;
             const match = db.leagueData.find(r => r.id == rId).matches[mIdx];
-            
             const type = document.getElementById('event-type').value;
             const team = document.getElementById('event-team').value;
             const player = document.getElementById('event-player').value;
@@ -570,23 +554,20 @@
             const isOwnGoal = document.getElementById('event-owngoal').checked;
 
             let eventText = player;
-            let targetTeam = team; // الديفولت هو نفس الفريق اللي اخترته
+            let targetTeam = team;
 
             if (type === 'goals') {
                 if (isOwnGoal) { 
                     eventText += " <span class='own-goal'>(هدف ذاتي)</span>"; 
-                    // لو هدف ذاتي، النقطة والحدث بيروحوا للفريق التاني!
                     targetTeam = (team === 'A') ? 'B' : 'A';
                 } 
                 else if (assist && !player.includes('بدون اسم')) { 
                     eventText += ` (أسيست ${assist})`; 
                 }
                 
-                // نزود السكور للفريق المستفيد
                 if (targetTeam === 'A') match.scoreA++; else match.scoreB++;
             }
             
-            // نحط الحدث في قايمة الفريق المستفيد
             match[`events${targetTeam}`][type].push(eventText);
             
             document.getElementById('event-owngoal').checked = false; 
@@ -715,10 +696,10 @@
                 const putRes = await fetch(url, {
                     method: "PUT",
                     headers: { "Authorization": `token ${token}`, "Content-Type": "application/json" },
-                    body: JSON.stringify({ message: "تحديث النتائج والفرق والغيابات التلقائية ⚡", content: base64Content, sha: currentSha })
+                    body: JSON.stringify({ message: "تحديث الشهور والجمعات التلقائية ⚡", content: base64Content, sha: currentSha })
                 });
 
-                if(putRes.ok) alert("🎉 تم الحفظ بنجاح! الموقع اتحدث بالكامل والخصومات والاعتذارات اتطبقت.");
+                if(putRes.ok) alert("🎉 تم الحفظ بنجاح!");
                 else alert("❌ فشل الحفظ. راجع صلاحيات الـ Token.");
             } catch (error) { alert("❌ خطأ: " + error.message); }
         }
