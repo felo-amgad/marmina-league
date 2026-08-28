@@ -1546,6 +1546,30 @@
               "excused": true,
               "study": false,
               "activity": false
+            },
+            "أمير ملاك": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "مارسلينو": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "كاراس عادل": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "جون رامز": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
             }
           }
         },
