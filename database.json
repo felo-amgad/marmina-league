@@ -1913,6 +1913,18 @@
               "excused": false,
               "study": false,
               "activity": false
+            },
+            "أبانوب ماهر": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "أبانوب ناصر": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
             }
           }
         },
@@ -1921,14 +1933,34 @@
           "date": "14 أغسطس",
           "visible": false,
           "hasAttendance": false,
-          "records": {}
+          "records": {
+            "أبانوب ناصر": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            }
+          }
         },
         {
           "name": "الجمعة الثالثة",
           "date": "21 أغسطس",
           "visible": false,
           "hasAttendance": false,
-          "records": {}
+          "records": {
+            "أبانوب ناصر": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "بيشوي هشام": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            }
+          }
         },
         {
           "name": "الجمعة الرابعة",
@@ -2093,6 +2125,115 @@
               "activity": false
             },
             "يوسف رامي": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            }
+          }
+        }
+      ]
+    },
+    {
+      "month": "سبتمبر",
+      "fridays": [
+        {
+          "name": "الجمعة الأولى",
+          "date": "4 سبتمبر",
+          "visible": false,
+          "hasAttendance": false,
+          "records": {
+            "أبانوب ماهر": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "بيشوي هشام": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "أبانوب ناصر": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "أمير ملاك": {
+              "friday": false,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "امير طارق": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "بولا عريان": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "جون رامز": {
+              "friday": false,
+              "excused": true,
+              "study": false,
+              "activity": false
+            },
+            "كاراس امجد": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "كاراس عماد": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "كاراس ميلاد": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "كيرلس مجدي": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "كيفين": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "ماركو امير": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "موسى سميح": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "يوحنا أسامة": {
+              "friday": true,
+              "excused": false,
+              "study": false,
+              "activity": false
+            },
+            "يوساب": {
               "friday": true,
               "excused": false,
               "study": false,
